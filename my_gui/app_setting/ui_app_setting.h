@@ -13,7 +13,7 @@
 #include "setting_display.h"
 #include "setting_about.h"
 
-#define keil 1
+#define keil 0
 
 #if keil
 #include "TFTLCD.h"
@@ -36,9 +36,9 @@ FONT
 
 #else
 
-#define FONT_Size_12_PATH    "0:/SD/my_font_all/Font_12.bin"
-#define FONT_Size_14_PATH    "0:/SD/my_font_all/Font_14.bin"
-#define FONT_Size_16_PATH    "0:/SD/my_font_all/Font_16.bin"
+#define FONT_Size_12_PATH     "0:/GitHub²Ö¿â/My_STM32_Phone/SD/my_font_all/Font_12.bin"
+#define FONT_Size_14_PATH     "0:/GitHub²Ö¿â/My_STM32_Phone/SD/my_font_all/Font_14.bin"
+#define FONT_Size_16_PATH     "0:/GitHub²Ö¿â/My_STM32_Phone/SD/my_font_all/Font_16.bin"
 
 #endif 
 
