@@ -1,0 +1,370 @@
+#include "ui_app_language.h"
+
+const ui_setting_language_t APP_SET_ABOUT_LA_TABLE[APP_SET_ABOUT_NUM]=
+{
+   [APP_SET_ABOUT_TITLE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="About Device",
+                     [CHINESE]="关于设备",
+             },
+   }, 
+   [APP_SET_ABOUT_DEVICE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Device",
+                     [CHINESE]="毕业设计",
+             },
+   }, 
+   [APP_SET_ABOUT_MCU]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="MCU:STM32F407ZGT6",
+                     [CHINESE]="芯片:STM32F407ZGT6",
+             },
+   },
+   [APP_SET_ABOUT_RAM]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="RAM:128K+64k+1M",
+                     [CHINESE]="内存:128K+64k+1M",
+             },
+   },
+   [APP_SET_ABOUT_ROM]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="RAM:128K+64k+1M",
+                     [CHINESE]="内存:128K+64k+1M",
+             },
+   },
+   [APP_SET_ABOUT_SD]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="SD:32G",
+                     [CHINESE]="SD:32G",
+             },
+   },
+   [APP_SET_ABOUT_SCREEN]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Screen:Resistive Screen240x320",
+                     [CHINESE]="屏幕:电阻触摸240x320",
+             },
+   },
+   [APP_SET_ABOUT_SYSTEM]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="SYS:FreeRTOS V11.1",
+                     [CHINESE]="系统:FreeRTOS V11.1",
+             },
+   },
+   [APP_SET_ABOUT_GUI]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="GUI:LVGL V8.3",
+                     [CHINESE]="界面:LVGL V8.3",
+             },
+   },
+};
+
+const ui_setting_language_t APP_SET_LA_TABLE[APP_SETTING_NUM]=
+{
+    [APP_SETTING_TITLE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Setting",
+                     [CHINESE]="设置",
+             },
+   }, 
+   [APP_SETTING_WLAN]=
+   {
+             .icon=LV_SYMBOL_WIFI,
+             .text=
+             {
+                     [ENGLISH]="WLAN",
+                     [CHINESE]="无线局域网",
+             },
+   },
+   [APP_SETTING_DISPLAY]=
+   {
+             .icon=LV_SYMBOL_REFRESH,
+             .text=
+             {
+                     [ENGLISH]="Display",
+                     [CHINESE]="显示",
+             },
+   }, 
+   [APP_SETTING_HOTSPOT]=
+   {
+             .icon=LV_SYMBOL_SHUFFLE,
+             .text=
+             {
+                     [ENGLISH]="Persion Hotspot",
+                     [CHINESE]="个人热点",
+             },
+   },
+   [APP_SETTING_ABOUT]=
+   {
+             .icon=LV_SYMBOL_NEW_LINE,
+             .text=
+             {
+                     [ENGLISH]="About",
+                     [CHINESE]="关于本机",
+             },
+   }, 
+};
+
+
+
+const ui_setting_language_t APP_SET_DISPLAY_LA_TABLE[SETTING_DISPLAY_NUM]=
+{
+   [DISPLAY_TITLE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="DIsplay",
+                     [CHINESE]="显示",
+             },
+   }, 
+   [DISPLAY_LANGUAGE_TITLE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Language",
+                     [CHINESE]="语言",
+             },
+   }, 
+   [DISPLAY_LANGUAGE_CUR]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="English\nChinese",
+                     [CHINESE]="英文\n中文",
+             },
+   },
+   [DISPLAY_WORD_TITLE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Font_Size",
+                     [CHINESE]="字符大小",
+             },
+   }, 
+   [DISPLAY_WORD_CUR]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="12\n14\n16",
+                     [CHINESE]="12\n14\n16",
+             },
+   },
+   [DISPLAY_SCR_TITLE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Screen_Direction",
+                     [CHINESE]="屏幕方向",
+             },
+   }, 
+   [DISPLAY_SCR_CUR]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="VER\nREV_VER\nHOR\nREV_HOR",
+                     [CHINESE]="正常竖向\n相反竖向\n正常横向\n相反横向",
+             },
+   },
+   [DISPLAY_BRIGHT_TITLE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Brightness",
+                     [CHINESE]="亮度",
+             },
+   }, 
+   [DISPLAY_BRIGHT_CUR]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="30\n60\n90",
+                     [CHINESE]="30\n60\n90",
+             },
+   },
+};
+
+const ui_setting_language_t DISPLAY_SCR_MSG_LA_TABLE[MSG_NUM]=
+{
+   [MSG_TITLE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Notice",
+                     [CHINESE]="注意",
+             },
+   }, 
+   [MSG_BTN_CONTINUE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Continue",
+                     [CHINESE]="确认",
+             },
+   }, 
+   [MSG_BTN_CANCEL]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Cancel",
+                     [CHINESE]="取消",
+             },
+   },
+   [MSG_TEXT]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Changing the screen orientation may be recalibrate the touchscreen. Do you want to continue?",
+                     [CHINESE]="更换屏幕方向可能需要重新校准触摸屏,您要继续吗?",
+             },
+   },
+};
+
+const ui_setting_language_t HOTSPOT_LV_TABLE[HOTSPOT_NUM]=
+{
+   [HOTSPOT_TITLE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Personal Hotspot",
+                     [CHINESE]="个人热点",
+             },
+   }, 
+   [HOTSPOT_NAME]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Hotspot Name",
+                     [CHINESE]="热点名称",
+             },
+   }, 
+   [HOTSPOT_PASS]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Hotspot Password",
+                     [CHINESE]="热点密码",
+             },
+   }, 
+   [HOTSPOT_CHANNEL]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Hotspot Channel",
+                     [CHINESE]="通道",
+             },
+   }, 
+   [HOTSPOT_METHOD]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Hotspot Method",
+                     [CHINESE]="加密方式",
+             },
+   }, 
+   [HOTSPOT_USERS]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Hotspot Users",
+                     [CHINESE]="连接数量",
+             },
+   }, 
+   [HOTSPOT_IP]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="IP Address",
+                     [CHINESE]="ip地址",
+             },
+   }, 
+};
+
+
+const ui_setting_language_t ALARM_MSGBOX_LA_TABLE[ALARM_MSGBOX_NUM]=
+{
+   [ALARM_MSGBOX_BTN_OK]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="OK",
+                     [CHINESE]="确认",
+             },
+   }, 
+   [ALARM_MSGBOX_BTN_WAIT]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="WAIT",
+                     [CHINESE]="稍后",
+             },
+   }, 
+   [ALARM_MSGBOX_TITLE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="ALARM",
+                     [CHINESE]="闹钟",
+             },
+   }, 
+   [ALARM_MSGBOX_LABEL]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="The alarm clock time has come!",
+                     [CHINESE]="主人,闹钟时间到了!",
+             },
+   }, 
+};
