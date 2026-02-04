@@ -104,12 +104,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../my_gui/ui_widgets.h" />
-		<Unit filename="SD/my_font/Font_24.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="SD/my_icon/cool_test.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="lv_conf.h" />
 		<Unit filename="lv_demo_conf.h" />
 		<Unit filename="lv_drivers/display/GC9A01.c">
