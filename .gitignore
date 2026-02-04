@@ -61,6 +61,8 @@ dkms.conf
 *.sct            # 散列加载文件（除非你手动改过，否则自动生成的不用传）
 *.lst            # 列表文件
 *.crf
+*.htm
+
 /Listings/       # Keil 默认存放列表的文件夹
 /Objects/        # Keil 默认存放输出的文件夹
 
