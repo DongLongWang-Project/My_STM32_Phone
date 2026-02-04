@@ -71,5 +71,4 @@ dkms.conf
 /DebugConfig/  # 屏蔽仿真器配置文件夹
 project.uvguix.19271
 *.19271
-*.19271
-project.uvguix.19271
+
