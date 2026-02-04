@@ -52,25 +52,20 @@ Mkfile.old
 dkms.conf
 
 # --- Keil MDK 特有垃圾文件 ---
-*.uvgui.* # 存储你上次关掉 Keil 时打开了哪些窗口，没必要传
-*.uvguix.* # 同上（新版 Keil）
-*.build_log.htm  # 编译日志
-*.dep            # 依赖文件
-*.iex            # 扩展索引
-*.lnp            # 链接脚本生成的临时文件
-*.sct            # 散列加载文件（除非你手动改过，否则自动生成的不用传）
-*.lst            # 列表文件
+*.uvgui* # 通杀所有 uvgui 变体
+*.uvguix* # 通杀所有 uvguix 变体
+*.build_log.htm
+*.dep
+*.iex
+*.lnp
+*.sct
+*.lst
 *.crf
 *.htm
-
-/Listings/       # Keil 默认存放列表的文件夹
-/Objects/        # Keil 默认存放输出的文件夹
-
-# --- STM32CubeIDE / Makefile 特有 ---
-*.launch         # 调试配置
-.mxproject       # CubeMX 的项目描述文件（如果你不打算给别人改，可以不传）
-
-# --- 操作系统临时文件 ---
-.DS_Store
-Thumbs.db
-
+*.map
+*.axf          # 你刚才提到了这个，建议加上
+*.bak          # 自动备份
+*.scvd         # 组件视图文件
+/Listings/
+/Objects/
+/DebugConfig/  # 屏蔽仿真器配置文件夹
