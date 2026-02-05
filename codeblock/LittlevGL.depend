@@ -10998,7 +10998,7 @@
 	"ui_main.h"
 	"ui_app_language.h"
 
-1770276796 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
+1770277738 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
 	"lvgl.h"
 	"../ui_main.h"
 	"../ui_app_language.h"
