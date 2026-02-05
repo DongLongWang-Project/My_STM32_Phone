@@ -5,46 +5,14 @@ lv_obj_t* ui_widgets_btn_create(lv_obj_t*parent,const char*btn_text);
 
 static void event_btn_add_clock_cb(lv_event_t*e);
 static void event_clock_obj_cb(lv_event_t*e);
-lv_obj_t*tab_clock_creat(lv_obj_t*parent,alarm_clock_set_t *alarm_table);
+void tab_clock_creat(lv_obj_t*parent,alarm_clock_set_t *alarm_table,void* user_data);
 static void clock_create(lv_obj_t*parent);
 static void alarm_clock_create(lv_obj_t*parent);
 static void timer_create(lv_obj_t*parent);
 static void event_add_alarm_cb(lv_event_t*e);
 static void event_timer_cb(lv_event_t *e);
 static void event_alarm_time_is_on_cb(lv_event_t*e);
-ui_clock_widget_t Clock_time_widget=
-{
-     .meter=NULL,
-     .hour_indicator=NULL,
-     .min_indicator=NULL,
-     .sec_indicator=NULL, 
-     .time_label=NULL,
-};
- 
- ui_timer_widget_t timer_widget=
- {
-    .timer_obj=NULL,
-     .hour_roller=NULL,
-     .minute_roller=NULL,
-     .second_roller=NULL,
-     .btn_timer_switch=NULL,
-     .switch_label=NULL,
- };
-
-
-alarm_clock_t alarm_clock;
-
-     
-// 小时选项：00 - 23
-const char * clock_set_hour_options = 
-    "00\n01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n"
-    "12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23";
-
-// 分钟选项：00 - 59
-const char * clock_set_min_options = 
-    "00\n01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n"
-    "20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31\n32\n33\n34\n35\n36\n37\n38\n39\n"
-    "40\n41\n42\n43\n44\n45\n46\n47\n48\n49\n50\n51\n52\n53\n54\n55\n56\n57\n58\n59";
+static void event_clock_set_cb(lv_event_t*e);
      
 void ui_app_clock_creat(lv_obj_t*parent)
 {
@@ -75,10 +43,11 @@ static void alarm_clock_create(lv_obj_t*parent)
     lv_label_set_text(btn_add_clock_label,LV_SYMBOL_PLUS);
     lv_obj_center(btn_add_clock_label);
     lv_obj_align(btn_add_clock,LV_ALIGN_TOP_RIGHT,0,0);
-   
+
    for(uint8_t i=0;i<alarm_clock.save_alarm_num;i++)
    {
-        tab_clock_creat(Clock_list,&alarm_clock.save_alarm_clock_table[i]);
+        tab_clock_creat(Clock_list,&alarm_clock.save_alarm_clock_table[i],(void*)i);
+
    }
     lv_obj_add_event_cb(btn_add_clock,event_btn_add_clock_cb,LV_EVENT_CLICKED,NULL);
 }
@@ -111,7 +80,7 @@ static void clock_create(lv_obj_t*parent)
    Clock_time_widget.min_indicator=lv_meter_add_needle_line(Clock_time_widget.meter,scale,3,lv_color_hex(0),-6);
     Clock_time_widget.hour_indicator=lv_meter_add_needle_line(Clock_time_widget.meter,scale,4,lv_color_hex(0),-30);
    
-   #if keil
+   
    lv_meter_set_indicator_value(Clock_time_widget.meter,Clock_time_widget.sec_indicator,Cur_Time.sec);
    lv_meter_set_indicator_value(Clock_time_widget.meter,Clock_time_widget.min_indicator,Cur_Time.min);
    
@@ -121,7 +90,7 @@ static void clock_create(lv_obj_t*parent)
    Clock_time_widget.time_label=lv_label_create(time_obj);
    lv_obj_align_to(Clock_time_widget.time_label,Clock_time_widget.meter,LV_ALIGN_OUT_BOTTOM_LEFT,45,10);
    lv_label_set_text_fmt(Clock_time_widget.time_label,"Time:%d:%d:%d",Cur_Time.hour,Cur_Time.min,Cur_Time.sec);
-   #endif
+  
 
 }
 
@@ -134,7 +103,7 @@ static void timer_create(lv_obj_t*parent)
     
     timer_widget.timer_obj=lv_obj_create(timer_list);
     lv_obj_set_size(timer_widget.timer_obj,lv_pct(100),lv_pct(90));
-    #if keil
+    
     /*创建小时滚动条*/
     timer_widget.hour_roller=lv_roller_create(timer_widget.timer_obj);
     lv_obj_set_size(timer_widget.hour_roller,lv_pct(33),lv_pct(60));
@@ -169,12 +138,12 @@ static void timer_create(lv_obj_t*parent)
     }
      /*按钮添加事件*/
      lv_obj_add_event_cb(timer_widget.btn_timer_switch,event_timer_cb,LV_EVENT_VALUE_CHANGED,NULL); 
-     #endif  
+    
 }
 
 static void event_timer_cb(lv_event_t *e)
 {
-    #if keil
+    
     lv_obj_t*target=lv_event_get_target(e);
         
     if(lv_obj_has_state(target,LV_STATE_CHECKED))
@@ -197,11 +166,8 @@ static void event_timer_cb(lv_event_t *e)
        Cur_Time.timer_sec=0;
        lv_label_set_text(timer_widget.switch_label,"");
     }
-    #endif // keil
 }
 
-
-    #if keil
 static void alarm_is_time(void)
 {
 
@@ -217,7 +183,7 @@ static void alarm_is_time(void)
           {
             /*闹钟时间到了*/
             /*创建一个窗口,单次的闹钟关闭,每天的闹钟继续*/
-            
+            printf("time is on\r\n");
             lv_obj_clear_flag(alarm_msgbox_obj,LV_OBJ_FLAG_HIDDEN);
           }  
       }
@@ -242,6 +208,8 @@ static void clock_timer(void)
            Cur_Time.hour = (Cur_Time.hour + 1) % 24;
        }
    }
+   
+    lv_label_set_text_fmt(label_time,"%d:%d:%d",Cur_Time.hour,Cur_Time.min,Cur_Time.sec);
     alarm_is_time();
    if(Clock_time_widget.meter!=NULL)
    {
@@ -301,7 +269,7 @@ static void timer_timer(void)
     clock_timer();
     timer_timer();
 }
-  #endif // keil
+  
 lv_obj_t* ui_widgets_btn_create(lv_obj_t*parent,const char*btn_text)
 {
     lv_obj_t*btn=lv_btn_create(parent);
@@ -396,7 +364,7 @@ static void event_add_alarm_cb(lv_event_t*e)
         alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num].Ringtone=lv_dropdown_get_selected(Repeat_drop);  
         lv_obj_del_async(obj); 
         
-        tab_clock_creat(clock_list,&alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num]); 
+        tab_clock_creat(clock_list,&alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num],(void*)alarm_clock.save_alarm_num); 
         alarm_clock.save_alarm_num++;
         #if keil
         save_alarm_data();
@@ -426,27 +394,48 @@ static void del_alarm_and_shift(int16_t index_alarm)
         alarm_clock.save_alarm_clock_table[i]=alarm_clock.save_alarm_clock_table[i+1];
     }
     alarm_clock.save_alarm_num--;
+    
 }
 static void event_clock_set_cb(lv_event_t*e)
-{
-    
+{  
     lv_obj_t*target=lv_event_get_target(e);
-    lv_obj_t*Clock_list=lv_obj_get_parent(target);
-    lv_obj_t*tab_Clock=lv_obj_get_parent(Clock_list);
     lv_event_code_t code = lv_event_get_code(e);
-//        if(code == LV_EVENT_CLICKED)
-//        {
-//         clock_time_create(tab_Clock,ALARM_SETTING); 
-//        }
+    uint8_t alarm_index=(uint8_t)lv_event_get_user_data(e);
+            printf("ALARM:%d\r\n",alarm_index);
     if(code == LV_EVENT_LONG_PRESSED) 
         {
-             lv_obj_del_async(target);  
-             uint16_t index_alarm=lv_obj_get_index(target);
-             del_alarm_and_shift(index_alarm);   
+            lv_obj_t*Clock_list=lv_obj_get_parent(target);
+            lv_obj_clean(Clock_list); 
+            lv_list_add_text(Clock_list,"Alarm Clock");
+
+             del_alarm_and_shift(alarm_index); 
+           for(uint8_t i=0;i<alarm_clock.save_alarm_num;i++)
+           {
+                tab_clock_creat(Clock_list,&alarm_clock.save_alarm_clock_table[i],(void*)i);
+           }  
         }
         if(code==LV_EVENT_VALUE_CHANGED)
         {
             /*状态变化打开或者关闭闹钟*/
+
+            printf("开关");
+            if(alarm_clock.save_alarm_clock_table[alarm_index].alarm_is_on==true)
+            {
+               alarm_clock.save_alarm_clock_table[alarm_index].alarm_is_on=false; 
+                /*关闭闹钟*/
+            }
+            else
+            {
+                  /*打开闹钟*/
+               alarm_clock.save_alarm_clock_table[alarm_index].alarm_is_on=true;  
+            }
+              
+                
+
+
+               
+                
+
             
         }
         #if keil
@@ -463,7 +452,7 @@ static void event_clock_set_cb(lv_event_t*e)
 //            lv_obj_del(target);
 //        }
 //}
-lv_obj_t*tab_clock_creat(lv_obj_t*parent,alarm_clock_set_t *alarm_table)
+void tab_clock_creat(lv_obj_t*parent,alarm_clock_set_t *alarm_table,void* user_data)
 {
     lv_obj_t*obj=lv_obj_create(parent);
     lv_obj_set_size(obj,lv_pct(100),lv_pct(20));
@@ -491,15 +480,14 @@ lv_obj_t*tab_clock_creat(lv_obj_t*parent,alarm_clock_set_t *alarm_table)
     lv_obj_align(clock_switch,LV_ALIGN_RIGHT_MID,0,0);
     
     
-    if(alarm_table->alarm_is_on)
+    if(alarm_table->alarm_is_on==true)
     {
+        printf("dakai\r\n");
       lv_obj_add_state(clock_switch,LV_STATE_CHECKED);
     }
-    lv_obj_add_event_cb(obj,event_clock_set_cb,LV_EVENT_LONG_PRESSED,NULL);
-//    lv_obj_add_event_cb(obj,event_clock_set_cb,LV_EVENT_CLICKED,NULL);
-    lv_obj_add_event_cb(clock_switch,event_clock_set_cb,LV_EVENT_VALUE_CHANGED,NULL);
-    
-    return  obj;
+    lv_obj_add_event_cb(obj,event_clock_set_cb,LV_EVENT_LONG_PRESSED,user_data);
+    lv_obj_add_event_cb(clock_switch,event_clock_set_cb,LV_EVENT_VALUE_CHANGED,user_data);
+
 }           
 
 

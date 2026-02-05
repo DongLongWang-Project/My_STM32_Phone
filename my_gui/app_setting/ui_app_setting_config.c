@@ -1,4 +1,4 @@
-#include "ui_app_config.h"
+#include "ui_app_setting_config.h"
 
 
  ui_app_setting_config_t display_cfg =

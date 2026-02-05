@@ -9,6 +9,7 @@
 #include "FreeRTOS.h"
 #include "Queue.h"
 #include "ui_app_setting.h"
+#include "ui_app_clock_config.h"
 
 #define USART3_RX_BUF_SIZE 512       //串口的缓冲区大小
 #define DEAL_BUF_SIZE       2048
@@ -23,24 +24,7 @@
 #define WIFI_IP_MAX_LEN           16
 
 
-typedef struct
-{
-  uint16_t year;
-  uint8_t month;
-  uint8_t day;
 
-  uint8_t hour;
-  uint8_t min;
-  uint8_t sec;
-
-  int8_t temperature;
-  uint8_t weather_code;
-
-  uint8_t timer_hour;
-  uint8_t timer_min;
-  uint8_t timer_sec;
-  
-}ui_weather_time_t;
 
 typedef struct 
 {
@@ -156,7 +140,7 @@ extern wifi_context_t wifi_scan_list;
 extern wifi_connect_t connected_wifi;
 extern wifi_save_t wifi_save_list;
 extern Hotspot_data_t  hotspot_data; 
-extern ui_weather_time_t Cur_Time;
+
 
 void DX_WF25_Init(void);
 void USART3_DMA_SendData(const char *Data);

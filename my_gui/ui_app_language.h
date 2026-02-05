@@ -2,7 +2,7 @@
 #define    __UI_APP_LANGUAGE_H
 
 #include "lvgl.h"
-#include "ui_app_config.h"
+#include "app_setting/ui_app_setting_config.h"
 
 
 

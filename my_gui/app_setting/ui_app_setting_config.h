@@ -1,5 +1,5 @@
-#ifndef __UI_APP_CONFIG_H
-#define __UI_APP_CONFIG_H
+#ifndef __UI_APP_SETTING_CONFIG_H
+#define __UI_APP_SETTING_CONFIG_H
 
 #include "lvgl.h"
 

@@ -26,11 +26,11 @@ void ui_init(void)
     lv_obj_align_to(main_page,state_bar,LV_ALIGN_OUT_BOTTOM_MID,0,0);
     ui_creat_control_bar(lv_scr_act());
     ui_creat_keyboard();
-    label_time= creat_statebar_icon("16:00");
+    label_time= creat_statebar_icon("");
     lv_obj_set_flex_grow(label_time,1);
-    #if keil
+ 
     lv_timer_create(clock_time_timer_cb, 1000, NULL);  
-    #endif // keil
+  
     ui_goto_page(PAGE_HOME,APP_TEMP);
     
     alarm_rem_win(lv_scr_act());
@@ -249,7 +249,3 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
         }
       }
  }
-
-
-
-

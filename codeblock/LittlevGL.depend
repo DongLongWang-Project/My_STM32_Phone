@@ -10336,14 +10336,14 @@
 	"lvgl.h"
 	"lvgl/lvgl.h"
 
-1770276796 source:g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock.c
+1770283941 source:g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock.c
 	"ui_app_clock.h"
 
-1770276796 g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock.h
+1770279919 g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock.h
 	"lvgl.h"
 	"../app_setting/setting_display.h"
 	"../ui_widgets.h"
-	"DX_WF25.h"
+	"ui_app_clock_config.h"
 
 1770276795 g:\github_code\my_stm32_phone\codeblock\lvgl\lvgl.h
 	"src/misc/lv_log.h"
@@ -10976,9 +10976,9 @@
 	"../ui_app_language.h"
 	"../ui_main.h"
 
-1770276796 g:\github_code\my_stm32_phone\my_gui\ui_app_language.h
+1770279861 g:\github_code\my_stm32_phone\my_gui\ui_app_language.h
 	"lvgl.h"
-	"ui_app_config.h"
+	"app_setting/ui_app_setting_config.h"
 
 1770276796 g:\github_code\my_stm32_phone\my_gui\ui_app_config.h
 	"lvgl.h"
@@ -10998,7 +10998,7 @@
 	"ui_main.h"
 	"ui_app_language.h"
 
-1770277738 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
+1770284138 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
 	"lvgl.h"
 	"../ui_main.h"
 	"../ui_app_language.h"
@@ -11077,7 +11077,7 @@
 1770276796 source:g:\github_code\my_stm32_phone\my_gui\ui_app_language.c
 	"ui_app_language.h"
 
-1770276796 source:g:\github_code\my_stm32_phone\my_gui\ui_main.c
+1770283779 source:g:\github_code\my_stm32_phone\my_gui\ui_main.c
 	"ui_main.h"
 
 1770276796 source:g:\github_code\my_stm32_phone\my_gui\ui_widgets.c
@@ -13773,4 +13773,16 @@
 	"lv_drivers/win32drv/win32drv.h"
 	<windows.h>
 	"../my_gui/ui_main.h"
+
+1770283992 source:g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock_config.c
+	"ui_app_clock_config.h"
+
+1770283181 g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock_config.h
+	"lvgl.h"
+
+1770278924 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.h
+	"lvgl.h"
+
+1770278914 source:g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.c
+	"ui_app_setting_config.h"
 

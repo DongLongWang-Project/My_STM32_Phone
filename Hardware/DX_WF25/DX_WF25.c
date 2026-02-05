@@ -37,22 +37,7 @@ Hotspot_data_t  hotspot_data=  /*热点的初始化配置*/
     .hotspot_ip_allow=true,      /*默认热点分配ip可用*/
 };
 
-ui_weather_time_t Cur_Time=
-{
-    .year=2026,
-    .month=2,
-    .day=3,
-    .hour=10,
-    .min=2,
-    .sec=30,
-    
-    .temperature=2,
-    .weather_code=1,
-    
-    .timer_hour=0,
-    .timer_min=0,
-    .timer_sec=0,
-};
+
 
 QueueHandle_t DX_WF25_CMD_Queue; /*AT指令队列*/
 
