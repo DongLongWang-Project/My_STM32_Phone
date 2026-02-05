@@ -2,114 +2,9 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="lv_drivers\win_drv.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="lv_drivers\indev\libinput.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="23" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\app_setting\ui_app_setting.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="913" topLine="28" />
-		</Cursor>
-	</File>
-	<File name="lvgl\env_support\cmsis-pack\lv_conf_cmsis.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="21405" topLine="570" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\app_setting\setting_wifi.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="13874" topLine="263" />
-		</Cursor>
-	</File>
-	<File name="lvgl\env_support\rt-thread\squareline\ui\lvgl\lvgl.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\hal\lv_hal_indev.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1493" topLine="62" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\app_clock\ui_app_clock_config.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="150" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\widgets\lv_dropdown.c" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1960" topLine="55" />
-		</Cursor>
-	</File>
-	<File name="main.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="296" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\extra\others\monkey\lv_monkey.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="816" topLine="6" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\hal\lv_hal_disp.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="9304" topLine="241" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\ui_main.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="241" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\extra\widgets\tabview\lv_tabview.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8818" topLine="246" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\core\lv_group.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1026" topLine="21" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\app_clock\ui_app_clock.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="337" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lv_drv_conf.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4294" topLine="105" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\ui_app_language.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="132" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lv_drivers\wayland\wayland.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1183" topLine="18" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\app_clock\ui_app_clock.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7797" topLine="112" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\app_net_ass\ui_app_net.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="55" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\extra\layouts\flex\lv_flex.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="214" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lv_drivers\gtkdrv\gtkdrv.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7634" topLine="286" />
+			<Cursor1 position="15388" topLine="454" />
 		</Cursor>
 	</File>
 	<File name="lvgl\lv_conf_template.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -117,34 +12,9 @@
 			<Cursor1 position="21270" topLine="597" />
 		</Cursor>
 	</File>
-	<File name="lvgl\src\widgets\lv_btnmatrix.c" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\my_gui\app_setting\setting_display.c" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="9857" topLine="263" />
-		</Cursor>
-	</File>
-	<File name="lv_drivers\indev\mouse.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="508" topLine="3" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\extra\lv_extra.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="608" topLine="7" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\ui_main.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="868" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lvgl\tests\src\test_cases\test_dropdown.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8914" topLine="215" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\misc\lv_style.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="11572" topLine="307" />
+			<Cursor1 position="18759" topLine="410" />
 		</Cursor>
 	</File>
 	<File name="lv_drivers\sdl\sdl_common.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -152,24 +22,19 @@
 			<Cursor1 position="7011" topLine="67" />
 		</Cursor>
 	</File>
-	<File name="..\my_gui\ui_app_language.c" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\my_gui\app_setting\setting_hotspot.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="534" topLine="252" />
+			<Cursor1 position="60" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="lvgl\src\core\lv_obj.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="lv_drivers\gtkdrv\gtkdrv.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4632" topLine="0" />
+			<Cursor1 position="7634" topLine="286" />
 		</Cursor>
 	</File>
-	<File name="..\my_gui\app_setting\setting_wifi.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\my_gui\app_net_ass\ui_app_net.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="54" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lvgl\lvgl.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
+			<Cursor1 position="55" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="lvgl\src\extra\lv_extra.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -177,69 +42,9 @@
 			<Cursor1 position="0" topLine="10" />
 		</Cursor>
 	</File>
-	<File name="lv_drivers\sdl\sdl.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="lvgl\src\core\lv_obj.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="110" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\hal\lv_hal_disp.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7823" topLine="171" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\core\lv_indev.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="14297" topLine="398" />
-		</Cursor>
-	</File>
-	<File name="lv_drivers\sdl\sdl.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="360" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lvgl\env_support\rt-thread\lv_rt_thread_conf.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="57" />
-		</Cursor>
-	</File>
-	<File name="lv_drivers\sdl\sdl_gpu.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="141" topLine="221" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\ui_widgets.c" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\hal\lv_hal_indev.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2070" topLine="66" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\extra\layouts\flex\lv_flex.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3593" topLine="112" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\core\lv_event.h" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2014" topLine="16" />
-		</Cursor>
-	</File>
-	<File name="lv_drivers\sdl\sdl_common.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1462" topLine="12" />
-		</Cursor>
-	</File>
-	<File name="lv_conf.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="10389" topLine="261" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\core\lv_obj_class.c" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="823" topLine="37" />
+			<Cursor1 position="4632" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="lv_drivers\display\ILI9341.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -247,14 +52,339 @@
 			<Cursor1 position="0" topLine="395" />
 		</Cursor>
 	</File>
+	<File name="lv_drivers\sdl\sdl_gpu.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="341" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\ui_widgets.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="555" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\win32drv\win32drv.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1349" topLine="27" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\app_setting\setting_about.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1402" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\indev\xkb.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5014" topLine="134" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\ui_widgets.c" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\extra\lv_extra.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="608" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\app_file_sys\file_img.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="305" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lv_drv_conf.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4294" topLine="105" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\sdl\sdl_gpu.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="141" topLine="221" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\core\lv_event.h" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2014" topLine="16" />
+		</Cursor>
+	</File>
 	<File name="..\my_gui\app_setting\setting_about.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="56" topLine="0" />
 		</Cursor>
 	</File>
+	<File name="lvgl\src\core\lv_indev.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="14297" topLine="398" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\widgets\lv_label.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2191" topLine="37" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\ui_main.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="241" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\widgets\lv_btnmatrix.c" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="9857" topLine="263" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\hal\lv_hal_disp.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7823" topLine="171" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\app_clock\ui_app_clock.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="10574" topLine="21" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\wayland\wayland.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1183" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\misc\lv_area.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8525" topLine="250" />
+		</Cursor>
+	</File>
+	<File name="lvgl\examples\porting\lv_port_disp_template.c" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="8" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="853" topLine="141" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\lv_drv_conf_template.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3433" topLine="166" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\sdl\sdl_common_internal.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="588" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\ui_app_language.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="132" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\app_setting\setting_wifi.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="13874" topLine="263" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\extra\layouts\flex\lv_flex.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="214" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\lv_conf_internal.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="62032" topLine="1751" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\extra\others\monkey\lv_monkey.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="816" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="lvgl\tests\src\test_cases\test_dropdown.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8914" topLine="215" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\app_clock\ui_app_clock_config.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="590" topLine="19" />
+		</Cursor>
+	</File>
+	<File name="lvgl\env_support\rt-thread\squareline\ui\lvgl\lvgl.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\misc\lv_style.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="11572" topLine="307" />
+		</Cursor>
+	</File>
+	<File name="lvgl\lvgl.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
 	<File name="..\my_gui\app_setting\setting_display.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="60" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\sdl\sdl_common.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1462" topLine="12" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\app_setting\ui_app_setting.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="281" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\app_weather\ui_app_weather.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="31" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\app_clock\ui_app_clock.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="337" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\win_drv.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="965" topLine="267" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\indev\keyboard.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="522" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\sdl\sdl.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="110" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\indev\evdev.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4434" topLine="97" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\extra\widgets\tabview\lv_tabview.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8818" topLine="246" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\extra\layouts\lv_layouts.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="216" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\hal\lv_hal_indev.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1493" topLine="62" />
+		</Cursor>
+	</File>
+	<File name="lvgl\env_support\cmsis-pack\lv_conf_cmsis.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="21405" topLine="570" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\app_setting\setting_hotspot.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8774" topLine="197" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\indev\mouse.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="508" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\hal\lv_hal_indev.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2070" topLine="66" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\display\UC1610.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5537" topLine="98" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\win32drv\win32drv.c" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="663" topLine="58" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\sdl\sdl.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="360" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\core\lv_group.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1026" topLine="21" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\ui_main.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="868" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\core\lv_group.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="24" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\widgets\lv_dropdown.c" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1960" topLine="55" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\app_setting\setting_wifi.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="54" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\core\lv_obj_class.c" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="823" topLine="37" />
+		</Cursor>
+	</File>
+	<File name="lv_drivers\win_drv.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="23" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\extra\widgets\list\lv_list.c" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1855" topLine="52" />
+		</Cursor>
+	</File>
+	<File name="lvgl\env_support\rt-thread\lv_rt_thread_conf.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="57" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\app_setting\ui_app_setting.c" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\my_gui\ui_app_language.c" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="534" topLine="252" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\extra\layouts\flex\lv_flex.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3593" topLine="112" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\core\lv_obj.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3005" topLine="80" />
+		</Cursor>
+	</File>
+	<File name="main.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="296" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="lvgl\src\hal\lv_hal_disp.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="9304" topLine="241" />
 		</Cursor>
 	</File>
 	<File name="lvgl\src\core\lv_obj_style.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -267,144 +397,14 @@
 			<Cursor1 position="852" topLine="21" />
 		</Cursor>
 	</File>
-	<File name="lv_drivers\win32drv\win32drv.c" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
+	<File name="lv_conf.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="663" topLine="58" />
+			<Cursor1 position="10389" topLine="261" />
 		</Cursor>
 	</File>
-	<File name="lv_drivers\win_drv.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\my_gui\app_clock\ui_app_clock_config.c" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="965" topLine="267" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\app_setting\ui_app_setting.c" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\app_file_sys\file_img.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="305" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\app_setting\setting_hotspot.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="60" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\ui_widgets.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="555" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lv_drivers\indev\libinput.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="15388" topLine="454" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\lv_conf_internal.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="62032" topLine="1751" />
-		</Cursor>
-	</File>
-	<File name="lv_drivers\sdl\sdl_common_internal.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="588" topLine="1" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\app_weather\ui_app_weather.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="31" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lv_drivers\sdl\sdl_gpu.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="341" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\extra\widgets\list\lv_list.c" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1855" topLine="52" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\core\lv_obj.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3005" topLine="80" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\app_setting\setting_hotspot.c" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8774" topLine="197" />
-		</Cursor>
-	</File>
-	<File name="lv_drivers\indev\keyboard.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="522" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lv_drivers\display\UC1610.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5537" topLine="98" />
-		</Cursor>
-	</File>
-	<File name="lv_drivers\indev\evdev.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4434" topLine="97" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\app_clock\ui_app_clock_config.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1156" topLine="57" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\misc\lv_area.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8525" topLine="250" />
-		</Cursor>
-	</File>
-	<File name="lv_drivers\indev\xkb.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5014" topLine="134" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\app_setting\setting_about.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1402" topLine="4" />
-		</Cursor>
-	</File>
-	<File name="lv_drivers\win32drv\win32drv.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1349" topLine="27" />
-		</Cursor>
-	</File>
-	<File name="..\my_gui\app_setting\setting_display.c" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="18759" topLine="410" />
-		</Cursor>
-	</File>
-	<File name="lvgl\examples\porting\lv_port_disp_template.c" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="8" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="853" topLine="141" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\extra\layouts\lv_layouts.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="216" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\widgets\lv_label.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2191" topLine="37" />
-		</Cursor>
-	</File>
-	<File name="lvgl\src\core\lv_group.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="24" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lv_drivers\lv_drv_conf_template.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3433" topLine="166" />
+			<Cursor1 position="460" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

@@ -13,7 +13,7 @@
 #include "setting_display.h"
 #include "setting_about.h"
 
-#define keil 0
+#define keil 1
 
 #if keil
 #include "TFTLCD.h"
