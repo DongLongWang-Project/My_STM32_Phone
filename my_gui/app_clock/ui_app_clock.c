@@ -4,14 +4,13 @@
 lv_obj_t* ui_widgets_btn_create(lv_obj_t*parent,const char*btn_text);
 
 static void event_btn_add_clock_cb(lv_event_t*e);
-static void event_clock_obj_cb(lv_event_t*e);
+
 void tab_clock_creat(lv_obj_t*parent,alarm_clock_set_t *alarm_table,void* user_data);
 static void clock_create(lv_obj_t*parent);
 static void alarm_clock_create(lv_obj_t*parent);
 static void timer_create(lv_obj_t*parent);
 static void event_add_alarm_cb(lv_event_t*e);
 static void event_timer_cb(lv_event_t *e);
-static void event_alarm_time_is_on_cb(lv_event_t*e);
 static void event_clock_set_cb(lv_event_t*e);
      
 void ui_app_clock_creat(lv_obj_t*parent)
@@ -74,7 +73,7 @@ static void clock_create(lv_obj_t*parent)
   lv_meter_set_scale_ticks(Clock_time_widget.meter,scale,60,1,8,lv_color_hex(0x9D9D9D));
    lv_meter_set_scale_major_ticks(Clock_time_widget.meter,scale,5,2,8,lv_color_hex(0),10);
    
-    lv_meter_set_scale_range(Clock_time_widget.meter,scale,0,60,360,-90);
+    lv_meter_set_scale_range(Clock_time_widget.meter,scale,0,60,360,270);
    
    Clock_time_widget.sec_indicator=lv_meter_add_needle_line(Clock_time_widget.meter,scale,2,lv_color_hex(0x599FFD),0);
    Clock_time_widget.min_indicator=lv_meter_add_needle_line(Clock_time_widget.meter,scale,3,lv_color_hex(0),-6);
@@ -132,7 +131,7 @@ static void timer_create(lv_obj_t*parent)
     timer_widget.switch_label=lv_label_create(timer_widget.btn_timer_switch); 
     lv_obj_center(timer_widget.switch_label);
     lv_label_set_text(timer_widget.switch_label,"");
-        if(Cur_Time.timer_hour  || Cur_Time.timer_min  || Cur_Time.timer_sec )
+    if(timer_widget.btn_timer_switch_state==true)
     {
         lv_obj_add_state(timer_widget.btn_timer_switch,LV_STATE_CHECKED);
     }
@@ -145,19 +144,9 @@ static void event_timer_cb(lv_event_t *e)
 {
     
     lv_obj_t*target=lv_event_get_target(e);
-        
-    if(lv_obj_has_state(target,LV_STATE_CHECKED))
-    {
-    
-        Cur_Time.timer_hour=lv_roller_get_selected(timer_widget.hour_roller);
-        Cur_Time.timer_min=lv_roller_get_selected(timer_widget.minute_roller);
-        Cur_Time.timer_sec=lv_roller_get_selected(timer_widget.second_roller);
-        lv_obj_add_state(timer_widget.hour_roller,LV_STATE_DISABLED);
-        lv_obj_add_state(timer_widget.minute_roller,LV_STATE_DISABLED);
-        lv_obj_add_state(timer_widget.second_roller,LV_STATE_DISABLED);
-    }
-    else
-    {
+     if(timer_widget.btn_timer_switch_state==true)
+     {
+        timer_widget.btn_timer_switch_state=false;
        lv_obj_clear_state(timer_widget.hour_roller,LV_STATE_DISABLED);
         lv_obj_clear_state(timer_widget.minute_roller,LV_STATE_DISABLED);
         lv_obj_clear_state(timer_widget.second_roller,LV_STATE_DISABLED);
@@ -165,7 +154,17 @@ static void event_timer_cb(lv_event_t *e)
        Cur_Time.timer_min=0;
        Cur_Time.timer_sec=0;
        lv_label_set_text(timer_widget.switch_label,"");
-    }
+     }
+     else
+     {
+        timer_widget.btn_timer_switch_state=true;
+        Cur_Time.timer_hour=lv_roller_get_selected(timer_widget.hour_roller);
+        Cur_Time.timer_min=lv_roller_get_selected(timer_widget.minute_roller);
+        Cur_Time.timer_sec=lv_roller_get_selected(timer_widget.second_roller);
+        lv_obj_add_state(timer_widget.hour_roller,LV_STATE_DISABLED);
+        lv_obj_add_state(timer_widget.minute_roller,LV_STATE_DISABLED);
+        lv_obj_add_state(timer_widget.second_roller,LV_STATE_DISABLED);
+     }
 }
 
 static void alarm_is_time(void)
@@ -183,7 +182,7 @@ static void alarm_is_time(void)
           {
             /*闹钟时间到了*/
             /*创建一个窗口,单次的闹钟关闭,每天的闹钟继续*/
-            printf("time is on\r\n");
+            printf("alarm time is on\r\n");
             lv_obj_clear_flag(alarm_msgbox_obj,LV_OBJ_FLAG_HIDDEN);
           }  
       }
@@ -210,7 +209,7 @@ static void clock_timer(void)
    }
    
     lv_label_set_text_fmt(label_time,"%d:%d:%d",Cur_Time.hour,Cur_Time.min,Cur_Time.sec);
-    alarm_is_time();
+   
    if(Clock_time_widget.meter!=NULL)
    {
        lv_meter_set_indicator_value(Clock_time_widget.meter,Clock_time_widget.sec_indicator,Cur_Time.sec);
@@ -222,51 +221,59 @@ static void clock_timer(void)
 }
 static void timer_timer(void)
 {
-    // 1. 检查是否已经归零（停止条件）
-    if(Cur_Time.timer_hour == 0 && Cur_Time.timer_min == 0 && Cur_Time.timer_sec == 0)
-    {
-        if(timer_widget.timer_obj!=NULL)
-        {
-            /* 结束逻辑 */
-            lv_obj_clear_state(timer_widget.hour_roller, LV_STATE_DISABLED);
-            lv_obj_clear_state(timer_widget.minute_roller, LV_STATE_DISABLED);
-            lv_obj_clear_state(timer_widget.second_roller, LV_STATE_DISABLED);
-            // 关闭开关
-            lv_obj_clear_state(timer_widget.btn_timer_switch, LV_STATE_CHECKED);
-            lv_label_set_text(timer_widget.switch_label,"");
-        }
-        return;
-    }
+         if(timer_widget.btn_timer_switch_state==true)
+         {
+                    // 1. 检查是否已经归零（停止条件）
+                    if(Cur_Time.timer_hour == 0 && Cur_Time.timer_min == 0 && Cur_Time.timer_sec == 0)
+                    {
+                        if(timer_widget.timer_obj!=NULL)
+                        {
+                            /* 结束逻辑 */
+                            lv_obj_clear_state(timer_widget.hour_roller, LV_STATE_DISABLED);
+                            lv_obj_clear_state(timer_widget.minute_roller, LV_STATE_DISABLED);
+                            lv_obj_clear_state(timer_widget.second_roller, LV_STATE_DISABLED);
+                            // 关闭开关
+                            lv_obj_clear_state(timer_widget.btn_timer_switch, LV_STATE_CHECKED);
+                            lv_label_set_text(timer_widget.switch_label,"");
+                            printf("timer time is on\r\n");
+                            lv_obj_clear_flag(alarm_msgbox_obj,LV_OBJ_FLAG_HIDDEN);
+                            timer_widget.btn_timer_switch_state=false;
+                        }
+                        return;
+                    }
 
-    // 2. 统一减 1 秒逻辑（处理借位）
-    if (Cur_Time.timer_sec > 0) {
-        Cur_Time.timer_sec--;
-    } else {
-        if (Cur_Time.timer_min > 0) {
-            Cur_Time.timer_min--;
-            Cur_Time.timer_sec = 59; // 秒钟借位
-        } else {
-            if (Cur_Time.timer_hour > 0) {
-                Cur_Time.timer_hour--;
-                Cur_Time.timer_min = 59; // 分钟借位
-                Cur_Time.timer_sec = 59; // 秒钟借位
-            }
-        }
-    }
+                    // 2. 统一减 1 秒逻辑（处理借位）
+                    if (Cur_Time.timer_sec > 0) {
+                        Cur_Time.timer_sec--;
+                    } else {
+                        if (Cur_Time.timer_min > 0) {
+                            Cur_Time.timer_min--;
+                            Cur_Time.timer_sec = 59; // 秒钟借位
+                        } else {
+                            if (Cur_Time.timer_hour > 0) {
+                                Cur_Time.timer_hour--;
+                                Cur_Time.timer_min = 59; // 分钟借位
+                                Cur_Time.timer_sec = 59; // 秒钟借位
+                            }
+                        }
+                    }
 
-    // 3. 实时刷新 UI 显示
-    // 建议使用 %02d 让显示更整齐，比如 01:05:09
-            if(timer_widget.timer_obj!=NULL)
-        {
-            lv_label_set_text_fmt(timer_widget.switch_label, "%02d:%02d:%02d", 
-                                  Cur_Time.timer_hour, Cur_Time.timer_min, Cur_Time.timer_sec);  
-        }
+                    // 3. 实时刷新 UI 显示
+                    // 建议使用 %02d 让显示更整齐，比如 01:05:09
+                            if(timer_widget.timer_obj!=NULL)
+                        {
+                            lv_label_set_text_fmt(timer_widget.switch_label, "%02d:%02d:%02d", 
+                                                  Cur_Time.timer_hour, Cur_Time.timer_min, Cur_Time.timer_sec);  
+                        }
+         }
+
 }
 
   
  void clock_time_timer_cb(lv_timer_t *timer)
 {
     clock_timer();
+    alarm_is_time();
     timer_timer();
 }
   
@@ -360,8 +367,8 @@ static void event_add_alarm_cb(lv_event_t*e)
       {
         alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num].hour=lv_roller_get_selected(hour_roller);  
         alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num].min=lv_roller_get_selected(minute_roller); 
-        alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num].repeat=lv_dropdown_get_selected(Ringtone_drop);
-        alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num].Ringtone=lv_dropdown_get_selected(Repeat_drop);  
+        alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num].repeat=(REPEAT_ENUM)lv_dropdown_get_selected(Ringtone_drop);
+        alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num].Ringtone=(RINGTONE_ENUM)lv_dropdown_get_selected(Repeat_drop);  
         lv_obj_del_async(obj); 
         
         tab_clock_creat(clock_list,&alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num],(void*)alarm_clock.save_alarm_num); 
@@ -400,7 +407,7 @@ static void event_clock_set_cb(lv_event_t*e)
 {  
     lv_obj_t*target=lv_event_get_target(e);
     lv_event_code_t code = lv_event_get_code(e);
-    uint8_t alarm_index=(uint8_t)lv_event_get_user_data(e);
+    uint32_t alarm_index=(uint32_t)lv_event_get_user_data(e);
             printf("ALARM:%d\r\n",alarm_index);
     if(code == LV_EVENT_LONG_PRESSED) 
         {
@@ -443,15 +450,7 @@ static void event_clock_set_cb(lv_event_t*e)
         #endif // keil
 }
 
-//static void event_clock_obj_cb(lv_event_t*e)
-//{
-//        lv_obj_t*target=lv_event_get_target(e);
-//        lv_event_code_t code=lv_event_get_code(e);
-//        if(code==LV_EVENT_CLICKED)
-//        {
-//            lv_obj_del(target);
-//        }
-//}
+
 void tab_clock_creat(lv_obj_t*parent,alarm_clock_set_t *alarm_table,void* user_data)
 {
     lv_obj_t*obj=lv_obj_create(parent);

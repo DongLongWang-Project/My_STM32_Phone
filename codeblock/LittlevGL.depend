@@ -10336,7 +10336,7 @@
 	"lvgl.h"
 	"lvgl/lvgl.h"
 
-1770283941 source:g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock.c
+1770284820 source:g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock.c
 	"ui_app_clock.h"
 
 1770279919 g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock.h
@@ -10998,7 +10998,7 @@
 	"ui_main.h"
 	"ui_app_language.h"
 
-1770284138 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
+1770285216 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
 	"lvgl.h"
 	"../ui_main.h"
 	"../ui_app_language.h"
@@ -11074,7 +11074,7 @@
 1770276796 source:g:\github_code\my_stm32_phone\my_gui\ui_app_config.c
 	"ui_app_config.h"
 
-1770276796 source:g:\github_code\my_stm32_phone\my_gui\ui_app_language.c
+1770285151 source:g:\github_code\my_stm32_phone\my_gui\ui_app_language.c
 	"ui_app_language.h"
 
 1770283779 source:g:\github_code\my_stm32_phone\my_gui\ui_main.c
@@ -13777,7 +13777,7 @@
 1770283992 source:g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock_config.c
 	"ui_app_clock_config.h"
 
-1770283181 g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock_config.h
+1770285517 g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock_config.h
 	"lvgl.h"
 
 1770278924 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.h

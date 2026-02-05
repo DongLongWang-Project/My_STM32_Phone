@@ -48,6 +48,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../my_gui/app_clock/ui_app_clock.h" />
+		<Unit filename="../my_gui/app_clock/ui_app_clock_config.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../my_gui/app_clock/ui_app_clock_config.h" />
 		<Unit filename="../my_gui/app_file_sys/file_img.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -84,14 +88,14 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../my_gui/app_setting/ui_app_setting.h" />
+		<Unit filename="../my_gui/app_setting/ui_app_setting_config.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../my_gui/app_setting/ui_app_setting_config.h" />
 		<Unit filename="../my_gui/app_weather/ui_app_weather.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../my_gui/app_weather/ui_app_weather.h" />
-		<Unit filename="../my_gui/ui_app_config.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../my_gui/ui_app_config.h" />
 		<Unit filename="../my_gui/ui_app_language.c">
 			<Option compilerVar="CC" />
 		</Unit>

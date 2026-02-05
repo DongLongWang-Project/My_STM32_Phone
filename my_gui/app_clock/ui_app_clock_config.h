@@ -40,6 +40,7 @@ typedef struct
     lv_obj_t*second_roller;
     lv_obj_t*btn_timer_switch;
     lv_obj_t*switch_label;
+    bool btn_timer_switch_state;
 }ui_timer_widget_t;
 
 typedef enum
