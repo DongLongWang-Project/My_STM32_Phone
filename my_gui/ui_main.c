@@ -130,9 +130,10 @@ lv_obj_t* ui_page_creat_app(lv_obj_t *parent)
     
     lv_obj_set_style_bg_opa(page, 100, 0); 
     lv_obj_set_style_radius(page,0,0);
-    lv_obj_set_style_bg_color(page,lv_color_hex(0x1A6120),LV_STATE_DEFAULT);
-//    lv_obj_set_style_bg_img_src(page, "0:/GitHub_Code/My_STM32_Phone/SD/my_icon/css.png", 0);
-//    lv_obj_set_style_bg_img_opa(page, 100, 0); // 确保图片完全显示
+//    lv_obj_set_style_bg_color(page,lv_color_hex(0x1A6120),LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(page, "0:/icon/100.png", 0);
+    
+    lv_obj_set_style_bg_img_opa(page, 100, 0); // 确保图片完全显示
     lv_obj_set_style_bg_img_tiled(page, false, 0);      // 设为 false，图片不平铺，而是拉伸或居中
 
     uint16_t Xpos=10,Ypos=10;
