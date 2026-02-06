@@ -8,7 +8,7 @@
 #include "app_file_sys/ui_app_file.h"
 #include "app_net_ass/ui_app_net.h"
 #include "app_clock/ui_app_clock.h"
-
+#include "app_weather/ui_app_weather.h"
 
  
 //#include "HX1838.h"

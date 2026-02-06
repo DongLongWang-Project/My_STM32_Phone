@@ -94,8 +94,8 @@ const wifi_cmd_t wifi_cmd_table[AT_CMD_NUM] =
 };
 
 //const char*get_time_weather_str="GET /v3/weather/now.json?key=S_fPwMVZxdqUzfG_i&location=beijing&language=zh-Hans&unit=c HTTP/1.1\r\nHost: api.seniverse.com\r\nConnection: close\r\n\r\n";            
-const char*get_time_weather_str="GET /v3/weather/now.json?key=S_fPwMVZxdqUzfG_i&location=beijing&language=zh-Hans&unit=c HTTP/1.1\r\nHost: api.seniverse.com\r\nConnection: close\r\n\r\n";            
-
+const char*weather_api_key_str="S_fPwMVZxdqUzfG_i";
+const char*weather_api_str="api.seniverse.com";
 //GET /v3/weather/now.json?key=S_fPwMVZxdqUzfG_i&location=beijing&language=zh-Hans&unit=c HTTP/1.1
 //Host: api.seniverse.com
 //Connection: close
@@ -522,10 +522,7 @@ void wifi_ide_deal(void)
             DX_WF25_Send_Static(AT_CMD_CIPSNTPCFG);
             DX_WF25_Send_Static(AT_GET_NTP_TIME); 
             
-            DX_WF25_Send_Static(AT_CMD_CIPMODE_0);
-            DX_WF25_Send_Static(AT_CMD_CIPSTART);
-            DX_WF25_Send_Dynamic(AT_CMD_CIPSEND,"AT+CIPSEND=%d\r\n",strlen(get_time_weather_str)); 
-            DX_WF25_Send_Dynamic(AT_GET_CLOCK_WEATHER,"%s",get_time_weather_str); 
+          Get_Weather_data(weather_api_str,weather_api_key_str,"ip");
         }
         else if(strstr(DEAL_BUF, "WIFI DISCONNECT") != NULL)
         {
@@ -534,6 +531,15 @@ void wifi_ide_deal(void)
     }
 }
 
+void Get_Weather_data(const char*api_str,const char*api_key_str,const char*place_str)
+{
+    char get_time_weather_str[512];
+    snprintf(get_time_weather_str,sizeof(get_time_weather_str),"GET /v3/weather/now.json?key=%s&location=%s&language=zh-Hans&unit=c HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n",api_key_str,place_str,api_str);
+    DX_WF25_Send_Static(AT_CMD_CIPMODE_0);
+    DX_WF25_Send_Static(AT_CMD_CIPSTART);
+    DX_WF25_Send_Dynamic(AT_CMD_CIPSEND,"AT+CIPSEND=%d\r\n",strlen(get_time_weather_str)); 
+    DX_WF25_Send_Dynamic(AT_GET_CLOCK_WEATHER,"%s",get_time_weather_str); 
+}
 /*--------------------------------------------------------------------------------↓
 	@函数	  :wifi收发状态机
 	@参数	  : 无
