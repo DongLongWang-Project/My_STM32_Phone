@@ -16,14 +16,16 @@ static void event_ui_page_btn_app(lv_event_t *e);
 
 void ui_init(void)
 {
+    
+
+
     ui_set_language(display_cfg.language,display_cfg.font_size);
     #if keil
     TIM12->CCR2=display_cfg.Brightness;
     #endif
     ui_creat_statebar();
     
-    lv_obj_t* main_page=ui_main_page(lv_scr_act());
-    lv_obj_align_to(main_page,state_bar,LV_ALIGN_OUT_BOTTOM_MID,0,0);
+    ui_main_page(lv_scr_act());
     ui_creat_control_bar(lv_scr_act());
     ui_creat_keyboard();
     label_time= creat_statebar_icon("");
@@ -34,20 +36,35 @@ void ui_init(void)
     ui_goto_page(PAGE_HOME,APP_TEMP);
     
     alarm_rem_win(lv_scr_act());
+    
 }
 
-lv_obj_t* ui_main_page(lv_obj_t*parent)
+
+void ui_main_page(lv_obj_t*parent)
 {
-    lv_obj_t*obj=lv_obj_create(parent);
-    lv_obj_set_size(obj,lv_pct(100),lv_pct(MainPage_Percent));
+    // 1. 创建基础容器
+    lv_obj_t* obj = lv_obj_create(parent);
+    lv_obj_set_size(obj, lv_pct(100), lv_pct(MainPage_Percent));
     lv_obj_set_style_pad_all(obj, 0, 0);
     lv_obj_set_style_border_width(obj, 0, 0);
     lv_obj_set_style_radius(obj, 0, 0);
-      
-    tileview = lv_tileview_create(obj);  
-    return obj;
-}
+    
+    // 关键点 A：必须让这个中间层透明，否则它是一片白
+    lv_obj_set_style_bg_opa(obj, LV_OPA_TRANSP, 0);
 
+    // 2. 创建 Tileview
+    tileview = lv_tileview_create(obj);  
+    lv_obj_align_to(obj, state_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    
+    // 关键点 B：Tileview 默认有背景，也得把它弄透明
+    lv_obj_set_style_bg_opa(tileview, LV_OPA_TRANSP, 0);
+
+    // 3. 添加具体的 Tile
+    tile_main = lv_tileview_add_tile(tileview, 0, 0, LV_DIR_HOR | LV_DIR_VER); 
+
+//    lv_obj_set_style_bg_color(tile_main,lv_color_hex(0xF87B7B),LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(tile_main, 100, LV_PART_MAIN);
+}
 const ui_app_message_t APP_LA_TABLE[APP_TEMP]=
 {
      [APP_SETTING]=
@@ -110,6 +127,14 @@ lv_obj_t* ui_page_creat_app(lv_obj_t *parent)
     lv_obj_set_size(page,lv_pct(100),lv_pct(100));
     lv_obj_set_style_pad_all(page, 0, 0);
     lv_obj_set_style_border_width(page, 0, 0);
+    
+    lv_obj_set_style_bg_opa(page, 100, 0); 
+    lv_obj_set_style_radius(page,0,0);
+    lv_obj_set_style_bg_color(page,lv_color_hex(0x1A6120),LV_STATE_DEFAULT);
+//    lv_obj_set_style_bg_img_src(page, "0:/GitHub_Code/My_STM32_Phone/SD/my_icon/css.png", 0);
+//    lv_obj_set_style_bg_img_opa(page, 100, 0); // 确保图片完全显示
+    lv_obj_set_style_bg_img_tiled(page, false, 0);      // 设为 false，图片不平铺，而是拉伸或居中
+
     uint16_t Xpos=10,Ypos=10;
     uint8_t row=0;
     
@@ -120,7 +145,7 @@ lv_obj_t* ui_page_creat_app(lv_obj_t *parent)
         {
             Xpos=0;
             row++;
-            Ypos=row*60;
+            Ypos=row*70;
         }
       lv_obj_t *btn_app=ui_create_app(page,APP_LA_TABLE[i].icon,APP_LA_TABLE[i].text[display_cfg.language]); 
       lv_obj_add_event_cb(btn_app, event_ui_page_btn_app, LV_EVENT_CLICKED, (void *)i); 
@@ -145,15 +170,9 @@ static void event_ui_page_btn_app(lv_event_t *e)
 ******************************************************/
 void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
 {
-    if(tile_main!=NULL)
-    {
-        lv_obj_del(tile_main);
-        tile_main = NULL;
+        lv_obj_clean(tile_main);
         Clock_time_widget.meter = NULL;
         timer_widget.timer_obj=NULL;
-    }
-     tile_main = lv_tileview_add_tile(tileview, 0, 0, LV_DIR_HOR | LV_DIR_VER); 
-     
 
     switch(Page)
     {

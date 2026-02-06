@@ -699,6 +699,20 @@ static void Handle_AT_CMD_CIPSEND(const char*buf)
 static void Handle_AT_GET_CLOCK_WEATHER(const char* buf)
 {
     char* p;
+    p = strstr(buf, "\"name\":\""); 
+    if (p != NULL) {
+        p += strlen("\"name\":\""); // 此时 p 指向 驻 字的起始地址
+        
+        // 寻找下一个双引号作为结束符
+        char *end = strchr(p, '\"');
+        if (end != NULL) {
+            int len = end - p;
+            if (len < sizeof(CITY_STR_MAX_LEN)) {
+                memcpy(weather_widget.place_str, p, len); // 拷贝这部分原始编码
+                weather_widget.place_str[len] = '\0';     // 必须手动封口
+            }
+        }
+    }
 
     // 1. 提取温度 (使用你最喜欢的 strlen 方案)
     p = strstr(buf, "\"temperature\":");

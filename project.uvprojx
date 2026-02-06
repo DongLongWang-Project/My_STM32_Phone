@@ -340,7 +340,7 @@
               <MiscControls>--no-multibyte-chars</MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER,LV_LVGL_H_INCLUDE_SIMPLE</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Library;.\Start;.\System;.\User;.\FreeRTOS\Library;.\FreeRTOS\portable\MemMang;.\FreeRTOS\portable\RVDS\ARM_CM4F;.\Hardware\LED;.\Hardware\SRAM;.\Hardware\TFTLCD;.\Hardware\USART;.\Hardware\W25QXX;.\Hardware\SD;.\FATFS;.\LVGL\porting;.\LVGL;.\LVGL\src;.\LVGL\src\hal;.\LVGL\demos\widgets\assets;.\LVGL\demos\widgets;.\LVGL\src\misc;.\LVGL\src\extra\libs\png;.\LVGL\src\extra\layouts;.\my_gui;.\MALLOC;.\Hardware\KEY;.\Hardware\DX_WF25;.\my_gui\app_file_sys;.\my_gui\app_net_ass;.\my_gui\app_setting;.\my_gui\app_clock</IncludePath>
+              <IncludePath>.\Library;.\Start;.\System;.\User;.\FreeRTOS\Library;.\FreeRTOS\portable\MemMang;.\FreeRTOS\portable\RVDS\ARM_CM4F;.\Hardware\LED;.\Hardware\SRAM;.\Hardware\TFTLCD;.\Hardware\USART;.\Hardware\W25QXX;.\Hardware\SD;.\FATFS;.\LVGL\porting;.\LVGL;.\LVGL\src;.\LVGL\src\hal;.\LVGL\demos\widgets\assets;.\LVGL\demos\widgets;.\LVGL\src\misc;.\LVGL\src\extra\libs\png;.\LVGL\src\extra\layouts;.\my_gui;.\MALLOC;.\Hardware\KEY;.\Hardware\DX_WF25;.\my_gui\app_file_sys;.\my_gui\app_net_ass;.\my_gui\app_setting;.\my_gui\app_clock;.\my_gui\app_weather</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

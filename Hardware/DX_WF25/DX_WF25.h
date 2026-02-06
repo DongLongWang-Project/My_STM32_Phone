@@ -10,6 +10,7 @@
 #include "Queue.h"
 #include "ui_app_setting.h"
 #include "ui_app_clock_config.h"
+#include "ui_app_weather.h"
 
 #define USART3_RX_BUF_SIZE 512       //串口的缓冲区大小
 #define DEAL_BUF_SIZE       2048

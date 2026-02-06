@@ -22,8 +22,8 @@
 
 
 #define StateBar_Percent     5
-#define MainPage_Percent     87
-#define ControlBar_Percent   8
+#define MainPage_Percent     90
+#define ControlBar_Percent   5
 
 /******************************************
 PAGE
@@ -55,7 +55,7 @@ extern lv_obj_t*keyboard;
  void ui_page_clear(void);
 lv_obj_t* ui_page_creat_app(lv_obj_t *parent);
 void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP);
-lv_obj_t* ui_main_page(lv_obj_t*parent);
+void ui_main_page(lv_obj_t*parent);
 void event_ui_app_list_btn_cb(lv_event_t *e);
 void ui_init(void);
 void btn_back(void);
