@@ -230,3 +230,19 @@ static void event_alarm_msgbox_cb(lv_event_t*e)
           printf("延时闹铃\r\n"); 
     }
 }
+
+lv_obj_t* ui_widgets_btn_create(lv_obj_t*parent,const char*btn_text)
+{
+    lv_obj_t*btn=lv_btn_create(parent);
+    lv_obj_t*btn_label=lv_label_create(btn);
+    lv_label_set_text(btn_label,btn_text);
+    lv_obj_set_size(btn,35,35);
+    lv_obj_center(btn_label);
+//    lv_obj_set_style_bg_opa(btn,10,LV_STATE_DEFAULT);
+//    lv_obj_set_style_border_width(btn,0,LV_STATE_DEFAULT);
+//    lv_obj_set_style_border_opa(btn,0,LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(btn,0,LV_STATE_DEFAULT);
+//    lv_obj_set_style_text_color(btn_label,lv_color_hex(0),LV_STATE_DEFAULT);
+    return btn;
+}
+

@@ -769,16 +769,15 @@ static void Handle_AT_GET_CLOCK_WEATHER(const char* buf)
     {
       p=strstr(p,"\"date\"");
       if (p == NULL) break; // 如果找不到了，直接跳出循环防止死机
-      if(i==0)
+
+      if (p != NULL)
       {
-            if (p != NULL)
-            {
-                // 跳过 "date":" 这 15 个字节
-                p += 8; 
-                sscanf(p, "%hu-%hhu-%hhuT", 
-                       &Cur_Time.year, &Cur_Time.month, &Cur_Time.day);
-            }
+          // 跳过 "date":" 这 15 个字节
+          p += 8; 
+          sscanf(p, "%hu-%hhu-%hhuT", 
+                 &Cur_Time.three_day_data[i].year, &Cur_Time.three_day_data[i].month, &Cur_Time.three_day_data[i].day);
       }
+      parse_value(buf,"\"text_day\":\"",Cur_Time.three_day_data[i].weather_str);
       parse_value(p,"\"code_day\":\"",temp_buf);
       Cur_Time.three_day_data[i].weather_code_day=(uint8_t)atoi(temp_buf);
       parse_value(p,"\"code_night\":\"",temp_buf);
@@ -791,16 +790,14 @@ static void Handle_AT_GET_CLOCK_WEATHER(const char* buf)
       if(i==0)
       {
               parse_value(p,"\"wind_direction\":\"",Cur_Time.wind_dir_str);
-              parse_value(p,"\"wind_speed\":\"",temp_buf);
-              Cur_Time.wind_speed=(float)atof(temp_buf); 
               parse_value(p,"\"humidity\":\"",temp_buf);
               Cur_Time.humidity=(uint8_t)atoi(temp_buf);             
       }
     }
-    print("%d-%d-%d %d:%d:%d\r\n high:%d low:%d,w_day:%d,w_night:%d\r\nplace:%s,wind_dir:%s,wind_speed:%f,hum:%d",Cur_Time.year,Cur_Time.month,Cur_Time.day,Cur_Time.hour,Cur_Time.min,Cur_Time.sec,
+    print("%d-%d-%d %d:%d:%d\r\n high:%d low:%d,w_day:%d,w_night:%d\r\nplace:%s,wind_dir:%s,hum:%d",Cur_Time.three_day_data[0].year,Cur_Time.three_day_data[0].month,Cur_Time.three_day_data[0].day,Cur_Time.hour,Cur_Time.min,Cur_Time.sec,
     Cur_Time.three_day_data[0].high_temperature,Cur_Time.three_day_data[0].low_temperature,Cur_Time.three_day_data[0].weather_code_day,
     Cur_Time.three_day_data[0].weather_code_night,
-    Cur_Time.place_str,Cur_Time.wind_dir_str,Cur_Time.wind_speed,Cur_Time.humidity);
+    Cur_Time.place_str,Cur_Time.wind_dir_str,Cur_Time.humidity);
     
 }
 static void Handle_AT_GET_NTP_TIME(const char*buf)
@@ -810,12 +807,11 @@ if(p != NULL) {
         // 注意：NTP 格式非常固定，但要数准空格
         // 用 sscanf 匹配这种带月份缩写的格式
         // 格式说明：%*s 代表跳过一个字符串（比如跳过 Tue 和 Feb）
-      sscanf(p, "+CIPSNTPTIME:%*s %*s %hhu %hhu:%hhu:%hhu %hu", 
-             &Cur_Time.day, 
+      sscanf(p, "+CIPSNTPTIME:%*s %*s %*hhu %hhu:%hhu:%hhu %*hu", 
              &Cur_Time.hour, 
              &Cur_Time.min, 
-             &Cur_Time.sec, 
-             &Cur_Time.year);
+             &Cur_Time.sec 
+);
     }
 }
 /*--------------------------------------------------------------------------------*/

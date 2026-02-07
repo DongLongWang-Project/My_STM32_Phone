@@ -3,9 +3,6 @@
 timer_data_t timer_data;
 ui_weather_time_t Cur_Time=
 {
-    .year=2026,
-    .month=2,
-    .day=3,
     .hour=0,
     .min=0,
     .sec=50,

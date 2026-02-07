@@ -21,4 +21,6 @@ extern lv_obj_t*keyboard;
 extern lv_obj_t*alarm_msgbox_obj;
 extern void event_textarea_cb(lv_event_t*e);
 void alarm_rem_win(lv_obj_t* parent);
+
+lv_obj_t* ui_widgets_btn_create(lv_obj_t*parent,const char*btn_text);
 #endif // __UI_WIDGETS_H

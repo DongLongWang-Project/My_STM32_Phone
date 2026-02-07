@@ -5,28 +5,24 @@
 
 typedef struct
 {
- int8_t high_temperature;
- int8_t low_temperature;
- uint8_t weather_code_day;
- uint8_t weather_code_night;
-}day_data;
-
-
-
-typedef struct
-{
   uint16_t year;
   uint8_t month;
   uint8_t day;
+  int8_t high_temperature;
+  int8_t low_temperature;
+  uint8_t weather_code_day;
+  uint8_t weather_code_night;
+  char weather_str[8];
+}day_data;
 
+typedef struct
+{
   uint8_t hour;
   uint8_t min;
   uint8_t sec;
-
-  uint8_t humidity;
-  float wind_speed;
-  char wind_dir_str[8];
   char place_str[32];
+  char wind_dir_str[8];
+  uint8_t humidity;
   day_data three_day_data[3]; 
 }ui_weather_time_t;
 
