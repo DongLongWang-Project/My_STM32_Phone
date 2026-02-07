@@ -5,6 +5,16 @@
 
 typedef struct
 {
+ int8_t high_temperature;
+ int8_t low_temperature;
+ uint8_t weather_code_day;
+ uint8_t weather_code_night;
+}day_data;
+
+
+
+typedef struct
+{
   uint16_t year;
   uint8_t month;
   uint8_t day;
@@ -13,14 +23,20 @@ typedef struct
   uint8_t min;
   uint8_t sec;
 
-  int8_t temperature;
-  uint8_t weather_code;
+  uint8_t humidity;
+  float wind_speed;
+  char wind_dir_str[8];
+  char place_str[32];
+  day_data three_day_data[3]; 
+}ui_weather_time_t;
 
+
+typedef struct
+{
   uint8_t timer_hour;
   uint8_t timer_min;
   uint8_t timer_sec;
-  
-}ui_weather_time_t;
+}timer_data_t;
 
 typedef struct
 {
@@ -87,6 +103,7 @@ extern ui_clock_widget_t Clock_time_widget;
 extern ui_timer_widget_t timer_widget;
 extern ui_weather_time_t Cur_Time;
 extern alarm_clock_t alarm_clock;
+extern timer_data_t timer_data;
 
 extern const char * clock_set_hour_options;
 extern const char * clock_set_min_options;

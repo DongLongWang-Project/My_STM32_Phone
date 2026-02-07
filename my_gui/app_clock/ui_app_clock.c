@@ -109,21 +109,21 @@ static void timer_create(lv_obj_t*parent)
     lv_obj_set_style_text_line_space(timer_widget.hour_roller,10,LV_STATE_DEFAULT);
     lv_obj_set_align(timer_widget.hour_roller,LV_ALIGN_TOP_LEFT);
     lv_roller_set_options(timer_widget.hour_roller,clock_set_hour_options,LV_ROLLER_MODE_NORMAL);
-    lv_roller_set_selected(timer_widget.hour_roller,Cur_Time.timer_hour,LV_ANIM_ON);
+    lv_roller_set_selected(timer_widget.hour_roller,timer_data.timer_hour,LV_ANIM_ON);
     /*创建分钟滚动条*/
     timer_widget.minute_roller=lv_roller_create(timer_widget.timer_obj);
     lv_obj_set_size(timer_widget.minute_roller,lv_pct(33),lv_pct(60));
     lv_obj_set_style_text_line_space(timer_widget.minute_roller,10,LV_STATE_DEFAULT);
     lv_obj_align_to(timer_widget.minute_roller,timer_widget.hour_roller,LV_ALIGN_OUT_RIGHT_MID,0,0);
     lv_roller_set_options(timer_widget.minute_roller,clock_set_min_options,LV_ROLLER_MODE_NORMAL);
-    lv_roller_set_selected(timer_widget.minute_roller,Cur_Time.timer_min,LV_ANIM_ON);
+    lv_roller_set_selected(timer_widget.minute_roller,timer_data.timer_min,LV_ANIM_ON);
     /*创建秒钟滚动条*/
     timer_widget.second_roller=lv_roller_create(timer_widget.timer_obj);
     lv_obj_set_size(timer_widget.second_roller,lv_pct(33),lv_pct(60));
     lv_obj_set_style_text_line_space(timer_widget.second_roller,10,LV_STATE_DEFAULT);
     lv_obj_align_to(timer_widget.second_roller,timer_widget.minute_roller,LV_ALIGN_OUT_RIGHT_MID,0,0);
     lv_roller_set_options(timer_widget.second_roller,clock_set_min_options,LV_ROLLER_MODE_NORMAL);
-    lv_roller_set_selected(timer_widget.second_roller,Cur_Time.timer_sec,LV_ANIM_ON);
+    lv_roller_set_selected(timer_widget.second_roller,timer_data.timer_sec,LV_ANIM_ON);
     
     timer_widget.btn_timer_switch=lv_switch_create(timer_widget.timer_obj);
     lv_obj_align(timer_widget.btn_timer_switch,LV_ALIGN_BOTTOM_MID,0,0);
@@ -150,17 +150,17 @@ static void event_timer_cb(lv_event_t *e)
        lv_obj_clear_state(timer_widget.hour_roller,LV_STATE_DISABLED);
         lv_obj_clear_state(timer_widget.minute_roller,LV_STATE_DISABLED);
         lv_obj_clear_state(timer_widget.second_roller,LV_STATE_DISABLED);
-       Cur_Time.timer_hour=0; 
-       Cur_Time.timer_min=0;
-       Cur_Time.timer_sec=0;
+       timer_data.timer_hour=0; 
+       timer_data.timer_min=0;
+       timer_data.timer_sec=0;
        lv_label_set_text(timer_widget.switch_label,"");
      }
      else
      {
         timer_widget.btn_timer_switch_state=true;
-        Cur_Time.timer_hour=lv_roller_get_selected(timer_widget.hour_roller);
-        Cur_Time.timer_min=lv_roller_get_selected(timer_widget.minute_roller);
-        Cur_Time.timer_sec=lv_roller_get_selected(timer_widget.second_roller);
+        timer_data.timer_hour=lv_roller_get_selected(timer_widget.hour_roller);
+        timer_data.timer_min=lv_roller_get_selected(timer_widget.minute_roller);
+        timer_data.timer_sec=lv_roller_get_selected(timer_widget.second_roller);
         lv_obj_add_state(timer_widget.hour_roller,LV_STATE_DISABLED);
         lv_obj_add_state(timer_widget.minute_roller,LV_STATE_DISABLED);
         lv_obj_add_state(timer_widget.second_roller,LV_STATE_DISABLED);
@@ -224,7 +224,7 @@ static void timer_timer(void)
          if(timer_widget.btn_timer_switch_state==true)
          {
                     // 1. 检查是否已经归零（停止条件）
-                    if(Cur_Time.timer_hour == 0 && Cur_Time.timer_min == 0 && Cur_Time.timer_sec == 0)
+                    if(timer_data.timer_hour == 0 && timer_data.timer_min == 0 && timer_data.timer_sec == 0)
                     {
                         if(timer_widget.timer_obj!=NULL)
                         {
@@ -243,17 +243,17 @@ static void timer_timer(void)
                     }
 
                     // 2. 统一减 1 秒逻辑（处理借位）
-                    if (Cur_Time.timer_sec > 0) {
-                        Cur_Time.timer_sec--;
+                    if (timer_data.timer_sec > 0) {
+                        timer_data.timer_sec--;
                     } else {
-                        if (Cur_Time.timer_min > 0) {
-                            Cur_Time.timer_min--;
-                            Cur_Time.timer_sec = 59; // 秒钟借位
+                        if (timer_data.timer_min > 0) {
+                            timer_data.timer_min--;
+                            timer_data.timer_sec = 59; // 秒钟借位
                         } else {
-                            if (Cur_Time.timer_hour > 0) {
-                                Cur_Time.timer_hour--;
-                                Cur_Time.timer_min = 59; // 分钟借位
-                                Cur_Time.timer_sec = 59; // 秒钟借位
+                            if (timer_data.timer_hour > 0) {
+                                timer_data.timer_hour--;
+                                timer_data.timer_min = 59; // 分钟借位
+                                timer_data.timer_sec = 59; // 秒钟借位
                             }
                         }
                     }
@@ -263,7 +263,7 @@ static void timer_timer(void)
                             if(timer_widget.timer_obj!=NULL)
                         {
                             lv_label_set_text_fmt(timer_widget.switch_label, "%02d:%02d:%02d", 
-                                                  Cur_Time.timer_hour, Cur_Time.timer_min, Cur_Time.timer_sec);  
+                                                  timer_data.timer_hour, timer_data.timer_min, timer_data.timer_sec);  
                         }
          }
 

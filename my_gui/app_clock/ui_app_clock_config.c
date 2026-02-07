@@ -1,5 +1,6 @@
 #include "ui_app_clock_config.h"
 
+timer_data_t timer_data;
 ui_weather_time_t Cur_Time=
 {
     .year=2026,
@@ -9,12 +10,12 @@ ui_weather_time_t Cur_Time=
     .min=0,
     .sec=50,
     
-    .temperature=2,
-    .weather_code=1,
+//    .temperature=2,
+//    .weather_code=1,
     
-    .timer_hour=0,
-    .timer_min=0,
-    .timer_sec=0,
+//    .timer_hour=0,
+//    .timer_min=0,
+//    .timer_sec=0,
 };
 
 ui_clock_widget_t Clock_time_widget=

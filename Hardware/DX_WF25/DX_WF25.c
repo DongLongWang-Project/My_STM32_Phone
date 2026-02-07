@@ -534,7 +534,9 @@ void wifi_ide_deal(void)
 void Get_Weather_data(const char*api_str,const char*api_key_str,const char*place_str)
 {
     char get_time_weather_str[512];
-    snprintf(get_time_weather_str,sizeof(get_time_weather_str),"GET /v3/weather/now.json?key=%s&location=%s&language=zh-Hans&unit=c HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n",api_key_str,place_str,api_str);
+//    snprintf(get_time_weather_str,sizeof(get_time_weather_str),"GET /v3/weather/now.json?key=%s&location=%s&language=zh-Hans&unit=c HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n",api_key_str,place_str,api_str);
+    snprintf(get_time_weather_str,sizeof(get_time_weather_str),"GET /v3/weather/daily.json?key=%s&location=%s&language=zh-Hans&unit=c&start=0&days=3 HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n",api_key_str,place_str,api_str);
+  
     DX_WF25_Send_Static(AT_CMD_CIPMODE_0);
     DX_WF25_Send_Static(AT_CMD_CIPSTART);
     DX_WF25_Send_Dynamic(AT_CMD_CIPSEND,"AT+CIPSEND=%d\r\n",strlen(get_time_weather_str)); 
@@ -696,54 +698,110 @@ static void Handle_AT_CMD_CIPSEND(const char*buf)
 //   USART3_DMA_SendData(get_time_weather_str);
 //     SendString(get_time_weather_str);
 }
+//static void Handle_AT_GET_CLOCK_WEATHER(const char* buf)
+//{
+//    char* p;
+//    p = strstr(buf, "\"name\":\""); 
+//    if (p != NULL) {
+//        p += strlen("\"name\":\""); // 此时 p 指向 驻 字的起始地址
+//        
+//        // 寻找下一个双引号作为结束符
+//        char *end = strchr(p, '\"');
+//        if (end != NULL) {
+//            int len = end - p;
+//            if (len < sizeof(CITY_STR_MAX_LEN)) {
+//                memcpy(weather_widget.place_str, p, len); // 拷贝这部分原始编码
+//                weather_widget.place_str[len] = '\0';     // 必须手动封口
+//            }
+//        }
+//    }
+
+//    // 1. 提取温度 (使用你最喜欢的 strlen 方案)
+//    p = strstr(buf, "\"temperature\":");
+//    if (p != NULL) {
+//        // +strlen("\"temperature\":") 会直接跳到冒号后面
+//        // 如果数据是 "temperature":"2"，跳过后指向 "2"
+//        p += strlen("\"temperature\":") + 1; 
+//        Cur_Time.temperature = (int8_t)atoi(p);
+//    }
+
+//    // 2. 提取天气代码
+//    p = strstr(buf, "\"code\":");
+//    if (p != NULL) {
+//        p += strlen("\"code\":") + 1; 
+//        Cur_Time.weather_code = (uint8_t)atoi(p);
+//    }
+
+//    // 3. 提取时间 (注意下划线 _)
+//    p = strstr(buf, "\"last_update\":");
+//    if (p != NULL) {
+//        // 跳过 "last_update":" 这 15 个字节
+//        p += 15; 
+//        // 格式：%hu 是 uint16_t, %hhu 是 uint8_t
+//        // 注意：有些编译器 sscanf 不支持 %hhu，如果报错请改用临时 int 中转
+//        sscanf(p, "%hu-%hhu-%hhuT", 
+//               &Cur_Time.year, &Cur_Time.month, &Cur_Time.day);
+//    }
+//    
+////    print("天气:%d\r\n温度:%d\r\n时间:%d-%d-%d %d:%d:%d",Cur_Time.weather_code,Cur_Time.temperature, 
+////    Cur_Time.year,Cur_Time.month,Cur_Time.day,Cur_Time.hour,Cur_Time.min,Cur_Time.sec
+////    );
+//}
+void parse_value(const char *src, const char *key, char *out_buf) {
+    char *p = strstr(src, key);
+    if (p) {
+        p += strlen(key);
+        int i = 0;
+        while (p[i] != '\"' && p[i] != '\0') {
+            out_buf[i] = p[i];
+            i++;
+        }
+        out_buf[i] = '\0';
+    }
+}
+
 static void Handle_AT_GET_CLOCK_WEATHER(const char* buf)
 {
-    char* p;
-    p = strstr(buf, "\"name\":\""); 
-    if (p != NULL) {
-        p += strlen("\"name\":\""); // 此时 p 指向 驻 字的起始地址
-        
-        // 寻找下一个双引号作为结束符
-        char *end = strchr(p, '\"');
-        if (end != NULL) {
-            int len = end - p;
-            if (len < sizeof(CITY_STR_MAX_LEN)) {
-                memcpy(weather_widget.place_str, p, len); // 拷贝这部分原始编码
-                weather_widget.place_str[len] = '\0';     // 必须手动封口
+    char  temp_buf[32];
+    const char *p=buf;
+    parse_value(buf,"\"name\":\"",Cur_Time.place_str);
+    for(uint8_t i=0;i<3;i++)
+    {
+      p=strstr(p,"\"date\"");
+      if (p == NULL) break; // 如果找不到了，直接跳出循环防止死机
+      if(i==0)
+      {
+            if (p != NULL)
+            {
+                // 跳过 "date":" 这 15 个字节
+                p += 8; 
+                sscanf(p, "%hu-%hhu-%hhuT", 
+                       &Cur_Time.year, &Cur_Time.month, &Cur_Time.day);
             }
-        }
+      }
+      parse_value(p,"\"code_day\":\"",temp_buf);
+      Cur_Time.three_day_data[i].weather_code_day=(uint8_t)atoi(temp_buf);
+      parse_value(p,"\"code_night\":\"",temp_buf);
+      Cur_Time.three_day_data[i].weather_code_night=(uint8_t)atoi(temp_buf); 
+      
+      parse_value(p,"\"high\":\"",temp_buf);
+      Cur_Time.three_day_data[i].high_temperature=(int8_t)atoi(temp_buf);
+      parse_value(p,"\"low\":\"",temp_buf);
+      Cur_Time.three_day_data[i].low_temperature=(int8_t)atoi(temp_buf);    
+      if(i==0)
+      {
+              parse_value(p,"\"wind_direction\":\"",Cur_Time.wind_dir_str);
+              parse_value(p,"\"wind_speed\":\"",temp_buf);
+              Cur_Time.wind_speed=(float)atof(temp_buf); 
+              parse_value(p,"\"humidity\":\"",temp_buf);
+              Cur_Time.humidity=(uint8_t)atoi(temp_buf);             
+      }
     }
-
-    // 1. 提取温度 (使用你最喜欢的 strlen 方案)
-    p = strstr(buf, "\"temperature\":");
-    if (p != NULL) {
-        // +strlen("\"temperature\":") 会直接跳到冒号后面
-        // 如果数据是 "temperature":"2"，跳过后指向 "2"
-        p += strlen("\"temperature\":") + 1; 
-        Cur_Time.temperature = (int8_t)atoi(p);
-    }
-
-    // 2. 提取天气代码
-    p = strstr(buf, "\"code\":");
-    if (p != NULL) {
-        p += strlen("\"code\":") + 1; 
-        Cur_Time.weather_code = (uint8_t)atoi(p);
-    }
-
-    // 3. 提取时间 (注意下划线 _)
-    p = strstr(buf, "\"last_update\":");
-    if (p != NULL) {
-        // 跳过 "last_update":" 这 15 个字节
-        p += 15; 
-        // 格式：%hu 是 uint16_t, %hhu 是 uint8_t
-        // 注意：有些编译器 sscanf 不支持 %hhu，如果报错请改用临时 int 中转
-        sscanf(p, "%hu-%hhu-%hhuT", 
-               &Cur_Time.year, &Cur_Time.month, &Cur_Time.day);
-    }
+    print("%d-%d-%d %d:%d:%d\r\n high:%d low:%d,w_day:%d,w_night:%d\r\nplace:%s,wind_dir:%s,wind_speed:%f,hum:%d",Cur_Time.year,Cur_Time.month,Cur_Time.day,Cur_Time.hour,Cur_Time.min,Cur_Time.sec,
+    Cur_Time.three_day_data[0].high_temperature,Cur_Time.three_day_data[0].low_temperature,Cur_Time.three_day_data[0].weather_code_day,
+    Cur_Time.three_day_data[0].weather_code_night,
+    Cur_Time.place_str,Cur_Time.wind_dir_str,Cur_Time.wind_speed,Cur_Time.humidity);
     
-    print("天气:%d\r\n温度:%d\r\n时间:%d-%d-%d %d:%d:%d",Cur_Time.weather_code,Cur_Time.temperature, 
-    Cur_Time.year,Cur_Time.month,Cur_Time.day,Cur_Time.hour,Cur_Time.min,Cur_Time.sec
-    );
 }
 static void Handle_AT_GET_NTP_TIME(const char*buf)
 {
