@@ -40,6 +40,7 @@ extern lv_font_t myFont_32;
 
 #else
 void memory_load_font(void);
+extern uint8_t * g_font_mem_ptr;
 #endif // keil
 
 

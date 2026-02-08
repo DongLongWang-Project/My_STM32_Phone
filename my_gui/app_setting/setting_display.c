@@ -283,6 +283,7 @@ static void display_set_scr_dir(uint16_t scr_dir)
  }
 /*************************************************************语言&字体设置*************************************************************/ 
 
+LV_FONT_DECLARE( Font_CN_12);
 /*--------------------------------------------------------------------------------↓
 	@函数	  :  设置对应语言和字体大小
 	@参数	  :  language:语言
@@ -316,11 +317,13 @@ void ui_set_language(DISPLAY_LANGUAGE_ENUM language,DISPLAY_FONT_SIZE_ENUM size)
 		    {
 		        lv_font_t*font;
                 ui_font_cn_load(size);/*加载对应的中文和大小(保存咋sd卡)*/
+//                lv_font_t * my_font = lv_font_load("0:/GitHub_Code/My_STM32_Phone/SD/my_cn_font/Font_CN_12.bin");
+//                my_font->fallback=&lv_font_montserrat_12;
                 switch(size)
                 {
 //                    case FONT_SIZE_12:font=ui_fonts.FONT_SIZE_12;break; 
-                    case FONT_SIZE_12:font=&myFont_12;break; 
-                   
+                    case FONT_SIZE_12:font=&Font_CN_12;break; 
+//                   case FONT_SIZE_12:font=my_font;break; 
                     case FONT_SIZE_14:font=ui_fonts.FONT_SIZE_14;break;
                     case FONT_SIZE_16:font=ui_fonts.FONT_SIZE_16;break; 
 //                    case FONT_SIZE_16:font=&myFont_16;break; 

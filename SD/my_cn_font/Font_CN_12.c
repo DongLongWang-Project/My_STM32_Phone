@@ -20,6 +20,9 @@
 
 #if FONT_CN_12
 
+
+#include "../font_w25q/myFont.h"
+
 /*-----------------
  *    BITMAPS
  *----------------*/
@@ -3997,6 +4000,50 @@ static const lv_font_fmt_txt_cmap_t cmaps[] =
 
 
 
+
+static uint8_t __g_font_buf[1024]; // 缓冲区
+const uint8_t * __user_font_get_bitmap_external(const lv_font_t * font, uint32_t unicode_letter) 
+{
+    // 1. 照抄官方逻辑拿到 gid 和 gdsc
+//    lv_font_fmt_txt_dsc_t * fdsc = (lv_font_fmt_txt_dsc_t *)font->dsc;
+//    uint32_t gid = get_glyph_dsc_id(font, unicode_letter);
+//    if(!gid) return NULL;
+//    const lv_font_fmt_txt_glyph_dsc_t * gdsc = &fdsc->glyph_dsc[gid];
+//
+//    #if keil
+//    // 2. 官方不干的活，咱们自己干：计算搬运长度
+//    // bpp 在 fdsc->bpp 里，宽高在 gdsc 里
+//    uint32_t size = (gdsc->box_w * gdsc->box_h * fdsc->bpp + 7) / 8;
+//    if(size == 0) return NULL;
+//
+//    // 3. 官方不干的活：计算 W25Q 里的绝对物理地址
+//    uint32_t flash_addr = (uint32_t)font->user_data + gdsc->bitmap_index;
+//
+//    // 4. 执行搬运
+//    W25QXX_Read(font_pixel_buf, flash_addr, size);
+//
+//    return font_pixel_buf; 
+//    #endif // keil
+//        uint32_t data_start_offset = *(uint32_t*)g_font_mem_ptr;
+//        
+//    if(fdsc->bitmap_format == LV_FONT_FMT_TXT_PLAIN)
+//        {
+//        return &g_font_mem_ptr[gdsc->bitmap_index];
+//    }
+    
+    if(unicode_letter == '\t') unicode_letter = ' ';
+
+    lv_font_fmt_txt_dsc_t * fdsc = (lv_font_fmt_txt_dsc_t *)font->dsc;
+    uint32_t gid = get_glyph_dsc_id(font, unicode_letter);
+    if(!gid) return NULL;
+
+    const lv_font_fmt_txt_glyph_dsc_t * gdsc = &fdsc->glyph_dsc[gid];
+
+    if(fdsc->bitmap_format == LV_FONT_FMT_TXT_PLAIN) {
+        return &g_font_mem_ptr[gdsc->bitmap_index];
+    }
+}
+
 /*--------------------
  *  ALL CUSTOM DATA
  *--------------------*/
@@ -4040,7 +4087,8 @@ const lv_font_t Font_CN_12 = {
 lv_font_t Font_CN_12 = {
 #endif
     .get_glyph_dsc = lv_font_get_glyph_dsc_fmt_txt,    /*Function pointer to get glyph's data*/
-    .get_glyph_bitmap = lv_font_get_bitmap_fmt_txt,    /*Function pointer to get glyph's bitmap*/
+    .get_glyph_bitmap = __user_font_get_bitmap_external,    /*Function pointer to get glyph's bitmap*/
+//    .get_glyph_bitmap =lv_font_get_bitmap_fmt_txt,
     .line_height = 13,          /*The maximum line height required by the font*/
     .base_line = 2,             /*Baseline measured from the bottom of the line*/
 #if !(LVGL_VERSION_MAJOR == 6 && LVGL_VERSION_MINOR == 0)
@@ -4050,7 +4098,7 @@ lv_font_t Font_CN_12 = {
     .underline_position = -1,
     .underline_thickness = 1,
 #endif
-    .static_bitmap = 0,
+//    .static_bitmap = 0,
     .dsc = &font_dsc,          /*The custom font data. Will be accessed by `get_glyph_bitmap/dsc` */
 #if LV_VERSION_CHECK(8, 2, 0) || LVGL_VERSION_MAJOR >= 9
     .fallback = &lv_font_montserrat_12,
@@ -4058,13 +4106,6 @@ lv_font_t Font_CN_12 = {
     .user_data = NULL,
 };
 
-static uint8_t __g_font_buf[1024]; // 缓冲区
-const uint8_t * __user_font_get_bitmap_external(const lv_font_t * font, uint32_t unicode_letter) 
-{
-    uint32_t base_addr = (uint32_t)font->user_data;
-    lv_font_glyph_dsc_t g_dsc;
-    if(!lv_font_get_glyph_dsc_fmt_txt(font, &g_dsc, unicode_letter, 0)) return NULL;
-    
-}
+
 
 #endif /*#if FONT_CN_12*/

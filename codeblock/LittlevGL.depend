@@ -10698,7 +10698,7 @@
 
 1770276795 g:\github_code\my_stm32_phone\codeblock\lvgl\src\font\lv_font_loader.h
 
-1770276795 g:\github_code\my_stm32_phone\codeblock\lvgl\src\font\lv_font_fmt_txt.h
+1770542712 g:\github_code\my_stm32_phone\codeblock\lvgl\src\font\lv_font_fmt_txt.h
 	<stdint.h>
 	<stddef.h>
 	<stdbool.h>
@@ -11057,7 +11057,7 @@
 1770276796 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_about.c
 	"setting_about.h"
 
-1770534846 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_display.c
+1770553779 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_display.c
 	"setting_display.h"
 
 1770276796 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_hotspot.c
@@ -13173,7 +13173,7 @@
 	"lvgl.h"
 	"../../lvgl.h"
 
-1770276795 source:g:\github_code\my_stm32_phone\codeblock\lvgl\src\font\lv_font_fmt_txt.c
+1770544389 source:g:\github_code\my_stm32_phone\codeblock\lvgl\src\font\lv_font_fmt_txt.c
 	"lv_font.h"
 	"lv_font_fmt_txt.h"
 	"../misc/lv_assert.h"
@@ -13183,7 +13183,7 @@
 	"../misc/lv_utils.h"
 	"../misc/lv_mem.h"
 
-1770276795 source:g:\github_code\my_stm32_phone\codeblock\lvgl\src\font\lv_font_loader.c
+1770553756 source:g:\github_code\my_stm32_phone\codeblock\lvgl\src\font\lv_font_loader.c
 	<stdint.h>
 	<stdbool.h>
 	"../lvgl.h"
@@ -13794,13 +13794,24 @@
 1770526494 source:g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.c
 	"ui_app_setting_config.h"
 
-1770524881 g:\github_code\my_stm32_phone\sd\font_w25q\myfont.h
+1770542842 g:\github_code\my_stm32_phone\sd\font_w25q\myfont.h
 	"lvgl.h"
 	"stdio.h"
 	"W25Qxx.h"
 	"ff.h"
 	"USART1.h"
 
-1770534603 source:g:\github_code\my_stm32_phone\sd\font_w25q\myfont.c
+1770555162 source:g:\github_code\my_stm32_phone\sd\font_w25q\myfont.c
 	"myFont.h"
+
+1770542687 source:g:\github_code\my_stm32_phone\sd\my_cn_font\font_cn_16.c
+
+1770542687 source:g:\github_code\my_stm32_phone\sd\my_cn_font\font_cn_24.c
+
+1770542687 source:g:\github_code\my_stm32_phone\sd\my_cn_font\font_cn_32.c
+
+1770544939 source:g:\github_code\my_stm32_phone\sd\my_cn_font\font_cn_12.c
+	"lvgl.h"
+	"lvgl/lvgl.h"
+	"../font_w25q/myFont.h"
 

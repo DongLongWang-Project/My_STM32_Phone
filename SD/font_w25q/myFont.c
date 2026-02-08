@@ -26,8 +26,8 @@ uint8_t * g_font_mem_ptr = NULL; // 定义一个全局指针存放字库数据
 void memory_load_font(void)
  {
     lv_fs_file_t f;
-    lv_fs_res_t res = lv_fs_open(&f,"0:/GitHub_Code/My_STM32_Phone/SD/font_w25q/Font.bin",LV_FS_MODE_RD);
-
+//    lv_fs_res_t res = lv_fs_open(&f,"0:/GitHub_Code/My_STM32_Phone/SD/font_w25q/Font.bin",LV_FS_MODE_RD);
+    lv_fs_res_t res = lv_fs_open(&f,"0:/GitHub_Code/My_STM32_Phone/SD/font12.bin",LV_FS_MODE_RD);
 //    lv_fs_res_t res = lv_fs_open(&f,"0:/GitHub_Code/My_STM32_Phone/SD/font_w25q/myFont_1.bin",LV_FS_MODE_RD); 
      
     if(res == LV_FS_RES_OK) {
@@ -45,6 +45,12 @@ void memory_load_font(void)
             uint32_t br;
             lv_fs_read(&f, g_font_mem_ptr, size, &br); // 一次性读入内存
             printf("字库全量加载成功，大小: %d bytes\r\n", size);
+            
+//            uint8_t *ptr = &g_font_mem_ptr[0]; 
+//            printf("BIN Header check: %02X %02X %02X %02X\n", ptr[0], ptr[1], ptr[2], ptr[3]);
+            
+                uint8_t *real_data = g_font_mem_ptr;
+                for(int i=0; i<900; i++) printf("%02X ", real_data[i]);
         }
         lv_fs_close(&f);
     } else {
