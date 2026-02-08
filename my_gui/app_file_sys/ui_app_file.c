@@ -7,7 +7,7 @@
 
 
 #define Dir_MAX_LEN     512
-char Cure_Path[128]={"0:/SD"};
+char Cure_Path[128]={"0:"};
 
 static FILE_TYPE_ENUM get_file_type(const char *path);
 

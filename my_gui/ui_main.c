@@ -7,6 +7,8 @@
 
 #include "ui_main.h"
 
+
+
 lv_obj_t*tileview,*tile_main;
 
 UI_APP_PAGE_ENUM Cur_Page = PAGE_HOME;
@@ -16,8 +18,11 @@ static void event_ui_page_btn_app(lv_event_t *e);
 
 void ui_init(void)
 {
+    #if keil
     
-
+    #else
+    memory_load_font();
+    #endif // keil
 
     ui_set_language(display_cfg.language,display_cfg.font_size);
     #if keil
@@ -248,7 +253,7 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
 //        printf("Come out ( %s )\r\n",Cure_Path);
         ui_goto_page(PAGE_APP_LIST,APP_FILE);
         }
-        
+        break;
     case APP_NET:
         {
                 switch(Cur_Page)

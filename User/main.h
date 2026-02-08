@@ -14,5 +14,6 @@
 #include "stdio.h"
 #include "key.h"
 #include "HX1838.h"
+#include "myFont.h"
 
 #endif

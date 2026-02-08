@@ -10972,8 +10972,9 @@
 1770276795 g:\github_code\my_stm32_phone\codeblock\lvgl\src\extra\widgets\span\lv_span.h
 	"../../../lvgl.h"
 
-1770276796 g:\github_code\my_stm32_phone\my_gui\app_setting\setting_display.h
+1770525948 g:\github_code\my_stm32_phone\my_gui\app_setting\setting_display.h
 	"../ui_app_language.h"
+	"../../SD/font_w25q/myFont.h"
 	"../ui_main.h"
 
 1770279861 g:\github_code\my_stm32_phone\my_gui\ui_app_language.h
@@ -10983,7 +10984,7 @@
 1770276796 g:\github_code\my_stm32_phone\my_gui\ui_app_config.h
 	"lvgl.h"
 
-1770460529 g:\github_code\my_stm32_phone\my_gui\ui_main.h
+1770524778 g:\github_code\my_stm32_phone\my_gui\ui_main.h
 	"lvgl.h"
 	"ui_widgets.h"
 	"app_setting/ui_app_setting.h"
@@ -10991,6 +10992,7 @@
 	"app_net_ass/ui_app_net.h"
 	"app_clock/ui_app_clock.h"
 	"app_weather/ui_app_weather.h"
+	"../SD/font_w25q/myFont.h"
 	"lvgl.h"
 	"ui_widgets.h"
 
@@ -10999,7 +11001,7 @@
 	"ui_main.h"
 	"ui_app_language.h"
 
-1770460529 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
+1770522307 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
 	"lvgl.h"
 	"../ui_main.h"
 	"../ui_app_language.h"
@@ -11046,7 +11048,7 @@
 1770276796 source:g:\github_code\my_stm32_phone\my_gui\app_file_sys\file_txt.c
 	"file_txt.h"
 
-1770276796 source:g:\github_code\my_stm32_phone\my_gui\app_file_sys\ui_app_file.c
+1770526998 source:g:\github_code\my_stm32_phone\my_gui\app_file_sys\ui_app_file.c
 	"ui_app_file.h"
 
 1770276796 source:g:\github_code\my_stm32_phone\my_gui\app_net_ass\ui_app_net.c
@@ -11055,7 +11057,7 @@
 1770276796 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_about.c
 	"setting_about.h"
 
-1770276796 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_display.c
+1770534846 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_display.c
 	"setting_display.h"
 
 1770276796 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_hotspot.c
@@ -11083,7 +11085,7 @@
 1770285151 source:g:\github_code\my_stm32_phone\my_gui\ui_app_language.c
 	"ui_app_language.h"
 
-1770378220 source:g:\github_code\my_stm32_phone\my_gui\ui_main.c
+1770534663 source:g:\github_code\my_stm32_phone\my_gui\ui_main.c
 	"ui_main.h"
 
 1770449345 source:g:\github_code\my_stm32_phone\my_gui\ui_widgets.c
@@ -13789,6 +13791,16 @@
 1770278924 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.h
 	"lvgl.h"
 
-1770278914 source:g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.c
+1770526494 source:g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.c
 	"ui_app_setting_config.h"
+
+1770524881 g:\github_code\my_stm32_phone\sd\font_w25q\myfont.h
+	"lvgl.h"
+	"stdio.h"
+	"W25Qxx.h"
+	"ff.h"
+	"USART1.h"
+
+1770534603 source:g:\github_code\my_stm32_phone\sd\font_w25q\myfont.c
+	"myFont.h"
 

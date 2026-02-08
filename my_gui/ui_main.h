@@ -15,7 +15,7 @@
 //#include "key.h"
 //#include "lv_port_indev.h"
 
-
+#include "../SD/font_w25q/myFont.h"
 
 #include "lvgl.h"
 #include "ui_widgets.h"

@@ -3,7 +3,7 @@
 
  ui_app_setting_config_t display_cfg =
   {
-    .language       = ENGLISH,
+    .language       = CHINESE,
     .font_size        = FONT_SIZE_12,  
     .scr_dir            = REV_VER,    
     .Brightness      = 50,

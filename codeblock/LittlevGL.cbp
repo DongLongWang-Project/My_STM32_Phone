@@ -44,6 +44,10 @@
 			<Option target="Debug" />
 			<Option target="Release" />
 		</UnitsGlob>
+		<Unit filename="../SD/font_w25q/myFont.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../SD/font_w25q/myFont.h" />
 		<Unit filename="../my_gui/app_clock/ui_app_clock.c">
 			<Option compilerVar="CC" />
 		</Unit>
