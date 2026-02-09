@@ -1698,13 +1698,6 @@
         </Group>
         <Group>
           <GroupName>Font</GroupName>
-          <Files>
-            <File>
-              <FileName>myFont.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\SD\font_w25q\myFont.c</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
           <GroupName>my_gui</GroupName>

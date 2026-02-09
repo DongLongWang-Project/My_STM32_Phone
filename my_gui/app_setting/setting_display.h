@@ -3,7 +3,7 @@
 
 
 #include "../ui_app_language.h"
-#include "../../SD/font_w25q/myFont.h"
+#include "../../SD/Font/Font.h"
 
 #include "../ui_main.h"
 

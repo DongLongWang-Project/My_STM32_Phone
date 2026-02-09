@@ -453,7 +453,7 @@ void DX_WF25_Send_Static(AT_CMD_WIFI_ENUM cmd_id)
 }
 
 #define BUF_NUM  4    // 缓冲区数量
-#define BUF_SIZE 512  // 每个缓冲区的大小
+#define BUF_SIZE 256  // 每个缓冲区的大小
 
 static char Dynamic_AT_CMD_BUF[BUF_NUM][BUF_SIZE];
 static uint8_t write_idx = 0; // 写指针
@@ -533,7 +533,7 @@ void wifi_ide_deal(void)
 
 void Get_Weather_data(const char*api_str,const char*api_key_str,const char*place_str)
 {
-    char get_time_weather_str[512];
+    char get_time_weather_str[256];
 //    snprintf(get_time_weather_str,sizeof(get_time_weather_str),"GET /v3/weather/now.json?key=%s&location=%s&language=zh-Hans&unit=c HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n",api_key_str,place_str,api_str);
     snprintf(get_time_weather_str,sizeof(get_time_weather_str),"GET /v3/weather/daily.json?key=%s&location=%s&language=zh-Hans&unit=c&start=0&days=3 HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n",api_key_str,place_str,api_str);
   

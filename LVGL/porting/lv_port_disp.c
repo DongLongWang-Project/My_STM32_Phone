@@ -94,9 +94,9 @@ void lv_port_disp_init(void)
 
     /* Example for 2) */
     static lv_disp_draw_buf_t draw_buf_dsc_2;
-    static lv_color_t buf_2_1[MY_DISP_HOR_RES * MY_DISP_VER_RES*5/6]__attribute__((at(EXT_SRAM_BASE+435200)));                        /*A buffer for 10 rows*/
-    static lv_color_t buf_2_2[MY_DISP_HOR_RES * MY_DISP_VER_RES*5/6]__attribute__((at(EXT_SRAM_BASE+HALF_BUFFER_SIZE+435200)));                        /*An other buffer for 10 rows*/
-    lv_disp_draw_buf_init(&draw_buf_dsc_2, buf_2_1, buf_2_2, MY_DISP_HOR_RES * MY_DISP_VER_RES*5/6);   /*Initialize the display buffer*/
+    static lv_color_t buf_2_1[HALF_BUFFER_PIXELS];                        /*A buffer for 10 rows*/
+    static lv_color_t buf_2_2[HALF_BUFFER_PIXELS];                        /*An other buffer for 10 rows*/
+    lv_disp_draw_buf_init(&draw_buf_dsc_2, buf_2_1, buf_2_2, HALF_BUFFER_PIXELS);   /*Initialize the display buffer*/
 
 //static lv_disp_draw_buf_t draw_buf_dsc_2;
 

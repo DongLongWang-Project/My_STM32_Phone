@@ -104,13 +104,13 @@ typedef struct
 	uint8_t Data_32x32[128];
 }CN_Font_32x32;
 
-extern Font_Size Font_Size_6x8; 
-extern Font_Size Font_Size_8x16;
-extern Font_Size Font_Size_12x24;
+extern const Font_Size Font_Size_6x8; 
+extern const Font_Size Font_Size_8x16;
+extern const Font_Size Font_Size_12x24;
 
-extern Font_Size Font_Size_16x16;
-extern Font_Size Font_Size_24x24;
-extern Font_Size Font_Size_32x32;
+extern const Font_Size Font_Size_16x16;
+extern const Font_Size Font_Size_24x24;
+extern const Font_Size Font_Size_32x32;
 
 extern 	const uint8_t Font_6x8[95][6];
 extern 	const uint8_t Font_8x16[95][16];

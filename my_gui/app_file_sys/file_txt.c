@@ -33,7 +33,7 @@ void operation_file_txt(lv_obj_t*parent,const char*path)
     if(res == LV_FS_RES_OK)/*打开文件状态*/
     {
 
-      char buf[2048];
+      char buf[256];
       uint32_t cnt=0;
       while(1)
       {

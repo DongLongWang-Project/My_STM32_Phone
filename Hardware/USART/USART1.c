@@ -127,6 +127,7 @@ void DMA2_Stream7_IRQHandler(void)
 }
  void print(char *format, ...)
 {
+    /*加static 防止栈溢出*/
     static char String[USART_Tx_BUF_SIZE];				//定义字符数组
     if(xTaskGetSchedulerState()==taskSCHEDULER_NOT_STARTED)
     {

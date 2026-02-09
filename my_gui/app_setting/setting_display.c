@@ -283,10 +283,10 @@ static void display_set_scr_dir(uint16_t scr_dir)
  }
 /*************************************************************语言&字体设置*************************************************************/ 
 
-LV_FONT_DECLARE( Font_CN_12);
-LV_FONT_DECLARE( Font_CN_16);
-LV_FONT_DECLARE( Font_CN_24);
-LV_FONT_DECLARE( Font_CN_32);
+//LV_FONT_DECLARE( FONT_12);
+//LV_FONT_DECLARE( Font_CN_12);
+//LV_FONT_DECLARE( Font_CN_24);
+//LV_FONT_DECLARE( Font_CN_32);
 /*--------------------------------------------------------------------------------↓
 	@函数	  :  设置对应语言和字体大小
 	@参数	  :  language:语言
@@ -308,7 +308,7 @@ void ui_set_language(DISPLAY_LANGUAGE_ENUM language,DISPLAY_FONT_SIZE_ENUM size)
             switch(size) /*根据对应的语言和大小来设置全局字体大小*/
                 {
                     case FONT_SIZE_12:set_global_font(&lv_font_montserrat_12);break;
-                    case FONT_SIZE_14:set_global_font(&lv_font_montserrat_14);break;
+//                    case FONT_SIZE_14:set_global_font(&lv_font_montserrat_14);break;
                     case FONT_SIZE_16:set_global_font(&lv_font_montserrat_16);break;  
                     default :break;             
                 }
@@ -324,8 +324,8 @@ void ui_set_language(DISPLAY_LANGUAGE_ENUM language,DISPLAY_FONT_SIZE_ENUM size)
 //                my_font->fallback=&lv_font_montserrat_12;
                 switch(size)
                 {
-//                    case FONT_SIZE_12:font=ui_fonts.FONT_SIZE_12;break; 
-                    case FONT_SIZE_12:font=&Font_CN_12;break;
+                    case FONT_SIZE_12:font=ui_fonts.FONT_SIZE_12;break; 
+//                    case FONT_SIZE_12:font=&FONT_12;break;
                      
                     
 //                   case FONT_SIZE_12:font=my_font;break; 
@@ -367,9 +367,9 @@ void ui_font_cn_load(DISPLAY_FONT_SIZE_ENUM size)
                        }
                    case FONT_SIZE_14: 
                        {   
-                           ui_fonts.FONT_SIZE_14=lv_font_load (FONT_Size_14_PATH);/*根据路径加载字体14*/
-                           if(ui_fonts.FONT_SIZE_14==NULL) printf("use FONT_SIZE_14 to error \r\n"); /*如果加载失败就打印*/
-                           else  ui_fonts.FONT_SIZE_14->fallback=&lv_font_montserrat_14;/*英文对应内置的大小*/   
+//                           ui_fonts.FONT_SIZE_14=lv_font_load (FONT_Size_14_PATH);/*根据路径加载字体14*/
+//                           if(ui_fonts.FONT_SIZE_14==NULL) printf("use FONT_SIZE_14 to error \r\n"); /*如果加载失败就打印*/
+//                           else  ui_fonts.FONT_SIZE_14->fallback=&lv_font_montserrat_14;/*英文对应内置的大小*/   
                            break;
                        }
                        
@@ -433,7 +433,7 @@ void ui_set_obj_text_font(lv_obj_t*parent,DISPLAY_FONT_SIZE_ENUM FONT_SIZE)
                 switch(FONT_SIZE)
             {
                 case FONT_SIZE_12: lv_obj_set_style_text_font(parent,&lv_font_montserrat_12,LV_STATE_DEFAULT); break;
-                case FONT_SIZE_14: lv_obj_set_style_text_font(parent,&lv_font_montserrat_14,LV_STATE_DEFAULT); break;
+//                case FONT_SIZE_14: lv_obj_set_style_text_font(parent,&lv_font_montserrat_14,LV_STATE_DEFAULT); break;
                 case FONT_SIZE_16: lv_obj_set_style_text_font(parent,&lv_font_montserrat_16,LV_STATE_DEFAULT); break;
                 case FONT_SIZE_24: lv_obj_set_style_text_font(parent,&lv_font_montserrat_24,LV_STATE_DEFAULT); break;
                 case FONT_SIZE_32: lv_obj_set_style_text_font(parent,&lv_font_montserrat_32,LV_STATE_DEFAULT); break; 

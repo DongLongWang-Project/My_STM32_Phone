@@ -10,7 +10,7 @@
 #define SRAMEX                  1                               /* 外部内存池 */
 
 //#define SRAMBANK                3                               /* 定义支持的SRAM块数 */
-#define SRAMBANK                2                               /* 定义支持的SRAM块数 */
+#define SRAMBANK                1                               /* 定义支持的SRAM块数 */
 
 
 /* 定义内存管理表类型,当外扩SDRAM的时候，必须使用uint32_t类型，否则可以定义成uint16_t，以节省内存占用 */
@@ -28,7 +28,7 @@
  
 /* mem1内存参数设定.mem1完全处于内部SRAM里面 */
 #define MEM1_BLOCK_SIZE         32                              /* 内存块大小为32字节 */
-#define MEM1_MAX_SIZE           60*1024                        /* 最大管理内存 100K */
+#define MEM1_MAX_SIZE           20*1024                        /* 最大管理内存 100K */
 #define MEM1_ALLOC_TABLE_SIZE   MEM1_MAX_SIZE/MEM1_BLOCK_SIZE   /* 内存表大小 */
 
 ///* mem2内存参数设定.mem2处于CCM,用于管理CCM(特别注意,这部分SRAM,仅CPU可以访问!!) */

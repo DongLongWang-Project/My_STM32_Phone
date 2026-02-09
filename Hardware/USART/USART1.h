@@ -9,7 +9,7 @@
 #include "string.h"
 #include <stdarg.h>
 
-#define USART_Tx_BUF_SIZE     1024
+#define USART_Tx_BUF_SIZE     256
 void Serial_Init(void);
 void Serial_SendByte(uint8_t Byte);
 void Serial_SendString(char *String);

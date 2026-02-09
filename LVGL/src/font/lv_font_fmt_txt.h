@@ -224,7 +224,7 @@ bool lv_font_get_glyph_dsc_fmt_txt(const lv_font_t * font, lv_font_glyph_dsc_t *
  * Free the allocated memories.
  */
 void _lv_font_clean_up_fmt_txt(void);
-
+uint32_t get_glyph_dsc_id(const lv_font_t * font, uint32_t letter);
 /**********************
  *      MACROS
  **********************/

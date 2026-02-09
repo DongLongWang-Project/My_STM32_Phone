@@ -24,7 +24,7 @@
 #define MY_DISP_HOR_RES  240
 #define MY_DISP_VER_RES  320
 
-#define HALF_BUFFER_PIXELS MY_DISP_HOR_RES*MY_DISP_VER_RES*5/6
+#define HALF_BUFFER_PIXELS      MY_DISP_HOR_RES*MY_DISP_VER_RES/4
 #define HALF_BUFFER_SIZE        (HALF_BUFFER_PIXELS * sizeof(lv_color_t))
 /*====================
    COLOR SETTINGS
@@ -53,10 +53,10 @@
  *=========================*/
 
 /*1: use custom malloc/free, 0: use the built-in `lv_mem_alloc()` and `lv_mem_free()`*/
-#define LV_MEM_CUSTOM 1
+#define LV_MEM_CUSTOM 0
 #if LV_MEM_CUSTOM == 0
     /*Size of the memory available for `lv_mem_alloc()` in bytes (>= 2kB)*/
-    #define LV_MEM_SIZE (60* 1024U)          /*[bytes]*/
+    #define LV_MEM_SIZE (30* 1024U)          /*[bytes]*/
 
     /*Set an address for the memory pool instead of allocating it as a normal array. Can be in external SRAM too.*/
 //    #define LV_MEM_ADR (0x68000000+HALF_BUFFER_PIXELS*2)     /*0: unused*/
@@ -145,15 +145,15 @@
  * "Transformed layers" (where transform_angle/zoom properties are used) use larger buffers
  * and can't be drawn in chunks. So these settings affects only widgets with opacity.
  */
-#define LV_LAYER_SIMPLE_BUF_SIZE          (24 * 1024)
-#define LV_LAYER_SIMPLE_FALLBACK_BUF_SIZE (3 * 1024)
+#define LV_LAYER_SIMPLE_BUF_SIZE          (8 * 1024)
+#define LV_LAYER_SIMPLE_FALLBACK_BUF_SIZE (2 * 1024)
 
 /*Default image cache size. Image caching keeps the images opened.
  *If only the built-in image formats are used there is no real advantage of caching. (I.e. if no new image decoder is added)
  *With complex image decoders (e.g. PNG or JPG) caching can save the continuous open/decode of images.
  *However the opened images might consume additional RAM.
  *0: to disable caching*/
-#define LV_IMG_CACHE_DEF_SIZE 0
+#define LV_IMG_CACHE_DEF_SIZE 1
 
 /*Number of stops allowed per gradient. Increase this to allow more stops.
  *This adds (sizeof(lv_color_t) + 1) bytes per additional stop*/
@@ -373,7 +373,7 @@
 #define LV_FONT_MONTSERRAT_8  0
 #define LV_FONT_MONTSERRAT_10 0
 #define LV_FONT_MONTSERRAT_12 1
-#define LV_FONT_MONTSERRAT_14 1
+#define LV_FONT_MONTSERRAT_14 0
 #define LV_FONT_MONTSERRAT_16 1
 #define LV_FONT_MONTSERRAT_18 0
 #define LV_FONT_MONTSERRAT_20 0
@@ -408,7 +408,7 @@
 #define LV_FONT_CUSTOM_DECLARE
 
 /*Always set a default font*/
-#define LV_FONT_DEFAULT &lv_font_montserrat_16
+#define LV_FONT_DEFAULT &lv_font_montserrat_12
 
 /*Enable handling large font and/or fonts with a lot of characters.
  *The limit depends on the font size, font face and bpp.
@@ -646,7 +646,7 @@
 #if LV_USE_FS_FATFS
     #define LV_FS_FATFS_LETTER '0'     /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
 //    #define LV_FS_FATFS_PATH  "0:"
-    #define LV_FS_FATFS_CACHE_SIZE 2048    /*>0 to cache this number of bytes in lv_fs_read()*/
+    #define LV_FS_FATFS_CACHE_SIZE 512    /*>0 to cache this number of bytes in lv_fs_read()*/
 #endif
 
 /*API for LittleFS (library needs to be added separately). Uses lfs_file_open, lfs_file_read, etc*/

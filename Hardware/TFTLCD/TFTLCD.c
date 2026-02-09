@@ -14,13 +14,13 @@ uint16_t Background=WHITE;
 uint16_t LCD_Height=320;
 uint16_t LCD_Length=240;
 LCD_Direction Cur_scr_dir=Dir_Rev_Ver;
-Font_Size Font_Size_6x8  = {6, 8, 6}; // ASCII
-Font_Size Font_Size_8x16 = {8, 16, 16}; // ASCII
-Font_Size Font_Size_12x24 = {12, 24, 36}; // ASCII
+const Font_Size Font_Size_6x8  = {6, 8, 6}; // ASCII
+const Font_Size Font_Size_8x16 = {8, 16, 16}; // ASCII
+const Font_Size Font_Size_12x24 = {12, 24, 36}; // ASCII
 
-Font_Size Font_Size_16x16 = {16, 16, 0,32,0x00000000+0X4680}; // 中文
-Font_Size Font_Size_24x24 = {24, 24, 0,72,0x00045080+0X9EA0}; // 中文
-Font_Size Font_Size_32x32 = {32, 32, 0,128,0x000E05A0+0X11A00}; // 中文
+const Font_Size Font_Size_16x16 = {16, 16, 0,32,0x00000000+0X4680}; // 中文
+const Font_Size Font_Size_24x24 = {24, 24, 0,72,0x00045080+0X9EA0}; // 中文
+const Font_Size Font_Size_32x32 = {32, 32, 0,128,0x000E05A0+0X11A00}; // 中文
 
 /*--------------------------------------------------------------------------------↓
                               FMCS初始化
@@ -456,7 +456,7 @@ void TFTLCD_ShowChar(uint16_t X,uint16_t Y,char Char,Font_Size *FontSize,uint16_
 	}
 }
 
-void TFTLCD_ShowString(uint16_t X, uint16_t Y, Font_Size *FontSize, char *String, uint16_t Color_Pencil)
+void TFTLCD_ShowString(uint16_t X, uint16_t Y,  Font_Size *FontSize, char *String, uint16_t Color_Pencil)
 {
     uint16_t i = 0;
     char SingleChar[5];
@@ -488,8 +488,8 @@ void TFTLCD_ShowString(uint16_t X, uint16_t Y, Font_Size *FontSize, char *String
         }
         else
         {
-            if (CurFontSize == &Font_Size_8x16) CurFontSize = &Font_Size_16x16;
-            else if (CurFontSize == &Font_Size_12x24) CurFontSize = &Font_Size_24x24;
+            if (CurFontSize == &Font_Size_8x16) CurFontSize = (Font_Size *)&Font_Size_16x16;
+            else if (CurFontSize == &Font_Size_12x24) CurFontSize = (Font_Size *)&Font_Size_24x24;
 
 						uint16_t pIndex;
             if (CurFontSize == &Font_Size_16x16)

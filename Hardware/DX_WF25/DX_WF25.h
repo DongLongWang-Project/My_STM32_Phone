@@ -12,7 +12,7 @@
 #include "ui_app_clock_config.h"
 #include "ui_app_weather.h"
 
-#define USART3_RX_BUF_SIZE 512       //串口的缓冲区大小
+#define USART3_RX_BUF_SIZE 256       //串口的缓冲区大小
 #define DEAL_BUF_SIZE       2048
 #define AT_CMD_MAX_LEN 256             //wifi的AT最长命令
 #define DX_WF25_Queue_MAX_LEN  8     //队列长度

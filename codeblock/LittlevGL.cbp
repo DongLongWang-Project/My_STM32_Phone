@@ -44,20 +44,23 @@
 			<Option target="Debug" />
 			<Option target="Release" />
 		</UnitsGlob>
-		<Unit filename="../SD/font_w25q/myFont.c">
+		<Unit filename="../SD/Font/Font.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../SD/font_w25q/myFont.h" />
-		<Unit filename="../SD/my_cn_font/Font_CN_12.c">
+		<Unit filename="../SD/Font/Font.h" />
+		<Unit filename="../SD/Font/Only_bin/Font_CN_12.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../SD/my_cn_font/Font_CN_16.c">
+		<Unit filename="../SD/Font/Only_bin/Font_CN_16.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../SD/my_cn_font/Font_CN_24.c">
+		<Unit filename="../SD/Font/Only_bin/Font_CN_24.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../SD/my_cn_font/Font_CN_32.c">
+		<Unit filename="../SD/Font/Only_bin/Font_CN_32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../SD/Font/font/FONT_12.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../my_gui/app_clock/ui_app_clock.c">

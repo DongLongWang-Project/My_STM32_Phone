@@ -259,7 +259,8 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
                 switch(Cur_Page)
           {
             case PAGE_APP_LIST: ui_goto_page(PAGE_HOME,APP_TEMP);break;
-            case PAGE_APP_DETAIL:  ui_app_net_list_creat(tile_main);break; 
+            case PAGE_APP_DETAIL:  ui_app_net_list_creat(tile_main);break;
+            default:break;            
           }
             break;
     case APP_WEATHER:

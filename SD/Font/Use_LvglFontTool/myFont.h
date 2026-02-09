@@ -12,6 +12,8 @@
 #endif // keil
 
 
+#define USE_LvglFontTool 0
+
 typedef struct{
     uint16_t min;
     uint16_t max;

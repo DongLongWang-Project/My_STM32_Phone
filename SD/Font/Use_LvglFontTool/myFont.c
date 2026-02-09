@@ -10,25 +10,21 @@
 #include "myFont.h"
 
 
-
-
 static x_header_t __g_xbf_hd = {
     .min = 0x0020,
     .max = 0xf2e0,
     .bpp = 2,
 };
-static uint8_t __g_font_buf[528];//如bin文件存在SPI FLASH可使用此buff
 
-uint8_t * g_font_mem_ptr = NULL; // 定义一个全局指针存放字库数据
-#if keil
 
-#else
+
+#if !keil
+static uint8_t __g_font_buf[1024];//如bin文件存在SPI FLASH可使用此buff
 void memory_load_font(void)
  {
     lv_fs_file_t f;
-//    lv_fs_res_t res = lv_fs_open(&f,"0:/GitHub_Code/My_STM32_Phone/SD/font_w25q/Font.bin",LV_FS_MODE_RD);
+
     lv_fs_res_t res = lv_fs_open(&f,"0:/GitHub_Code/My_STM32_Phone/SD/Font/font.bin",LV_FS_MODE_RD);
-//    lv_fs_res_t res = lv_fs_open(&f,"0:/GitHub_Code/My_STM32_Phone/SD/font_w25q/myFont_1.bin",LV_FS_MODE_RD); 
      
     if(res == LV_FS_RES_OK) {
         // 1. 获取文件总大小
@@ -45,12 +41,6 @@ void memory_load_font(void)
             uint32_t br;
             lv_fs_read(&f, g_font_mem_ptr, size, &br); // 一次性读入内存
             printf("字库全量加载成功，大小: %d bytes\r\n", size);
-            
-//            uint8_t *ptr = &g_font_mem_ptr[0]; 
-//            printf("BIN Header check: %02X %02X %02X %02X\n", ptr[0], ptr[1], ptr[2], ptr[3]);
-            
-                uint8_t *real_data = g_font_mem_ptr;
-                for(int i=0; i<900; i++) printf("%02X ", real_data[i]);
         }
         lv_fs_close(&f);
     } else {
@@ -236,44 +226,3 @@ void update_font(void)
 
 
 //static uint8_t __g_font_buf[1024]; // 缓冲区
-const uint8_t * __user_font_get_bitmap_external(const lv_font_t * font, uint32_t unicode_letter) 
-{
-    // 1. 照抄官方逻辑拿到 gid 和 gdsc
-//    lv_font_fmt_txt_dsc_t * fdsc = (lv_font_fmt_txt_dsc_t *)font->dsc;
-//    uint32_t gid = get_glyph_dsc_id(font, unicode_letter);
-//    if(!gid) return NULL;
-//    const lv_font_fmt_txt_glyph_dsc_t * gdsc = &fdsc->glyph_dsc[gid];
-//
-//    #if keil
-//    // 2. 官方不干的活，咱们自己干：计算搬运长度
-//    // bpp 在 fdsc->bpp 里，宽高在 gdsc 里
-//    uint32_t size = (gdsc->box_w * gdsc->box_h * fdsc->bpp + 7) / 8;
-//    if(size == 0) return NULL;
-//
-//    // 3. 官方不干的活：计算 W25Q 里的绝对物理地址
-//    uint32_t flash_addr = (uint32_t)font->user_data + gdsc->bitmap_index;
-//
-//    // 4. 执行搬运
-//    W25QXX_Read(font_pixel_buf, flash_addr, size);
-//
-//    return font_pixel_buf; 
-//    #endif // keil
-//        uint32_t data_start_offset = *(uint32_t*)g_font_mem_ptr;
-//        
-//    if(fdsc->bitmap_format == LV_FONT_FMT_TXT_PLAIN)
-//        {
-//        return &g_font_mem_ptr[gdsc->bitmap_index];
-//    }
-    
-    if(unicode_letter == '\t') unicode_letter = ' ';
-
-    lv_font_fmt_txt_dsc_t * fdsc = (lv_font_fmt_txt_dsc_t *)font->dsc;
-    uint32_t gid = get_glyph_dsc_id(font, unicode_letter);
-    if(!gid) return NULL;
-
-    const lv_font_fmt_txt_glyph_dsc_t * gdsc = &fdsc->glyph_dsc[gid];
-
-    if(fdsc->bitmap_format == LV_FONT_FMT_TXT_PLAIN) {
-        return &g_font_mem_ptr[gdsc->bitmap_index+(uint32_t)font->user_data];
-    }
-}

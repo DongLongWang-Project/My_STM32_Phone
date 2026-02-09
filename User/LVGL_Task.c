@@ -32,14 +32,14 @@
    /******************************************************************************************************/
 
 
-                                               void lvgl_demo(void)
+void lvgl_demo(void)
 {
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
     Delay_init(168);
     TIM2_Int_Init(10000-1,8400-1);
     Serial_Init();
        
-    my_mem_init(SRAMIN);
+//    my_mem_init(SRAMIN);
     Key_Init();
     lv_init();                                          /* lvgl系统初始化 */
     lv_port_disp_init();                                /* lvgl显示接口初始化,放在lv_init()的后面 */
