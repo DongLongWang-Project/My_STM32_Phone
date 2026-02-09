@@ -284,6 +284,9 @@ static void display_set_scr_dir(uint16_t scr_dir)
 /*************************************************************语言&字体设置*************************************************************/ 
 
 LV_FONT_DECLARE( Font_CN_12);
+LV_FONT_DECLARE( Font_CN_16);
+LV_FONT_DECLARE( Font_CN_24);
+LV_FONT_DECLARE( Font_CN_32);
 /*--------------------------------------------------------------------------------↓
 	@函数	  :  设置对应语言和字体大小
 	@参数	  :  language:语言
@@ -322,7 +325,9 @@ void ui_set_language(DISPLAY_LANGUAGE_ENUM language,DISPLAY_FONT_SIZE_ENUM size)
                 switch(size)
                 {
 //                    case FONT_SIZE_12:font=ui_fonts.FONT_SIZE_12;break; 
-                    case FONT_SIZE_12:font=&Font_CN_12;break; 
+                    case FONT_SIZE_12:font=&Font_CN_12;break;
+                     
+                    
 //                   case FONT_SIZE_12:font=my_font;break; 
                     case FONT_SIZE_14:font=ui_fonts.FONT_SIZE_14;break;
                     case FONT_SIZE_16:font=ui_fonts.FONT_SIZE_16;break; 

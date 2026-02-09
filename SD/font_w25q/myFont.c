@@ -27,7 +27,7 @@ void memory_load_font(void)
  {
     lv_fs_file_t f;
 //    lv_fs_res_t res = lv_fs_open(&f,"0:/GitHub_Code/My_STM32_Phone/SD/font_w25q/Font.bin",LV_FS_MODE_RD);
-    lv_fs_res_t res = lv_fs_open(&f,"0:/GitHub_Code/My_STM32_Phone/SD/font12.bin",LV_FS_MODE_RD);
+    lv_fs_res_t res = lv_fs_open(&f,"0:/GitHub_Code/My_STM32_Phone/SD/Font/font.bin",LV_FS_MODE_RD);
 //    lv_fs_res_t res = lv_fs_open(&f,"0:/GitHub_Code/My_STM32_Phone/SD/font_w25q/myFont_1.bin",LV_FS_MODE_RD); 
      
     if(res == LV_FS_RES_OK) {
@@ -233,3 +233,47 @@ void update_font(void)
   Update_Font_to_W25Qxx("0:/SD/font_w25q/myFont_32.bin",(uint32_t)myFont_32.user_data);
 }
 #endif
+
+
+//static uint8_t __g_font_buf[1024]; // 缓冲区
+const uint8_t * __user_font_get_bitmap_external(const lv_font_t * font, uint32_t unicode_letter) 
+{
+    // 1. 照抄官方逻辑拿到 gid 和 gdsc
+//    lv_font_fmt_txt_dsc_t * fdsc = (lv_font_fmt_txt_dsc_t *)font->dsc;
+//    uint32_t gid = get_glyph_dsc_id(font, unicode_letter);
+//    if(!gid) return NULL;
+//    const lv_font_fmt_txt_glyph_dsc_t * gdsc = &fdsc->glyph_dsc[gid];
+//
+//    #if keil
+//    // 2. 官方不干的活，咱们自己干：计算搬运长度
+//    // bpp 在 fdsc->bpp 里，宽高在 gdsc 里
+//    uint32_t size = (gdsc->box_w * gdsc->box_h * fdsc->bpp + 7) / 8;
+//    if(size == 0) return NULL;
+//
+//    // 3. 官方不干的活：计算 W25Q 里的绝对物理地址
+//    uint32_t flash_addr = (uint32_t)font->user_data + gdsc->bitmap_index;
+//
+//    // 4. 执行搬运
+//    W25QXX_Read(font_pixel_buf, flash_addr, size);
+//
+//    return font_pixel_buf; 
+//    #endif // keil
+//        uint32_t data_start_offset = *(uint32_t*)g_font_mem_ptr;
+//        
+//    if(fdsc->bitmap_format == LV_FONT_FMT_TXT_PLAIN)
+//        {
+//        return &g_font_mem_ptr[gdsc->bitmap_index];
+//    }
+    
+    if(unicode_letter == '\t') unicode_letter = ' ';
+
+    lv_font_fmt_txt_dsc_t * fdsc = (lv_font_fmt_txt_dsc_t *)font->dsc;
+    uint32_t gid = get_glyph_dsc_id(font, unicode_letter);
+    if(!gid) return NULL;
+
+    const lv_font_fmt_txt_glyph_dsc_t * gdsc = &fdsc->glyph_dsc[gid];
+
+    if(fdsc->bitmap_format == LV_FONT_FMT_TXT_PLAIN) {
+        return &g_font_mem_ptr[gdsc->bitmap_index+(uint32_t)font->user_data];
+    }
+}

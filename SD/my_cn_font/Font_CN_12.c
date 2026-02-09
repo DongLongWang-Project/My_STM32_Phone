@@ -3999,51 +3999,6 @@ static const lv_font_fmt_txt_cmap_t cmaps[] =
 };
 
 
-
-
-static uint8_t __g_font_buf[1024]; // 缓冲区
-const uint8_t * __user_font_get_bitmap_external(const lv_font_t * font, uint32_t unicode_letter) 
-{
-    // 1. 照抄官方逻辑拿到 gid 和 gdsc
-//    lv_font_fmt_txt_dsc_t * fdsc = (lv_font_fmt_txt_dsc_t *)font->dsc;
-//    uint32_t gid = get_glyph_dsc_id(font, unicode_letter);
-//    if(!gid) return NULL;
-//    const lv_font_fmt_txt_glyph_dsc_t * gdsc = &fdsc->glyph_dsc[gid];
-//
-//    #if keil
-//    // 2. 官方不干的活，咱们自己干：计算搬运长度
-//    // bpp 在 fdsc->bpp 里，宽高在 gdsc 里
-//    uint32_t size = (gdsc->box_w * gdsc->box_h * fdsc->bpp + 7) / 8;
-//    if(size == 0) return NULL;
-//
-//    // 3. 官方不干的活：计算 W25Q 里的绝对物理地址
-//    uint32_t flash_addr = (uint32_t)font->user_data + gdsc->bitmap_index;
-//
-//    // 4. 执行搬运
-//    W25QXX_Read(font_pixel_buf, flash_addr, size);
-//
-//    return font_pixel_buf; 
-//    #endif // keil
-//        uint32_t data_start_offset = *(uint32_t*)g_font_mem_ptr;
-//        
-//    if(fdsc->bitmap_format == LV_FONT_FMT_TXT_PLAIN)
-//        {
-//        return &g_font_mem_ptr[gdsc->bitmap_index];
-//    }
-    
-    if(unicode_letter == '\t') unicode_letter = ' ';
-
-    lv_font_fmt_txt_dsc_t * fdsc = (lv_font_fmt_txt_dsc_t *)font->dsc;
-    uint32_t gid = get_glyph_dsc_id(font, unicode_letter);
-    if(!gid) return NULL;
-
-    const lv_font_fmt_txt_glyph_dsc_t * gdsc = &fdsc->glyph_dsc[gid];
-
-    if(fdsc->bitmap_format == LV_FONT_FMT_TXT_PLAIN) {
-        return &g_font_mem_ptr[gdsc->bitmap_index];
-    }
-}
-
 /*--------------------
  *  ALL CUSTOM DATA
  *--------------------*/
@@ -4103,7 +4058,7 @@ lv_font_t Font_CN_12 = {
 #if LV_VERSION_CHECK(8, 2, 0) || LVGL_VERSION_MAJOR >= 9
     .fallback = &lv_font_montserrat_12,
 #endif
-    .user_data = NULL,
+    .user_data = (void*)0x00000000,
 };
 
 

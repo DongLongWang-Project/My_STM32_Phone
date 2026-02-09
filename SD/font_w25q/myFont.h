@@ -43,5 +43,5 @@ void memory_load_font(void);
 extern uint8_t * g_font_mem_ptr;
 #endif // keil
 
-
+const uint8_t * __user_font_get_bitmap_external(const lv_font_t * font, uint32_t unicode_letter) ;
 #endif

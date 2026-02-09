@@ -11057,7 +11057,7 @@
 1770276796 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_about.c
 	"setting_about.h"
 
-1770553779 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_display.c
+1770601420 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_display.c
 	"setting_display.h"
 
 1770276796 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_hotspot.c
@@ -13794,23 +13794,32 @@
 1770526494 source:g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.c
 	"ui_app_setting_config.h"
 
-1770542842 g:\github_code\my_stm32_phone\sd\font_w25q\myfont.h
+1770601013 g:\github_code\my_stm32_phone\sd\font_w25q\myfont.h
 	"lvgl.h"
 	"stdio.h"
 	"W25Qxx.h"
 	"ff.h"
 	"USART1.h"
 
-1770555162 source:g:\github_code\my_stm32_phone\sd\font_w25q\myfont.c
+1770601303 source:g:\github_code\my_stm32_phone\sd\font_w25q\myfont.c
 	"myFont.h"
 
-1770542687 source:g:\github_code\my_stm32_phone\sd\my_cn_font\font_cn_16.c
+1770601279 source:g:\github_code\my_stm32_phone\sd\my_cn_font\font_cn_16.c
+	"lvgl.h"
+	"lvgl/lvgl.h"
+	"../font_w25q/myFont.h"
 
-1770542687 source:g:\github_code\my_stm32_phone\sd\my_cn_font\font_cn_24.c
+1770601279 source:g:\github_code\my_stm32_phone\sd\my_cn_font\font_cn_24.c
+	"lvgl.h"
+	"lvgl/lvgl.h"
+	"../font_w25q/myFont.h"
 
-1770542687 source:g:\github_code\my_stm32_phone\sd\my_cn_font\font_cn_32.c
+1770601279 source:g:\github_code\my_stm32_phone\sd\my_cn_font\font_cn_32.c
+	"lvgl.h"
+	"lvgl/lvgl.h"
+	"../font_w25q/myFont.h"
 
-1770544939 source:g:\github_code\my_stm32_phone\sd\my_cn_font\font_cn_12.c
+1770601279 source:g:\github_code\my_stm32_phone\sd\my_cn_font\font_cn_12.c
 	"lvgl.h"
 	"lvgl/lvgl.h"
 	"../font_w25q/myFont.h"
