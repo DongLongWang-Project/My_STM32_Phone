@@ -1402,6 +1402,7 @@ SD_Error SD_WaitWriteOperation(void)
   
   while ((DMAEndOfTransfer == 0x00) && (TransferEnd == 0) && (TransferError == SD_OK) && (timeout > 0))
   {
+//    print("DMAEndOfTransfer:%d\r\nTransferEnd:%d\r\nTransferError:%d\r\n",DMAEndOfTransfer,TransferEnd,TransferError);
     timeout--;
   }
   
@@ -1779,6 +1780,8 @@ SD_Error SD_ProcessIRQSrc(void)
   * @参数无。
   * @retval 无。
   */
+  #include "USART1.h"
+  
 void SD_ProcessDMAIRQ(void)
 {
   if(DMA2->LISR & SD_SDIO_DMA_FLAG_TCIF)
@@ -1786,6 +1789,11 @@ void SD_ProcessDMAIRQ(void)
     DMAEndOfTransfer = 0x01;
     DMA_ClearFlag(SD_SDIO_DMA_STREAM, SD_SDIO_DMA_FLAG_TCIF|SD_SDIO_DMA_FLAG_FEIF);
   }
+//  if (DMA_GetITStatus(DMA2_Stream3, DMA_IT_TEIF3) != RESET) {
+////        TransferError = SD_DATA_ERROR; // 告诉等待函数出事了
+//          print("出事了:DMA_IT_TEIF3");
+//        DMA_ClearITPendingBit(DMA2_Stream3, DMA_IT_TEIF3);
+//    }
 }
 
 /**

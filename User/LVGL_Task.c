@@ -38,13 +38,18 @@ void lvgl_demo(void)
     Delay_init(168);
     TIM2_Int_Init(10000-1,8400-1);
     Serial_Init();
-       
+
+    
 //    my_mem_init(SRAMIN);
     Key_Init();
     lv_init();                                          /* lvgl系统初始化 */
     lv_port_disp_init();                                /* lvgl显示接口初始化,放在lv_init()的后面 */
     lv_port_indev_init();                               /* lvgl输入接口初始化,放在lv_init()的后面 */
-        
+     
+//    char*t=lv_mem_alloc(100);
+//    print("新建的测试内存位置:0x%x",(uint32_t)t);
+//    lv_mem_free(t); 
+    
     xTaskCreate((TaskFunction_t )start_task,            /* 任务函数 */
                 (const char*    )"start_task",          /* 任务名称 */
                 (uint16_t       )START_STK_SIZE,        /* 任务堆栈大小 */
@@ -77,13 +82,13 @@ void lvgl_demo(void)
                (UBaseType_t    )LV_DEMO_TASK_PRIO,
                (TaskHandle_t*  )&LV_DEMOTask_Handler);
 
-   /* DX_WF25测试任务 */
-   xTaskCreate((TaskFunction_t )DX_WF25_task,
-               (const char*    )"KEY_task",
-               (uint16_t       )DX_WF25_STK_SIZE,
-               (void*          )NULL,
-               (UBaseType_t    )DX_WF25_TASK_PRIO,
-               (TaskHandle_t*  )&DX_WF25_Task_Handler);
+//   /* DX_WF25测试任务 */
+//   xTaskCreate((TaskFunction_t )DX_WF25_task,
+//               (const char*    )"KEY_task",
+//               (uint16_t       )DX_WF25_STK_SIZE,
+//               (void*          )NULL,
+//               (UBaseType_t    )DX_WF25_TASK_PRIO,
+//               (TaskHandle_t*  )&DX_WF25_Task_Handler);
    taskEXIT_CRITICAL();            /* 退出临界区 */
    vTaskDelete(StartTask_Handler); /* 删除开始任务 */
    }

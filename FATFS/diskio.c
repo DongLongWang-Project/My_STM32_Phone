@@ -72,17 +72,17 @@ DRESULT disk_read (BYTE pdrv, BYTE *buff, DWORD sector, UINT count)
 {
     switch(pdrv)     
     {
-      case SD:  
-      {   
-          SD_Error ret = SD_ReadMultiBlocks(buff, sector << 9, SD_Block_Size, count); 
+        case SD:  
+        {   
+            SD_Error ret = SD_ReadMultiBlocks(buff, sector << 9, SD_Block_Size, count); 
             if (ret == SD_OK) 
-              {
+            {
                 SD_WaitReadOperation();
                 while(SD_GetStatus() != SD_TRANSFER_OK);
                 return RES_OK;      
-              }
+            }
             break;
-      }
+        }
       case  SPI_FLASH :
       {
              W25Qxx_ReadData(sector*4096,  buff,  4096*count);

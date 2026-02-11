@@ -48,19 +48,16 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../SD/Font/Font.h" />
-		<Unit filename="../SD/Font/Only_bin/Font_CN_12.c">
+		<Unit filename="../SD/Font/my_font_12.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../SD/Font/Only_bin/Font_CN_16.c">
+		<Unit filename="../SD/Font/my_font_16.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../SD/Font/Only_bin/Font_CN_24.c">
+		<Unit filename="../SD/Font/my_font_24.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../SD/Font/Only_bin/Font_CN_32.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../SD/Font/font/FONT_12.c">
+		<Unit filename="../SD/Font/my_font_32.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../my_gui/app_clock/ui_app_clock.c">

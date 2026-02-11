@@ -1,0 +1,8 @@
+目标文件:C:\Users\19271\Desktop\font\bin\font_index.bin   大小:0x0004BFA8
+各部分大小如下:
+
+索引                        文件名                                            大小              偏移量            强制插入
+ 1      C:\Users\19271\Desktop\font\bin\my_font_12_index.bin                0x00029750        0x00000000             否
+ 2      C:\Users\19271\Desktop\font\bin\my_font_16_index.bin                0x0000DD88        0x00029750             否
+ 3      C:\Users\19271\Desktop\font\bin\my_font_24_index.bin                0x0000DD88        0x000374D8             否
+ 4      C:\Users\19271\Desktop\font\bin\my_font_32_index.bin                0x00006D48        0x00045260             否

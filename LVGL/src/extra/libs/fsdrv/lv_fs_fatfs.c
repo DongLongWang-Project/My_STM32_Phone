@@ -90,16 +90,30 @@ void lv_fs_fatfs_init(void)
 /*Initialize your Storage device and File system.*/
 static void fs_init(void)
 {
-      static FATFS fs;
-      FRESULT res=f_mount(&fs,"0:",1);
-      if(res!=FR_OK)
-      {
-        printf("LVGL fatfs mount failed: %d\r\n",res);
-      }
-      else
-      {
-        printf("LVGL fatfs mount succeed: %d\r\n",res);  
-      }
+    static FATFS fs;
+    FRESULT res;
+
+    // 1. 先强行卸载（不管之前有没有挂载成功）
+    f_mount(NULL, "0:", 0);
+    
+    // 2. 彻底复位底层 SDIO 硬件和 DMA
+    SD_LowLevel_DeInit(); 
+    Delay_ms(100);       // 给电容放电时间
+    
+    // 3. 重新初始化硬件
+    if(SD_Init() != SD_OK) {
+        printf("SD Card Hardware Init Failed!\r\n");
+        return;
+    }
+
+    // 4. 重新挂载文件系统
+    res = f_mount(&fs, "0:", 1);
+    
+    if(res != FR_OK) {
+        printf("LVGL fatfs mount failed: %d\r\n", res);
+    } else {
+        printf("LVGL fatfs mount succeed!\r\n");  
+    }
 }
 
 /**
@@ -150,6 +164,111 @@ static lv_fs_res_t fs_close(lv_fs_drv_t * drv, void * file_p)
     return LV_FS_RES_OK;
 }
 
+#if 0
+// 在文件开头定义一个 512 字节的静态中转缓冲区
+// 必须确保它不在 CCM RAM 中（默认的全局变量通常在 SRAM）
+#define SD_DMA_BRIDGE_SIZE  1024
+static uint8_t g_sd_bridge[SD_DMA_BRIDGE_SIZE] __attribute__((aligned(4))); 
+#include "USART1.h"
+
+static lv_fs_res_t fs_read(lv_fs_drv_t * drv, void * file_p, void * buf, uint32_t btr, uint32_t * br)
+{
+    LV_UNUSED(drv);
+    FRESULT res = FR_OK;
+    *br = 0; // 初始化已读取字节数
+    print("buf地址:0x%x\r\n",(uint32_t)buf);
+    print("g_sd_bridge地址:0x%x\r\n",(uint32_t)g_sd_bridge);
+    // 关键判断：目标缓冲区 buf 是否落在 CCM RAM 区域 (0x10000000 开头)
+    if (((uint32_t)buf & 0xF0000000) == 0x10000000) 
+    {
+        uint32_t bytes_to_read = btr;
+        uint32_t total_read = 0;
+        UINT current_br = 0;
+        print("btr:%d\r\n",btr);
+        while (bytes_to_read > 0) 
+        {
+            // 每次最多读取 512 字节（即中转站的大小）
+            uint32_t chunk = (bytes_to_read > SD_DMA_BRIDGE_SIZE) ? SD_DMA_BRIDGE_SIZE : bytes_to_read;
+            
+             taskENTER_CRITICAL();           /* 进入临界区 */
+               
+            res = f_read((FIL*)file_p, g_sd_bridge, chunk, &current_br);
+            
+            taskEXIT_CRITICAL();            /* 退出临界区 */
+            
+             print("res:%d\r\n",res);
+             print("current_br:%d\r\n",current_br);
+            if (res != FR_OK) return LV_FS_RES_UNKNOWN;
+            if (current_br == 0) break; // 读取结束（到达文件末尾）
+
+            // CPU 搬运：从 SRAM 中转站拷贝到 CCM 目标地址
+            memcpy((uint8_t*)buf + total_read, g_sd_bridge, current_br);
+            
+            total_read += current_br;
+            bytes_to_read -= current_br;
+        }
+        *br = total_read;
+        return LV_FS_RES_OK;
+    }
+    else 
+    {
+        // 【原生路径】
+        // 如果地址在普通 SRAM (0x20000000)，直接调用 FatFs 走 DMA 极速读取
+        
+        res = f_read((FIL*)file_p, buf, btr, (UINT *)br);
+        
+        if(res == FR_OK) return LV_FS_RES_OK;
+        else return LV_FS_RES_UNKNOWN;
+    }
+}
+
+static lv_fs_res_t fs_write(lv_fs_drv_t * drv, void * file_p, const void * buf, uint32_t btw, uint32_t * bw)
+{
+    LV_UNUSED(drv);
+    FRESULT res = FR_OK;
+    *bw = 0;
+
+    // 检查源数据 buf 是否在 CCM RAM (0x10000000)
+    if (((uint32_t)buf & 0xF0000000) == 0x10000000) 
+    {
+        uint32_t bytes_to_write = btw;
+        uint32_t total_written = 0;
+        UINT current_bw = 0;
+
+        // 【分段写入逻辑】
+        while (bytes_to_write > 0) 
+        {
+            uint32_t chunk = (bytes_to_write > SD_DMA_BRIDGE_SIZE) ? SD_DMA_BRIDGE_SIZE : bytes_to_write;
+
+            // 1. CPU 搬运：从 CCM 搬到 SRAM 中转站
+            memcpy(g_sd_bridge, (uint8_t*)buf + total_written, chunk);
+
+            taskENTER_CRITICAL();           /* 进入临界区 */
+            // 2. 让 FatFs 从 SRAM 中转站写入 SD 卡 (DMA 可正常访问)
+            res = f_write((FIL*)file_p, g_sd_bridge, chunk, &current_bw);
+
+            taskEXIT_CRITICAL();            /* 退出临界区 */
+            
+            if (res != FR_OK) return LV_FS_RES_UNKNOWN;
+            if (current_bw == 0) break; // 磁盘可能已满
+
+            total_written += current_bw;
+            bytes_to_write -= current_bw;
+        }
+        *bw = total_written;
+        return LV_FS_RES_OK;
+    }
+    else 
+    {
+        // 原生路径：buf 已经在 SRAM，直接调用 FatFs 写入
+        res = f_write((FIL*)file_p, buf, btw, (UINT *)bw);
+        
+        if(res == FR_OK) return LV_FS_RES_OK;
+        else return LV_FS_RES_UNKNOWN;
+    }
+}
+
+#else
 /**
  * Read data from an opened file
  * @param drv pointer to a driver where this function belongs
@@ -184,6 +303,11 @@ static lv_fs_res_t fs_write(lv_fs_drv_t * drv, void * file_p, const void * buf, 
     if(res == FR_OK) return LV_FS_RES_OK;
     else return LV_FS_RES_UNKNOWN;
 }
+
+#endif
+
+
+
 
 /**
  * Set the read write pointer. Also expand the file size if necessary.

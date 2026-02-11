@@ -1,8 +1,0 @@
-目标文件:G:\GitHub_Code\My_STM32_Phone\SD\font_w25q\Font.bin   大小:0x00BBCDB4
-各部分大小如下:
-
-索引                        文件名                                            大小              偏移量            强制插入
- 1      G:\GitHub_Code\My_STM32_Phone\SD\font_w25q\myFont_12.bin            0x00130697        0x00000000             否
- 2      G:\GitHub_Code\My_STM32_Phone\SD\font_w25q\myFont_16.bin            0x001B6825        0x00130697             否
- 3      G:\GitHub_Code\My_STM32_Phone\SD\font_w25q\myFont_24.bin            0x0034C7EF        0x002E6EBC             否
- 4      G:\GitHub_Code\My_STM32_Phone\SD\font_w25q\myFont_32.bin            0x00589709        0x006336AB             否

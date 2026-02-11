@@ -24,7 +24,7 @@
 #define MY_DISP_HOR_RES  240
 #define MY_DISP_VER_RES  320
 
-#define HALF_BUFFER_PIXELS      MY_DISP_HOR_RES*MY_DISP_VER_RES/4
+#define HALF_BUFFER_PIXELS      MY_DISP_HOR_RES*MY_DISP_VER_RES/8
 #define HALF_BUFFER_SIZE        (HALF_BUFFER_PIXELS * sizeof(lv_color_t))
 /*====================
    COLOR SETTINGS
@@ -60,8 +60,10 @@
 
     /*Set an address for the memory pool instead of allocating it as a normal array. Can be in external SRAM too.*/
 //    #define LV_MEM_ADR (0x68000000+HALF_BUFFER_PIXELS*2)     /*0: unused*/
+//     #define LV_MEM_ADR (0x68000000)     /*0: unused*/   
     #define LV_MEM_ADR 0     /*0: unused*/
-    
+//    #define LV_MEM_ADR (0x10000000+24*1024)     /*0: unused*/
+   
     /*Instead of an address give a memory allocator that will be called to get a memory pool for LVGL. E.g. my_malloc*/
     #if LV_MEM_ADR == 0
         #undef LV_MEM_POOL_INCLUDE

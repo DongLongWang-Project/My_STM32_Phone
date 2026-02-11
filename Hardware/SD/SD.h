@@ -263,7 +263,7 @@ extern SD_CardInfo SDCardInfo;
 /* 取消注释以下行以选择 SDIO 数据传输模式 */
 #if !defined (SD_DMA_MODE) && !defined (SD_POLLING_MODE)
 #define SD_DMA_MODE                                ((uint32_t)0x00000000)
-/*#define SD_POLLING_MODE                            ((uint32_t)0x00000002)*/
+//#define SD_POLLING_MODE                            ((uint32_t)0x00000002)
 #endif
 
 /**
