@@ -326,7 +326,7 @@ void ui_set_language(DISPLAY_LANGUAGE_ENUM language,DISPLAY_FONT_SIZE_ENUM size)
                 switch(size)
                 {
 //                    case FONT_SIZE_12:font=ui_fonts.FONT_SIZE_12;break; 
-                    case FONT_SIZE_12:font=&my_font_16;break;
+                    case FONT_SIZE_12:font=&my_font_12;break;
                      
                     
 //                   case FONT_SIZE_12:font=my_font;break; 

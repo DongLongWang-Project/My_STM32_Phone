@@ -5,6 +5,8 @@
 #include "FreeRTOS.h"
 #include "Queue.h"
 #include "semphr.h"
+#include "USART1.h"
+
 typedef struct
 {
   uint8_t   MID;
@@ -37,7 +39,7 @@ void W25Qxx_Write(uint32_t Address, uint32_t Data,uint8_t len);
 void W25Qxx_WriteBuffer(uint32_t addr,const uint8_t *buf, uint32_t len);    
 uint8_t W25Qxx_Write_Sector(uint32_t Sector, const uint8_t *DataArray, uint32_t Count) ;
 
-  
+uint8_t W25Qxx_DMA_ReadData(uint32_t W25Qxx_Addr,uint32_t Target_addr,uint16_t byte_num);
 #define W25Qxx_WRITE_ENABLE							0x06
 #define W25Qxx_WRITE_DISABLE						0x04
 #define W25Qxx_READ_STATUS_REGISTER_1				0x05

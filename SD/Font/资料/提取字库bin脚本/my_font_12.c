@@ -54045,10 +54045,21 @@ static const lv_font_fmt_txt_glyph_dsc_t glyph_dsc[] = {
 /*---------------------
  *  CHARACTER MAPPING
  *--------------------*/
+typedef struct {
+    uint32_t version;
+    uint32_t Index_Size;
+    uint32_t Bitmap_Size;
+    uint32_t total_Size;   
+}Font_Version_t;
 
+#define  FONT_VERSION  2026021202 
 
-#define  FONT_VERSION  2026021201
-const uint32_t Font_version=FONT_VERSION;
+Font_Version_t Font_Data={
+    .version=FONT_VERSION,
+    .Index_Size=sizeof(glyph_dsc),
+    .Bitmap_Size=sizeof(glyph_bitmap),
+    .total_Size=sizeof(glyph_dsc)+sizeof(glyph_bitmap)
+};
 
 int main(void) {
     FILE*fp;
@@ -54077,8 +54088,13 @@ int main(void) {
     }
     else
     {
-        fwrite(&Font_version, sizeof(uint32_t), 1, fp);
+        fwrite(&Font_Data, sizeof(Font_Version_t), 1, fp);
         fclose(fp);
+        printf("Font version: %u\n", Font_Data.version);
+        printf("Index size: %u bytes\n", Font_Data.Index_Size);
+        printf("Bitmap size: %u bytes\n", Font_Data.Bitmap_Size);
+        printf("Total size: %u bytes\n", Font_Data.total_Size); 
+        
     }
 
     return 0;

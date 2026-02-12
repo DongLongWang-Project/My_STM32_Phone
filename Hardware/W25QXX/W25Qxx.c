@@ -19,6 +19,8 @@ const uint8_t w25q_dummy_byte=W25Qxx_DUMMY_BYTE;
 
 volatile SemaphoreHandle_t W25Qxx_Read_BinSemaphore;
 volatile SemaphoreHandle_t W25Qxx_Read_MutexSemaphore;
+
+void W25Qxx_Read_DMA_config(void);
 /*
 	@函数	  : 设置spi的片选引脚cs
 	@参数	  : State->状态
@@ -101,6 +103,8 @@ void W25Qxx_SPI_Init(void)
   GPIO_SetBits(GPIOG,GPIO_Pin_7);//PG7输出1,防止NRF干扰SPI FLASH的通信 
 
   SPI_Set_CS(1);//拉高CS,空闲著状态
+  
+  W25Qxx_Read_DMA_config();
 }
 
 /*
@@ -332,9 +336,11 @@ uint8_t W25Qxx_Write_Sector(uint32_t SectorNo, const uint8_t *DataArray, uint32_
 
 void W25Qxx_Read_DMA_config(void)
 {
-
-  SPI_I2S_DMACmd(SPI1,SPI_I2S_DMAReq_Rx|SPI_I2S_DMAReq_Tx,ENABLE);
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2,ENABLE);
+  
+  SPI_I2S_DMACmd(SPI1,SPI_I2S_DMAReq_Rx,ENABLE);
+  SPI_I2S_DMACmd(SPI1,SPI_I2S_DMAReq_Tx,ENABLE);  
+
   
   DMA_InitTypeDef W25Qxx_Send_DMA_Initstruct;
   DMA_InitTypeDef W25Qxx_Read_DMA_Initstruct;
@@ -370,7 +376,7 @@ void W25Qxx_Read_DMA_config(void)
   W25Qxx_Read_DMA_Initstruct.DMA_PeripheralInc=DMA_PeripheralInc_Disable;
   
   W25Qxx_Read_DMA_Initstruct.DMA_Mode=DMA_Mode_Normal;
-  W25Qxx_Read_DMA_Initstruct.DMA_Priority=DMA_Priority_High;
+  W25Qxx_Read_DMA_Initstruct.DMA_Priority=DMA_Priority_VeryHigh;
 
   W25Qxx_Read_DMA_Initstruct.DMA_Channel=DMA_Channel_3;
   W25Qxx_Read_DMA_Initstruct.DMA_DIR=DMA_DIR_PeripheralToMemory;
@@ -379,7 +385,7 @@ void W25Qxx_Read_DMA_config(void)
   W25Qxx_Read_DMA_Initstruct.DMA_FIFOMode=DMA_FIFOMode_Disable;
   W25Qxx_Read_DMA_Initstruct.DMA_FIFOThreshold=DMA_FIFOThreshold_1QuarterFull;
   
-  DMA_Init(DMA2_Stream3,&W25Qxx_Send_DMA_Initstruct);
+  DMA_Init(DMA2_Stream5,&W25Qxx_Send_DMA_Initstruct);
   DMA_Init(DMA2_Stream0,&W25Qxx_Read_DMA_Initstruct);
   
   DMA_ITConfig(DMA2_Stream0,DMA_IT_TC,ENABLE); 
@@ -408,27 +414,91 @@ void DMA2_Stream0_IRQHandler(void)
   }
 }
 
-void W25Qxx_DMA_ReadData(uint32_t mem_addr,uint32_t byte_num)
-{
-  if(xSemaphoreTake(W25Qxx_Read_MutexSemaphore,portMAX_DELAY)==pdTRUE)
-  {
-     DMA_ClearFlag(DMA2_Stream0, DMA_FLAG_TCIF0);
-     
-     DMA_Cmd(DMA2_Stream3,DISABLE);
-     DMA2_Stream3->NDTR=byte_num;
+uint8_t W25Qxx_DMA_ReadData(uint32_t W25Qxx_Addr,uint32_t Target_addr,uint16_t byte_num)
+{   
+    if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) 
+    {
+       uint32_t timeout=0xFFFFFFF;
+       
+       SPI_Start();								//SPI起始
+       SPI_SwapByte(W25Qxx_READ_DATA);			//交换发送读取数据的指令
+       SPI_SwapByte(W25Qxx_Addr >> 16);				//交换发送地址23~16位
+       SPI_SwapByte(W25Qxx_Addr >> 8);				//交换发送地址15~8位
+       SPI_SwapByte(W25Qxx_Addr);					//交换发送地址7~0位
+       
+       DMA_ClearFlag(DMA2_Stream0, DMA_FLAG_TCIF0);
+       DMA_ClearFlag(DMA2_Stream5, DMA_FLAG_TCIF5); 
+       
+       DMA_Cmd(DMA2_Stream5,DISABLE);
+       while(DMA_GetCmdStatus(DMA2_Stream5) != DISABLE); // 确保 DMA 已停止
+       DMA2_Stream5->NDTR=byte_num;
 
-     DMA_Cmd(DMA2_Stream0,DISABLE);
-     DMA2_Stream0->M0AR=mem_addr;
-     DMA2_Stream0->NDTR=byte_num;
-     
-     DMA_Cmd(DMA2_Stream0,ENABLE);
-     DMA_Cmd(DMA2_Stream3,ENABLE);
-  }
-
-   if(xSemaphoreTake(W25Qxx_Read_BinSemaphore, portMAX_DELAY) == pdTRUE)        
-   {
-      /*传输完毕*/
-       xSemaphoreGive(W25Qxx_Read_MutexSemaphore);
-   }
+       DMA_Cmd(DMA2_Stream0,DISABLE);
+       while(DMA_GetCmdStatus(DMA2_Stream0) != DISABLE); // 确保 DMA 已停止
+       DMA2_Stream0->M0AR=Target_addr;
+       DMA2_Stream0->NDTR=byte_num;
+       
+       DMA_Cmd(DMA2_Stream0,ENABLE);
+       DMA_Cmd(DMA2_Stream5,ENABLE);
     
+        // 【开机搬运阶段】：使用阻塞查询，不依赖信号量
+        // CPU 在这里等待 DMA 完成，保证下一行代码执行时数据已就绪
+        while (DMA_GetFlagStatus(DMA2_Stream0, DMA_FLAG_TCIF0) == RESET)
+        {
+          timeout--;
+          if(timeout==0)
+          {
+            SPI_Stop();
+            print("开机DMA读取超时, 地址: 0x%X\r\n", W25Qxx_Addr);
+            return 0;
+          }
+        }
+        SPI_Stop();
+        return 1;
+    }
+    else 
+    {
+        if(xSemaphoreTake(W25Qxx_Read_MutexSemaphore,pdMS_TO_TICKS(10000))==pdTRUE)
+      {
+         SPI_Start();								//SPI起始
+         SPI_SwapByte(W25Qxx_READ_DATA);			//交换发送读取数据的指令
+         SPI_SwapByte(W25Qxx_Addr >> 16);				//交换发送地址23~16位
+         SPI_SwapByte(W25Qxx_Addr >> 8);				//交换发送地址15~8位
+         SPI_SwapByte(W25Qxx_Addr);					//交换发送地址7~0位
+         
+         DMA_ClearFlag(DMA2_Stream0, DMA_FLAG_TCIF0);
+         DMA_ClearFlag(DMA2_Stream5, DMA_FLAG_TCIF5); 
+         
+         DMA_Cmd(DMA2_Stream5,DISABLE);
+         while(DMA_GetCmdStatus(DMA2_Stream5) != DISABLE); // 确保 DMA 已停止
+         DMA2_Stream5->NDTR=byte_num;
+
+         DMA_Cmd(DMA2_Stream0,DISABLE);
+         while(DMA_GetCmdStatus(DMA2_Stream0) != DISABLE); // 确保 DMA 已停止
+         DMA2_Stream0->M0AR=Target_addr;
+         DMA2_Stream0->NDTR=byte_num;
+         
+         DMA_Cmd(DMA2_Stream0,ENABLE);
+         DMA_Cmd(DMA2_Stream5,ENABLE);
+      
+        // 【系统运行阶段】：使用信号量，不占用 CPU
+        if(xSemaphoreTake(W25Qxx_Read_BinSemaphore, pdMS_TO_TICKS(10000)) == pdTRUE) 
+        {
+            SPI_Stop(); 
+            xSemaphoreGive(W25Qxx_Read_MutexSemaphore);
+            return 1; 
+        }
+        else
+        {
+           SPI_Stop();
+           print("DMA异常/获取不到互斥信号量,索引表/点阵数据搬运错误\r\n");
+           xSemaphoreGive(W25Qxx_Read_MutexSemaphore);
+           return 0;
+        }
+
+      }
+      else
+        return 0; 
+    }
+       
 }

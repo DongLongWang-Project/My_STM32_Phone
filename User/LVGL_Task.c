@@ -38,15 +38,17 @@ void lvgl_demo(void)
     Delay_init(168);
     TIM2_Int_Init(10000-1,8400-1);
     Serial_Init();
-    W25Qxx_SPI_Init();
-    update_font();
-    
-//    my_mem_init(SRAMIN);
     Key_Init();
-    lv_init();                                          /* lvgl系统初始化 */
-    lv_port_disp_init();                                /* lvgl显示接口初始化,放在lv_init()的后面 */
-    lv_port_indev_init();                               /* lvgl输入接口初始化,放在lv_init()的后面 */
-     
+    W25Qxx_SPI_Init();
+    FSMC_SRAM_Init();
+    DX_WF25_Init();
+    update_font();
+
+//    my_mem_init(SRAMIN);
+      lv_init();                                          /* lvgl系统初始化 */
+      lv_port_disp_init();                                /* lvgl显示接口初始化,放在lv_init()的后面 */
+      lv_port_indev_init();                               /* lvgl输入接口初始化,放在lv_init()的后面 */
+
 //    char*t=lv_mem_alloc(100);
 //    print("新建的测试内存位置:0x%x",(uint32_t)t);
 //    lv_mem_free(t); 
@@ -105,6 +107,7 @@ void lvgl_demo(void)
    void lv_demo_task(void *pvParameters)
    {
      pvParameters = pvParameters;
+
      ui_init();
 //     lv_obj_t*label=lv_label_create(lv_scr_act());
 //     lv_obj_set_style_text_font(label,&myFont_12,0);
@@ -129,7 +132,7 @@ void lvgl_demo(void)
    {
      pvParameters = pvParameters;
      DX_WF25_CMD_Queue=xQueueCreate(DX_WF25_Queue_MAX_LEN,sizeof(wifi_cmd_t));
-     DX_WF25_Init();
+
 
      memset(&wifi_save_list, 0, sizeof(wifi_save_t));
 //     W25Qxx_SectorErase(WIFI_SAVE_Addr);  

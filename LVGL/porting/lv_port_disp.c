@@ -167,7 +167,6 @@ static void disp_init(void)
     /*You code here*/
     LCD_Init(WHITE);
     LCD_DMA_Init();
-    FSMC_SRAM_Init();
 }
 
 volatile bool disp_flush_enabled = true;

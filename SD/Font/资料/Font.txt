@@ -1,0 +1,8 @@
+目标文件:G:\GitHub_Code\My_STM32_Phone\SD\Font\Font.bin   大小:0x0031F15B
+各部分大小如下:
+
+索引                        文件名                                            大小              偏移量            强制插入
+ 1      G:\GitHub_Code\My_STM32_Phone\SD\Font\Font_Version.bin              0x00000004        0x00000000             否
+ 2      G:\GitHub_Code\My_STM32_Phone\SD\Font\font_index.bin                0x0004BFA8        0x00000004             否
+ 3      G:\GitHub_Code\My_STM32_Phone\SD\Font\font_bitmap.bin               0x002D31AB        0x0004BFAC             否
+ 4      G:\GitHub_Code\My_STM32_Phone\SD\Font\Font_Version.bin              0x00000004        0x0031F157             否
