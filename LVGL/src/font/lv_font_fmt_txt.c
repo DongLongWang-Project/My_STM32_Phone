@@ -33,7 +33,9 @@ typedef enum {
  **********************/
 //static uint32_t get_glyph_dsc_id(const lv_font_t * font, uint32_t letter);
 uint32_t get_glyph_dsc_id(const lv_font_t * font, uint32_t letter);
-static int8_t get_kern_value(const lv_font_t * font, uint32_t gid_left, uint32_t gid_right);
+//static int8_t get_kern_value(const lv_font_t * font, uint32_t gid_left, uint32_t gid_right);
+int8_t get_kern_value(const lv_font_t * font, uint32_t gid_left, uint32_t gid_right);
+
 static int32_t unicode_list_compare(const void * ref, const void * element);
 static int32_t kern_pair_8_compare(const void * ref, const void * element);
 static int32_t kern_pair_16_compare(const void * ref, const void * element);
@@ -269,7 +271,8 @@ uint32_t get_glyph_dsc_id(const lv_font_t * font, uint32_t letter)
 
 }
 
-static int8_t get_kern_value(const lv_font_t * font, uint32_t gid_left, uint32_t gid_right)
+//static int8_t get_kern_value(const lv_font_t * font, uint32_t gid_left, uint32_t gid_right)
+int8_t get_kern_value(const lv_font_t * font, uint32_t gid_left, uint32_t gid_right)
 {
     lv_font_fmt_txt_dsc_t * fdsc = (lv_font_fmt_txt_dsc_t *)font->dsc;
 

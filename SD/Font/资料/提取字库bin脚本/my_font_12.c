@@ -54047,28 +54047,37 @@ static const lv_font_fmt_txt_glyph_dsc_t glyph_dsc[] = {
  *--------------------*/
 
 
-
-
+#define  FONT_VERSION  2026021201
+const uint32_t Font_version=FONT_VERSION;
 
 int main(void) {
     FILE*fp;
-    fp=fopen("my_font_12_bitmap.bin","wb");
-    if(fp==NULL) {
-        printf("Failed to open my_font_12_bitmap.\n");
-    }
-    else
-    {
-        fwrite(glyph_bitmap, sizeof(glyph_bitmap), 1, fp);
-        fclose(fp);
-    }
+    // fp=fopen("my_font_12_bitmap.bin","wb");
+    // if(fp==NULL) {
+    //     printf("Failed to open my_font_12_bitmap.\n");
+    // }
+    // else
+    // {
+    //     fwrite(glyph_bitmap, sizeof(glyph_bitmap), 1, fp);
+    //     fclose(fp);
+    // }
 
-    fp=fopen("my_font_12_index.bin","wb");
+    // fp=fopen("my_font_12_index.bin","wb");
+    // if(fp==NULL) {
+    //     printf("Failed to open my_font_12_index.\n");
+    // }
+    // else
+    // {
+    //     fwrite(glyph_dsc, sizeof(glyph_dsc), 1, fp);
+    //     fclose(fp);
+    // }
+    fp=fopen("Font_Version.bin","wb");
     if(fp==NULL) {
-        printf("Failed to open my_font_12_index.\n");
+        printf("Failed to open Font_Version.bin.\n");
     }
     else
     {
-        fwrite(glyph_dsc, sizeof(glyph_dsc), 1, fp);
+        fwrite(&Font_version, sizeof(uint32_t), 1, fp);
         fclose(fp);
     }
 

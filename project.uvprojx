@@ -340,7 +340,7 @@
               <MiscControls>--no-multibyte-chars</MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER,LV_LVGL_H_INCLUDE_SIMPLE</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Library;.\Start;.\System;.\User;.\FreeRTOS\Library;.\FreeRTOS\portable\MemMang;.\FreeRTOS\portable\RVDS\ARM_CM4F;.\Hardware\LED;.\Hardware\SRAM;.\Hardware\TFTLCD;.\Hardware\USART;.\Hardware\W25QXX;.\Hardware\SD;.\FATFS;.\LVGL\porting;.\LVGL;.\LVGL\src;.\LVGL\src\hal;.\LVGL\demos\widgets\assets;.\LVGL\demos\widgets;.\LVGL\src\misc;.\LVGL\src\extra\libs\png;.\LVGL\src\extra\layouts;.\my_gui;.\MALLOC;.\Hardware\KEY;.\Hardware\DX_WF25;.\my_gui\app_file_sys;.\my_gui\app_net_ass;.\my_gui\app_setting;.\my_gui\app_clock;.\my_gui\app_weather;.\SD\font_w25q</IncludePath>
+              <IncludePath>.\Library;.\Start;.\System;.\User;.\FreeRTOS\Library;.\FreeRTOS\portable\MemMang;.\FreeRTOS\portable\RVDS\ARM_CM4F;.\Hardware\LED;.\Hardware\SRAM;.\Hardware\TFTLCD;.\Hardware\USART;.\Hardware\W25QXX;.\Hardware\SD;.\FATFS;.\LVGL\porting;.\LVGL;.\LVGL\src;.\LVGL\src\hal;.\LVGL\demos\widgets\assets;.\LVGL\demos\widgets;.\LVGL\src\misc;.\LVGL\src\extra\libs\png;.\LVGL\src\extra\layouts;.\my_gui;.\MALLOC;.\Hardware\KEY;.\Hardware\DX_WF25;.\my_gui\app_file_sys;.\my_gui\app_net_ass;.\my_gui\app_setting;.\my_gui\app_clock;.\my_gui\app_weather;.\SD\font_w25q;.\SD\Font</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1698,6 +1698,33 @@
         </Group>
         <Group>
           <GroupName>Font</GroupName>
+          <Files>
+            <File>
+              <FileName>Font.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SD\Font\Font.c</FilePath>
+            </File>
+            <File>
+              <FileName>my_font_12.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SD\Font\my_font_12.c</FilePath>
+            </File>
+            <File>
+              <FileName>my_font_16.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SD\Font\my_font_16.c</FilePath>
+            </File>
+            <File>
+              <FileName>my_font_24.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SD\Font\my_font_24.c</FilePath>
+            </File>
+            <File>
+              <FileName>my_font_32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SD\Font\my_font_32.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>my_gui</GroupName>

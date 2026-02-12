@@ -15,8 +15,10 @@
 #include "W25Qxx.h"
 
 W25Qxx_ID W25Qxx;
+const uint8_t w25q_dummy_byte=W25Qxx_DUMMY_BYTE;
 
-
+volatile SemaphoreHandle_t W25Qxx_Read_BinSemaphore;
+volatile SemaphoreHandle_t W25Qxx_Read_MutexSemaphore;
 /*
 	@函数	  : 设置spi的片选引脚cs
 	@参数	  : State->状态
@@ -327,3 +329,106 @@ uint8_t W25Qxx_Write_Sector(uint32_t SectorNo, const uint8_t *DataArray, uint32_
 	@返回值 :
 	@备注	  :
 ↑--------------------------------------------------------------------------------*/
+
+void W25Qxx_Read_DMA_config(void)
+{
+
+  SPI_I2S_DMACmd(SPI1,SPI_I2S_DMAReq_Rx|SPI_I2S_DMAReq_Tx,ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2,ENABLE);
+  
+  DMA_InitTypeDef W25Qxx_Send_DMA_Initstruct;
+  DMA_InitTypeDef W25Qxx_Read_DMA_Initstruct;
+  
+  W25Qxx_Send_DMA_Initstruct.DMA_Memory0BaseAddr=(uint32_t)&w25q_dummy_byte;
+  W25Qxx_Send_DMA_Initstruct.DMA_MemoryBurst=DMA_MemoryBurst_Single;
+  W25Qxx_Send_DMA_Initstruct.DMA_MemoryDataSize=DMA_MemoryDataSize_Byte;
+  W25Qxx_Send_DMA_Initstruct.DMA_MemoryInc=DMA_MemoryInc_Disable;
+  W25Qxx_Send_DMA_Initstruct.DMA_PeripheralBaseAddr=(uint32_t)&SPI1->DR;
+  W25Qxx_Send_DMA_Initstruct.DMA_PeripheralBurst=DMA_PeripheralBurst_Single;
+  W25Qxx_Send_DMA_Initstruct.DMA_PeripheralDataSize=DMA_PeripheralDataSize_Byte;
+  W25Qxx_Send_DMA_Initstruct.DMA_PeripheralInc=DMA_PeripheralInc_Disable;
+  
+  W25Qxx_Send_DMA_Initstruct.DMA_Mode=DMA_Mode_Normal;
+  W25Qxx_Send_DMA_Initstruct.DMA_Priority=DMA_Priority_High;
+
+  W25Qxx_Send_DMA_Initstruct.DMA_Channel=DMA_Channel_3;
+  W25Qxx_Send_DMA_Initstruct.DMA_DIR=DMA_DIR_MemoryToPeripheral;
+  W25Qxx_Send_DMA_Initstruct.DMA_BufferSize=0;
+   
+  W25Qxx_Send_DMA_Initstruct.DMA_FIFOMode=DMA_FIFOMode_Disable;
+  W25Qxx_Send_DMA_Initstruct.DMA_FIFOThreshold=DMA_FIFOThreshold_1QuarterFull;
+  
+   
+
+  W25Qxx_Read_DMA_Initstruct.DMA_Memory0BaseAddr=0;
+  W25Qxx_Read_DMA_Initstruct.DMA_MemoryBurst=DMA_MemoryBurst_Single;
+  W25Qxx_Read_DMA_Initstruct.DMA_MemoryDataSize=DMA_MemoryDataSize_Byte;
+  W25Qxx_Read_DMA_Initstruct.DMA_MemoryInc=DMA_MemoryInc_Enable;
+  W25Qxx_Read_DMA_Initstruct.DMA_PeripheralBaseAddr=(uint32_t)&SPI1->DR;
+  W25Qxx_Read_DMA_Initstruct.DMA_PeripheralBurst=DMA_PeripheralBurst_Single;
+  W25Qxx_Read_DMA_Initstruct.DMA_PeripheralDataSize=DMA_PeripheralDataSize_Byte;
+  W25Qxx_Read_DMA_Initstruct.DMA_PeripheralInc=DMA_PeripheralInc_Disable;
+  
+  W25Qxx_Read_DMA_Initstruct.DMA_Mode=DMA_Mode_Normal;
+  W25Qxx_Read_DMA_Initstruct.DMA_Priority=DMA_Priority_High;
+
+  W25Qxx_Read_DMA_Initstruct.DMA_Channel=DMA_Channel_3;
+  W25Qxx_Read_DMA_Initstruct.DMA_DIR=DMA_DIR_PeripheralToMemory;
+  W25Qxx_Read_DMA_Initstruct.DMA_BufferSize=0;
+   
+  W25Qxx_Read_DMA_Initstruct.DMA_FIFOMode=DMA_FIFOMode_Disable;
+  W25Qxx_Read_DMA_Initstruct.DMA_FIFOThreshold=DMA_FIFOThreshold_1QuarterFull;
+  
+  DMA_Init(DMA2_Stream3,&W25Qxx_Send_DMA_Initstruct);
+  DMA_Init(DMA2_Stream0,&W25Qxx_Read_DMA_Initstruct);
+  
+  DMA_ITConfig(DMA2_Stream0,DMA_IT_TC,ENABLE); 
+  
+  NVIC_InitTypeDef NVIC_W25Qxx_Read_DMA_Initstruct;
+  NVIC_W25Qxx_Read_DMA_Initstruct.NVIC_IRQChannel=DMA2_Stream0_IRQn;
+  NVIC_W25Qxx_Read_DMA_Initstruct.NVIC_IRQChannelCmd=ENABLE;
+  NVIC_W25Qxx_Read_DMA_Initstruct.NVIC_IRQChannelPreemptionPriority=7;
+  NVIC_W25Qxx_Read_DMA_Initstruct.NVIC_IRQChannelSubPriority=0;
+  NVIC_Init(&NVIC_W25Qxx_Read_DMA_Initstruct);
+  
+  W25Qxx_Read_BinSemaphore=xSemaphoreCreateBinary();
+  W25Qxx_Read_MutexSemaphore=xSemaphoreCreateMutex();
+  
+}
+
+void DMA2_Stream0_IRQHandler(void)
+{
+  if(DMA_GetITStatus(DMA2_Stream0,DMA_IT_TCIF0)==SET)
+  {
+     DMA_ClearITPendingBit(DMA2_Stream0,DMA_IT_TCIF0);
+     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+     xSemaphoreGiveFromISR(W25Qxx_Read_BinSemaphore, &xHigherPriorityTaskWoken);
+
+     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+  }
+}
+
+void W25Qxx_DMA_ReadData(uint32_t mem_addr,uint32_t byte_num)
+{
+  if(xSemaphoreTake(W25Qxx_Read_MutexSemaphore,portMAX_DELAY)==pdTRUE)
+  {
+     DMA_ClearFlag(DMA2_Stream0, DMA_FLAG_TCIF0);
+     
+     DMA_Cmd(DMA2_Stream3,DISABLE);
+     DMA2_Stream3->NDTR=byte_num;
+
+     DMA_Cmd(DMA2_Stream0,DISABLE);
+     DMA2_Stream0->M0AR=mem_addr;
+     DMA2_Stream0->NDTR=byte_num;
+     
+     DMA_Cmd(DMA2_Stream0,ENABLE);
+     DMA_Cmd(DMA2_Stream3,ENABLE);
+  }
+
+   if(xSemaphoreTake(W25Qxx_Read_BinSemaphore, portMAX_DELAY) == pdTRUE)        
+   {
+      /*传输完毕*/
+       xSemaphoreGive(W25Qxx_Read_MutexSemaphore);
+   }
+    
+}

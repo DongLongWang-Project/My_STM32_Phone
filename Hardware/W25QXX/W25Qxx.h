@@ -2,6 +2,9 @@
 #define	  __W25Qxx_H
 
 #include "stm32f4xx.h"
+#include "FreeRTOS.h"
+#include "Queue.h"
+#include "semphr.h"
 typedef struct
 {
   uint8_t   MID;

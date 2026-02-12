@@ -18,9 +18,7 @@ static void event_ui_page_btn_app(lv_event_t *e);
 
 void ui_init(void)
 {
-    #if keil
-    
-    #else
+    #if !keil
     memory_load_font();
     #endif // keil
 

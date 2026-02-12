@@ -319,7 +319,7 @@ void ui_set_language(DISPLAY_LANGUAGE_ENUM language,DISPLAY_FONT_SIZE_ENUM size)
 		    }
 		case CHINESE:
 		    {
-		        lv_font_t*font;
+		        const lv_font_t*font;
                 ui_font_cn_load(size);/*加载对应的中文和大小(保存咋sd卡)*/
 //                lv_font_t * my_font = lv_font_load("0:/GitHub_Code/My_STM32_Phone/SD/my_cn_font/Font_CN_12.bin");
 //                my_font->fallback=&lv_font_montserrat_12;
