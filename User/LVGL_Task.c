@@ -109,9 +109,7 @@ void lvgl_demo(void)
      pvParameters = pvParameters;
 
      ui_init();
-//     lv_obj_t*label=lv_label_create(lv_scr_act());
-//     lv_obj_set_style_text_font(label,&myFont_12,0);
-//     lv_label_set_text(label,"王東龙");
+
      while(1)
      {
          lv_timer_handler(); /* LVGL计时器 */

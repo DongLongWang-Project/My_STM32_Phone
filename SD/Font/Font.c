@@ -10,7 +10,9 @@ LV_FONT_DECLARE( my_font_24);
 LV_FONT_DECLARE( my_font_32);
 
 Font_Version_t Font_Data;
-static uint8_t Font_Bitmap[512];   
+#define FONT_BUFFER_SIZE 256
+static uint8_t Font_Bitmap_1[FONT_BUFFER_SIZE]; 
+
 #if !keil
 //void memory_load_font(void)
 // {
@@ -143,32 +145,33 @@ const uint8_t * __user_font_get_bitmap_external(const lv_font_t * font, uint32_t
     }
     
     const lv_font_fmt_txt_glyph_dsc_t * gdsc = &my_index_array[gid];
+    uint32_t total_bits = (uint32_t)gdsc->box_w * gdsc->box_h * fdsc->bpp;
+    uint32_t read_len = (total_bits + 7) >> 3; // 理论字节
+    if (read_len > FONT_BUFFER_SIZE) read_len = FONT_BUFFER_SIZE;
+    
 #if keil
 
     if(fdsc->bitmap_format == LV_FONT_FMT_TXT_PLAIN) {
     
-    uint32_t bpp = fdsc->bpp;
-    uint32_t bytes_per_line = (gdsc->box_w * bpp + 7) / 8; 
-    // 总字节数 = 行字节数 * 高度
-    uint32_t read_len = bytes_per_line * gdsc->box_h;
-    
-//    if(W25Qxx_DMA_ReadData(gdsc->bitmap_index+(uint32_t)font->user_data,(uint32_t)Font_Bitmap,read_len))
-//    {
-////      print("获取字符成功\r\n");
-//          return (uint8_t *)Font_Bitmap;
-//    }
-//    else
-//    {
-//     print("获取字符失败\r\n"); 
-//    }
+//    print("box_w:%d\r\ngbox_h:%d\r\nadv_w:%d\r\nbitmap_index:%d\r\n",gdsc->box_w,gdsc->box_h,gdsc->adv_w,gdsc->bitmap_index);
+
+//     print("read_len:%d\r\n",read_len);
+//     print("bitmap_index:%d\r\n",gdsc->bitmap_index);   
     uint32_t flash_addr = gdsc->bitmap_index + (uint32_t)font->user_data;
-    W25Qxx_ReadData(flash_addr,Font_Bitmap,read_len);
-    return Font_Bitmap;
+
+      W25Qxx_ReadData(flash_addr,Font_Bitmap_1,sizeof(Font_Bitmap_1));
+//      W25Qxx_ReadData(flash_addr,Font_Bitmap_1,read_len);
+
+
+      return Font_Bitmap_1;      
     }
 
 #else
+//     printf("bitmap_index:%d\r\n",gdsc->bitmap_index); 
+     memcpy(Font_Bitmap_1,&Font_mem[gdsc->bitmap_index+(uint32_t)font->user_data],read_len); 
     if(fdsc->bitmap_format == LV_FONT_FMT_TXT_PLAIN) {
-        return &Font_mem[gdsc->bitmap_index+(uint32_t)font->user_data];
+//        return &Font_mem[gdsc->bitmap_index+(uint32_t)font->user_data];
+        return Font_Bitmap_1;     
     }
 #endif
        return NULL;

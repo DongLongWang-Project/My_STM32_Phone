@@ -11001,7 +11001,7 @@
 	"ui_main.h"
 	"ui_app_language.h"
 
-1770907219 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
+1770975192 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
 	"lvgl.h"
 	"../ui_main.h"
 	"../ui_app_language.h"
@@ -11085,7 +11085,7 @@
 1770285151 source:g:\github_code\my_stm32_phone\my_gui\ui_app_language.c
 	"ui_app_language.h"
 
-1770901360 source:g:\github_code\my_stm32_phone\my_gui\ui_main.c
+1770974140 source:g:\github_code\my_stm32_phone\my_gui\ui_main.c
 	"ui_main.h"
 
 1770449345 source:g:\github_code\my_stm32_phone\my_gui\ui_widgets.c
@@ -13832,7 +13832,7 @@
 	"USART1.h"
 	"W25Qxx.h"
 
-1770906997 source:g:\github_code\my_stm32_phone\sd\font\font.c
+1770973039 source:g:\github_code\my_stm32_phone\sd\font\font.c
 	"Font.h"
 
 1770716760 source:g:\github_code\my_stm32_phone\sd\font\font\font_12.c

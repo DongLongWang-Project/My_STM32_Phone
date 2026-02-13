@@ -285,16 +285,16 @@ uint8_t W25Qxx_SectorErase(uint32_t Address)
 
 void W25Qxx_ReadData(uint32_t Address, uint8_t *DataArray, uint32_t Count)
 {
-	uint32_t i;
 	SPI_Start();								//SPI起始
 	SPI_SwapByte(W25Qxx_READ_DATA);			//交换发送读取数据的指令
 	SPI_SwapByte(Address >> 16);				//交换发送地址23~16位
 	SPI_SwapByte(Address >> 8);				//交换发送地址15~8位
 	SPI_SwapByte(Address);					//交换发送地址7~0位
-	for (i = 0; i < Count; i ++)				//循环Count次
+	for (uint32_t i = 0; i < Count; i ++)				//循环Count次
 	{
 		DataArray[i] = SPI_SwapByte(W25Qxx_DUMMY_BYTE);	//依次在起始地址后读取数据
 	}
+  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_BSY) == SET);
 	SPI_Stop();								//SPI终止
 }
 
