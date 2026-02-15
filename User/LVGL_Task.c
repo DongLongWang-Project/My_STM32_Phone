@@ -42,7 +42,7 @@ void lvgl_demo(void)
     W25Qxx_SPI_Init();
     FSMC_SRAM_Init();
     DX_WF25_Init();
-    update_font();
+//    update_font();
 
 //    my_mem_init(SRAMIN);
       lv_init();                                          /* lvgl系统初始化 */
@@ -85,13 +85,13 @@ void lvgl_demo(void)
                (UBaseType_t    )LV_DEMO_TASK_PRIO,
                (TaskHandle_t*  )&LV_DEMOTask_Handler);
 
-//   /* DX_WF25测试任务 */
-//   xTaskCreate((TaskFunction_t )DX_WF25_task,
-//               (const char*    )"KEY_task",
-//               (uint16_t       )DX_WF25_STK_SIZE,
-//               (void*          )NULL,
-//               (UBaseType_t    )DX_WF25_TASK_PRIO,
-//               (TaskHandle_t*  )&DX_WF25_Task_Handler);
+   /* DX_WF25测试任务 */
+   xTaskCreate((TaskFunction_t )DX_WF25_task,
+               (const char*    )"KEY_task",
+               (uint16_t       )DX_WF25_STK_SIZE,
+               (void*          )NULL,
+               (UBaseType_t    )DX_WF25_TASK_PRIO,
+               (TaskHandle_t*  )&DX_WF25_Task_Handler);
    taskEXIT_CRITICAL();            /* 退出临界区 */
    vTaskDelete(StartTask_Handler); /* 删除开始任务 */
    }

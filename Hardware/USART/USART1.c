@@ -134,7 +134,8 @@ void DMA2_Stream7_IRQHandler(void)
     {
         va_list arg;					//定义可变参数列表数据类型的变量arg
         va_start(arg, format);			//从format开始，接收参数列表到arg变量
-        vsprintf(String, format, arg);	//使用vsprintf打印格式化字符串和参数列表到字符数组中
+//        vsprintf(String, format, arg);	//使用vsprintf打印格式化字符串和参数列表到字符数组中
+        vsnprintf(String,sizeof(String),format, arg);
         va_end(arg);					//结束变量arg
 //        printf("use usart\r\n");
         Serial_SendString(String);
@@ -145,7 +146,7 @@ void DMA2_Stream7_IRQHandler(void)
         {
             va_list arg;					//定义可变参数列表数据类型的变量arg
             va_start(arg, format);			//从format开始，接收参数列表到arg变量
-            vsprintf(String, format, arg);	//使用vsprintf打印格式化字符串和参数列表到字符数组中
+            vsnprintf(String,sizeof(String),format, arg);
             va_end(arg);					//结束变量arg    
           if(xSemaphoreTake(USART_DMA_Printf_Semaphore,pdMS_TO_TICKS(200))==pdTRUE)
           {

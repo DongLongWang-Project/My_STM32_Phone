@@ -3,7 +3,7 @@
 
 
 ui_app_weather_widget_t weather_widget;
-
+static lv_obj_t* temperature_slider(lv_obj_t*parent,int32_t temperature_min,int32_t temperature_max);
 static void event_weather_search_btn_cb(lv_event_t*e)
 {
     lv_event_code_t code=lv_event_get_code(e);
@@ -43,7 +43,7 @@ void ui_app_weather_create(lv_obj_t*parent)
 
     weather_widget.search_btn=ui_widgets_btn_create(obj_search_box,"OK");
     lv_obj_set_style_bg_opa(weather_widget.search_btn,100,LV_STATE_DEFAULT);
-    lv_obj_set_size(weather_widget.search_btn,lv_pct(20),lv_pct(100)); 
+    lv_obj_set_size(weather_widget.search_btn,lv_pct(20),lv_pct(80)); 
     lv_obj_align_to(weather_widget.search_btn,weather_widget.search_box,LV_ALIGN_OUT_RIGHT_MID,0,0);
     lv_obj_add_event_cb(weather_widget.search_btn,event_weather_search_btn_cb,LV_EVENT_CLICKED,NULL);
     
@@ -65,9 +65,9 @@ void ui_app_weather_create(lv_obj_t*parent)
     weather_widget.temperature_label=lv_label_create(obj_cur_day);
     ui_set_obj_text_font(weather_widget.temperature_label,FONT_SIZE_32);
     lv_obj_align_to(weather_widget.temperature_label,weather_widget.place_label,LV_ALIGN_OUT_BOTTOM_LEFT,0,20);
-
+    
     #if keil
-    lv_label_set_text_fmt(weather_widget.temperature_label,"%d~%d°C",Cur_Time.three_day_data[0].low_temperature,Cur_Time.three_day_data[0].high_temperature);
+    lv_label_set_text_fmt(weather_widget.temperature_label,"%s\n%d~%d°C",Cur_Time.three_day_data[0].weather_str,Cur_Time.three_day_data[0].low_temperature,Cur_Time.three_day_data[0].high_temperature);
      img_icon=update_weather_icon(obj_cur_day,Cur_Time.three_day_data[0].weather_code_day,true);
     lv_obj_align(img_icon,LV_ALIGN_TOP_RIGHT,-10,5);
     #else
@@ -95,34 +95,44 @@ void ui_app_weather_create(lv_obj_t*parent)
     lv_obj_set_style_bg_opa(obj_next_day,10,LV_STATE_DEFAULT); 
     lv_obj_set_style_bg_color(obj_next_day,lv_color_hex(0x949494),0);
     lv_obj_set_style_pad_all(obj_next_day,0,0);
+    lv_obj_set_style_radius(obj_next_day,0,0);
     lv_obj_set_size(obj_next_day,lv_pct(100),lv_pct(20));
     
     weather_widget.next_day1_label=lv_label_create(obj_next_day);
     weather_widget.next_day2_label=lv_label_create(obj_next_day);
-    lv_obj_set_size(weather_widget.next_day1_label,lv_pct(100),lv_pct(50));
-    lv_obj_set_size(weather_widget.next_day2_label,lv_pct(100),lv_pct(50));
+    lv_obj_set_size(weather_widget.next_day1_label,lv_pct(50),lv_pct(50));
+    lv_obj_set_size(weather_widget.next_day2_label,lv_pct(50),lv_pct(50));
     lv_obj_align_to(weather_widget.next_day2_label, weather_widget.next_day1_label,LV_ALIGN_OUT_BOTTOM_MID,0,0);
     ui_set_obj_text_font(weather_widget.next_day1_label,FONT_SIZE_16);
     ui_set_obj_text_font(weather_widget.next_day2_label,FONT_SIZE_16);
 
-
+    
     
     #if keil
-    lv_label_set_text_fmt(weather_widget.next_day1_label,"Tomorrow :%d~%d°C", Cur_Time.three_day_data[1].low_temperature,Cur_Time.three_day_data[1].high_temperature);
-    lv_label_set_text_fmt(weather_widget.next_day2_label,"After    :%d~%d°C",Cur_Time.three_day_data[2].low_temperature,Cur_Time.three_day_data[2].high_temperature);
-    img_icon=update_weather_icon(obj_next_day,Cur_Time.three_day_data[1].weather_code_day,false);
-    lv_obj_align(img_icon,LV_ALIGN_TOP_RIGHT,-10,10);
-    img_icon=update_weather_icon(obj_next_day,Cur_Time.three_day_data[2].weather_code_day,false);
-    lv_obj_align(img_icon,LV_ALIGN_BOTTOM_RIGHT,-10,-10);
+    lv_label_set_text_fmt(weather_widget.next_day1_label,"Day 1:%s",Cur_Time.three_day_data[1].weather_str);
+    lv_label_set_text_fmt(weather_widget.next_day2_label,"Day2:%s",Cur_Time.three_day_data[2].weather_str);
+    
+    weather_widget.next_day1_tem=temperature_slider(obj_next_day,Cur_Time.three_day_data[1].low_temperature,Cur_Time.three_day_data[1].high_temperature);
+    weather_widget.next_day2_tem=temperature_slider(obj_next_day,Cur_Time.three_day_data[2].low_temperature,Cur_Time.three_day_data[2].high_temperature);
+    lv_obj_align_to(weather_widget.next_day1_tem,weather_widget.next_day1_label,LV_ALIGN_OUT_RIGHT_MID,0,-5);
+    lv_obj_align_to(weather_widget.next_day2_tem,weather_widget.next_day2_label,LV_ALIGN_OUT_RIGHT_MID,0,-5);
+
     #else
      
-//    img_icon=update_weather_icon(obj_next_day,20,false);
-//    lv_obj_align(img_icon,LV_ALIGN_TOP_RIGHT,-10,8);
-//    img_icon=update_weather_icon(obj_next_day,8,false);
-//    lv_obj_align(img_icon,LV_ALIGN_BOTTOM_RIGHT,-10,-8);
+
+
+   
     
-    lv_label_set_text_fmt(weather_widget.next_day1_label," :+00~+00°C");
-    lv_label_set_text_fmt(weather_widget.next_day2_label,"After         :+00~+00°C");
+    lv_label_set_text_fmt(weather_widget.next_day1_label,"Next_day 1:%s","晴");
+    lv_label_set_text_fmt(weather_widget.next_day2_label,"Next_day2:%s","阴");
+    
+    weather_widget.next_day1_tem=temperature_slider(obj_next_day,-10,20);
+    weather_widget.next_day2_tem=temperature_slider(obj_next_day,-20,10);
+
+    lv_obj_align_to(weather_widget.next_day1_tem,weather_widget.next_day1_label,LV_ALIGN_OUT_RIGHT_MID,0,-5);
+    lv_obj_align_to(weather_widget.next_day2_tem,weather_widget.next_day2_label,LV_ALIGN_OUT_RIGHT_MID,0,-5);
+
+
     #endif // keil
 //    
 //    weather_widget.template_label=lv_label_create(list_weather);
@@ -137,7 +147,7 @@ lv_obj_t* update_weather_icon(lv_obj_t * parent, uint8_t weather_code,bool is_cu
     if(is_cur_day==true)
     {
     #if keil
-    snprintf(icon_path, sizeof(icon_path), "0:SD/my_icon/xinzhi_icon/white/%d@2x.png", weather_code);
+    snprintf(icon_path, sizeof(icon_path), "0:SD/my_icon/xinzhi_icon/white/%d@1x.png", weather_code);
     #else
 //    snprintf(icon_path, sizeof(icon_path), "0:/GitHub_Code/My_STM32_Phone/SD/my_icon/weather_icon/%d.png", weather_code);
      snprintf(icon_path, sizeof(icon_path), "0:/GitHub_Code/My_STM32_Phone/SD/my_icon/xinzhi_icon/white/%d@1x.png", weather_code);
@@ -162,4 +172,25 @@ lv_obj_t* update_weather_icon(lv_obj_t * parent, uint8_t weather_code,bool is_cu
     // 关键一步：重新设置图片源
     lv_img_set_src(img_icon, icon_path);
     return img_icon;
+}
+
+static lv_obj_t* temperature_slider(lv_obj_t*parent,int32_t temperature_min,int32_t temperature_max)
+{
+   lv_obj_t*slider=lv_slider_create(parent);
+   lv_obj_set_width(slider,lv_pct(50));
+
+   lv_slider_set_mode(slider,LV_SLIDER_MODE_RANGE);
+   lv_slider_set_range(slider,-30,50);
+    lv_obj_set_style_opa(slider,0,LV_PART_KNOB);
+    lv_obj_add_state(slider,LV_STATE_DISABLED);
+    lv_slider_set_left_value(slider,temperature_min,LV_ANIM_OFF);
+    lv_slider_set_value(slider,temperature_max,LV_ANIM_OFF);
+
+    lv_obj_t *label=lv_label_create(slider);
+   
+    lv_obj_set_style_text_color(label,lv_color_hex(0),0);
+    lv_label_set_text_fmt(label,"%d°~%d°",temperature_min,temperature_max);
+     lv_obj_align_to(label,slider,LV_ALIGN_CENTER,0,0);
+    
+   return slider;
 }

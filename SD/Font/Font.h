@@ -72,7 +72,7 @@ const uint8_t * __user_font_get_bitmap_external(const lv_font_t * font, uint32_t
 bool __user_font_get_get_glyph_dsc_fmt_txt(const lv_font_t * font, lv_font_glyph_dsc_t * dsc_out, uint32_t unicode_letter, uint32_t unicode_letter_next);
 
 extern uint8_t * g_font_mem_ptr_bitmap; // 定义一个全局指针存放字库数据
-extern uint8_t * g_font_mem_ptr_index  ; // 定义一个全局指针存放字库数据
+extern uint8_t * g_font_mem_ptr_index; // 定义一个全局指针存放字库数据
 void update_font(void);
 uint8_t Font_index_to_SDRAM(uint32_t Font_Index_Addr,uint32_t SDRAM_Addr);
 

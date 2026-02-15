@@ -24,6 +24,10 @@ typedef struct
     lv_obj_t*next_day1_label;
     lv_obj_t*next_day2_label;
     
+    lv_obj_t*next_day1_tem;
+    lv_obj_t*next_day2_tem;
+    
+    
 }ui_app_weather_widget_t;
 
 extern ui_app_weather_widget_t weather_widget;

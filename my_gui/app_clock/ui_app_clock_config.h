@@ -12,7 +12,7 @@ typedef struct
   int8_t low_temperature;
   uint8_t weather_code_day;
   uint8_t weather_code_night;
-  char weather_str[8];
+  char weather_str[16];
 }day_data;
 
 typedef struct

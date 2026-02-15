@@ -179,8 +179,8 @@ const ui_setting_language_t APP_SET_DISPLAY_LA_TABLE[SETTING_DISPLAY_NUM]=
              .icon=NULL,
              .text=
              {
-                     [ENGLISH]="12\n14\n16",
-                     [CHINESE]="12\n14\n16",
+                     [ENGLISH]="12\n16",
+                     [CHINESE]="12\n16",
              },
    },
    [DISPLAY_SCR_TITLE]=

@@ -1,0 +1,9 @@
+G:/GitHub_Code/My_STM32_Phone/codeblock/build/CMakeFiles/lvgl.dir
+G:/GitHub_Code/My_STM32_Phone/codeblock/build/CMakeFiles/lvgl_examples.dir
+G:/GitHub_Code/My_STM32_Phone/codeblock/build/CMakeFiles/lvgl_demos.dir
+G:/GitHub_Code/My_STM32_Phone/codeblock/build/CMakeFiles/edit_cache.dir
+G:/GitHub_Code/My_STM32_Phone/codeblock/build/CMakeFiles/rebuild_cache.dir
+G:/GitHub_Code/My_STM32_Phone/codeblock/build/CMakeFiles/list_install_components.dir
+G:/GitHub_Code/My_STM32_Phone/codeblock/build/CMakeFiles/install.dir
+G:/GitHub_Code/My_STM32_Phone/codeblock/build/CMakeFiles/install/local.dir
+G:/GitHub_Code/My_STM32_Phone/codeblock/build/CMakeFiles/install/strip.dir

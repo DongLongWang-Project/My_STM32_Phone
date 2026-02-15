@@ -87,10 +87,10 @@ const wifi_cmd_t wifi_cmd_table[AT_CMD_NUM] =
     
     [AT_CMD_CIPSTART]={AT_CMD_CIPSTART,   "AT+CIPSTART=\"TCP\",\"api.seniverse.com\",80\r\n",500, "CONNECT\r\n\r\nOK"},
     [AT_CMD_CIPSEND]={AT_CMD_CIPSEND,         "",           500,        ">",Handle_AT_CMD_CIPSEND},
-    [AT_GET_CLOCK_WEATHER]={AT_GET_CLOCK_WEATHER,  "",           1000,       "CLOSED\r\n",Handle_AT_GET_CLOCK_WEATHER},
+    [AT_GET_CLOCK_WEATHER]={AT_GET_CLOCK_WEATHER,  "",           5000,       "CLOSED\r\n",Handle_AT_GET_CLOCK_WEATHER},
     
     [AT_CMD_CIPSNTPCFG]={AT_CMD_CIPSNTPCFG,"AT+CIPSNTPCFG=1,8,\"ntp.aliyun.com\",\"cn.ntp.org.cn\"\r\n",2000,"OK\r\n+TIME_UPDATED"} ,
-    [AT_GET_NTP_TIME]={AT_GET_NTP_TIME,"AT+CIPSNTPTIME?\r\n",1000,"OK\r\n",Handle_AT_GET_NTP_TIME},
+    [AT_GET_NTP_TIME]={AT_GET_NTP_TIME,"AT+CIPSNTPTIME?\r\n",2000,"OK\r\n",Handle_AT_GET_NTP_TIME},
 };
 
 //const char*get_time_weather_str="GET /v3/weather/now.json?key=S_fPwMVZxdqUzfG_i&location=beijing&language=zh-Hans&unit=c HTTP/1.1\r\nHost: api.seniverse.com\r\nConnection: close\r\n\r\n";            
@@ -490,7 +490,7 @@ static uint8_t DX_WF25_Rev_queue(void)
 
     // 指针二选一：优先用消息里的，没有就用表里的
     const char* final_ptr = q_msg.cmd_str;
-
+    Total_Len=0; 
     if (final_ptr) {
         cur_cmd = q_msg.cmd;
         // 如果是天气长命令，这里加个 CIPSEND 的特殊判断逻辑...
@@ -559,7 +559,6 @@ void wifi_cmd_stateMACHINE(void)
     if(DX_WF25_Rev_queue())
     {
       S=1;
-      Total_Len=0;     
     }
   }
   else if(S==1)
@@ -582,7 +581,7 @@ void wifi_cmd_stateMACHINE(void)
         {
             S = 0; 
             Total_Len = 0;
-            memset(DEAL_BUF, 0, sizeof(DEAL_BUF));
+//            memset(DEAL_BUF, 0, sizeof(DEAL_BUF));
         }
      else if(xSemaphoreTake(DX_WF25_Rev_AT_RESP_CountSemaphore,pdMS_TO_TICKS(100))==pdTRUE)
       {
@@ -590,7 +589,6 @@ void wifi_cmd_stateMACHINE(void)
             {
                 S = 3; 
                 DEAL_BUF[Total_Len]='\0';
-                print("%s",DEAL_BUF);
             }
       }
   }
@@ -598,7 +596,8 @@ void wifi_cmd_stateMACHINE(void)
   {
   if(wifi_cmd_table[cur_cmd].handler!=NULL)
   {
-     wifi_cmd_table[cur_cmd].handler(DEAL_BUF);
+//     printf("%s",DEAL_BUF);
+     wifi_cmd_table[cur_cmd].handler(DEAL_BUF); 
   }
   else
   {
@@ -606,8 +605,8 @@ void wifi_cmd_stateMACHINE(void)
   }
      
       S=0;
-      Total_Len = 0;
-      memset(DEAL_BUF,0,sizeof(DEAL_BUF));
+//      Total_Len = 0;
+//      memset(DEAL_BUF,0,sizeof(DEAL_BUF));
   }
 }
 
@@ -747,7 +746,7 @@ static void Handle_AT_CMD_CIPSEND(const char*buf)
 ////    Cur_Time.year,Cur_Time.month,Cur_Time.day,Cur_Time.hour,Cur_Time.min,Cur_Time.sec
 ////    );
 //}
-void parse_value(const char *src, const char *key, char *out_buf) {
+char* parse_value(const char *src, const char *key, char *out_buf) {
     char *p = strstr(src, key);
     if (p) {
         p += strlen(key);
@@ -757,48 +756,62 @@ void parse_value(const char *src, const char *key, char *out_buf) {
             i++;
         }
         out_buf[i] = '\0';
+        return (char*)p+i;
     }
+    return (char *)src;
 }
 
 static void Handle_AT_GET_CLOCK_WEATHER(const char* buf)
 {
+//    printf("\r\n天气数据%s\r\n",buf);
+    
     char  temp_buf[32];
     const char *p=buf;
-    parse_value(buf,"\"name\":\"",Cur_Time.place_str);
+    p=parse_value(p,"\"name\":\"",Cur_Time.place_str);
     for(uint8_t i=0;i<3;i++)
     {
-      p=strstr(p,"\"date\"");
+      p=strstr(p,"\"date\":\"");
       if (p == NULL) break; // 如果找不到了，直接跳出循环防止死机
 
       if (p != NULL)
       {
-          // 跳过 "date":" 这 15 个字节
+          // 跳过 "date":" 这 8 个字节
           p += 8; 
           sscanf(p, "%hu-%hhu-%hhuT", 
                  &Cur_Time.three_day_data[i].year, &Cur_Time.three_day_data[i].month, &Cur_Time.three_day_data[i].day);
       }
-      parse_value(buf,"\"text_day\":\"",Cur_Time.three_day_data[i].weather_str);
-      parse_value(p,"\"code_day\":\"",temp_buf);
+      p=parse_value(p,"\"text_day\":\"",Cur_Time.three_day_data[i].weather_str);
+      p=parse_value(p,"\"code_day\":\"",temp_buf);
       Cur_Time.three_day_data[i].weather_code_day=(uint8_t)atoi(temp_buf);
-      parse_value(p,"\"code_night\":\"",temp_buf);
+      p=parse_value(p,"\"code_night\":\"",temp_buf);
       Cur_Time.three_day_data[i].weather_code_night=(uint8_t)atoi(temp_buf); 
       
-      parse_value(p,"\"high\":\"",temp_buf);
+      p=parse_value(p,"\"high\":\"",temp_buf);
       Cur_Time.three_day_data[i].high_temperature=(int8_t)atoi(temp_buf);
-      parse_value(p,"\"low\":\"",temp_buf);
+      p=parse_value(p,"\"low\":\"",temp_buf);
       Cur_Time.three_day_data[i].low_temperature=(int8_t)atoi(temp_buf);    
       if(i==0)
       {
-              parse_value(p,"\"wind_direction\":\"",Cur_Time.wind_dir_str);
-              parse_value(p,"\"humidity\":\"",temp_buf);
+              p=parse_value(p,"\"wind_direction\":\"",Cur_Time.wind_dir_str);
+              p=parse_value(p,"\"humidity\":\"",temp_buf);
               Cur_Time.humidity=(uint8_t)atoi(temp_buf);             
       }
     }
-    print("%d-%d-%d %d:%d:%d\r\n high:%d low:%d,w_day:%d,w_night:%d\r\nplace:%s,wind_dir:%s,hum:%d",Cur_Time.three_day_data[0].year,Cur_Time.three_day_data[0].month,Cur_Time.three_day_data[0].day,Cur_Time.hour,Cur_Time.min,Cur_Time.sec,
+    print("\r\n%d-%d-%d %d:%d:%d\r\n high:%d low:%d,w_day:%d,w_night:%d\r\nplace:%s,wind_dir:%s,hum:%d\r\n",Cur_Time.three_day_data[0].year,Cur_Time.three_day_data[0].month,Cur_Time.three_day_data[0].day,Cur_Time.hour,Cur_Time.min,Cur_Time.sec,
     Cur_Time.three_day_data[0].high_temperature,Cur_Time.three_day_data[0].low_temperature,Cur_Time.three_day_data[0].weather_code_day,
     Cur_Time.three_day_data[0].weather_code_night,
     Cur_Time.place_str,Cur_Time.wind_dir_str,Cur_Time.humidity);
-    
+    print("\r\n%d-%d-%d %d:%d:%d\r\n high:%d low:%d,w_day:%d,w_night:%d\r\nplace:%s,wind_dir:%s,hum:%d\r\n",Cur_Time.three_day_data[1].year,Cur_Time.three_day_data[1].month,Cur_Time.three_day_data[1].day,Cur_Time.hour,Cur_Time.min,Cur_Time.sec,
+    Cur_Time.three_day_data[1].high_temperature,Cur_Time.three_day_data[1].low_temperature,Cur_Time.three_day_data[1].weather_code_day,
+    Cur_Time.three_day_data[1].weather_code_night,
+    Cur_Time.place_str,Cur_Time.wind_dir_str,Cur_Time.humidity); 
+
+    print("\r\n%d-%d-%d %d:%d:%d\r\n high:%d low:%d,w_day:%d,w_night:%d\r\nplace:%s,wind_dir:%s,hum:%d\r\n",Cur_Time.three_day_data[2].year,Cur_Time.three_day_data[2].month,Cur_Time.three_day_data[2].day,Cur_Time.hour,Cur_Time.min,Cur_Time.sec,
+    Cur_Time.three_day_data[2].high_temperature,Cur_Time.three_day_data[2].low_temperature,Cur_Time.three_day_data[2].weather_code_day,
+    Cur_Time.three_day_data[2].weather_code_night,
+    Cur_Time.place_str,Cur_Time.wind_dir_str,Cur_Time.humidity);
+
+   
 }
 static void Handle_AT_GET_NTP_TIME(const char*buf)
 {

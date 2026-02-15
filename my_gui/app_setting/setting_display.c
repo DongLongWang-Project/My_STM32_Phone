@@ -6,6 +6,11 @@
 ↑--------------------------------------------------------------------------------*/
 #include "setting_display.h"
 
+LV_FONT_DECLARE( my_font_12);
+LV_FONT_DECLARE( my_font_16);
+LV_FONT_DECLARE( my_font_24);
+LV_FONT_DECLARE( my_font_32);
+
 static void event_ui_app_setting_display_cb(lv_event_t*e); /*下拉框回调函数*/
 
 static void ui_app_setting_display_scr_msg(lv_obj_t*parent);/*对话框*/
@@ -15,17 +20,12 @@ static void display_set_scr_dir(uint16_t scr_dir); /*设置屏幕方向*/
 static void display_config(lv_obj_t*parent,uint8_t index);/*根据配置设置对应的下拉框的索引*/
 
 void set_global_font(const lv_font_t *font);/*全局字体*/
-void ui_font_cn_load(DISPLAY_FONT_SIZE_ENUM size);/*加载中文*/
-static void free_font(DISPLAY_LANGUAGE_ENUM Last_language,DISPLAY_FONT_SIZE_ENUM Last_size);/*设置语言和字体*/
 
 
 static void display_brightness_creat(lv_obj_t*parent);/*创建亮度滑动条*/
 static void event_brightness_slider_cb(lv_event_t*e); /*滑动条回调函数*/
  
  
-ui_font_t ui_fonts;
-
-
 /*--------------------------------------------------------------------------------↓
 	@函数	  : 创建显示设置
 	@参数	  : 父对象
@@ -148,12 +148,16 @@ static void event_ui_app_setting_display_cb(lv_event_t*e)
     SETTING_DISPLAY_ENUM list_bnt=(SETTING_DISPLAY_ENUM)lv_event_get_user_data(e);/*根据用户传入的值(语言,字体大小,屏幕方向)*/
     
     uint16_t droplist_num=lv_dropdown_get_selected(droplist);/*获得下拉列表的选中的选项*/
+
+    lv_obj_t *parent=lv_obj_get_parent(list);   
     switch(list_bnt)
     {
         case DISPLAY_WORD_CUR: /*字体*/
             {
                 display_cfg.font_size=(DISPLAY_FONT_SIZE_ENUM)droplist_num;/*更新字体大小配置*/
-                ui_set_language(display_cfg.language,display_cfg.font_size); /*根据对应语言设置字体大小*/ 
+                ui_set_language(display_cfg.language,display_cfg.font_size); /*根据对应语言设置字体大小*/
+                lv_obj_clean(parent);
+                ui_app_setting_display(parent);
                break; 
             } 
         case DISPLAY_SCR_CUR: /*屏幕方向*/
@@ -167,7 +171,9 @@ static void event_ui_app_setting_display_cb(lv_event_t*e)
            {
                 display_cfg.language=(DISPLAY_LANGUAGE_ENUM)droplist_num;/*更新语言配置*/
                 ui_set_language(display_cfg.language,display_cfg.font_size); /*根据字体大小设置对应语言*/
-                
+                lv_obj_clean(parent);
+                ui_app_setting_display(parent);
+ 
                 lv_obj_del(alarm_msgbox_obj);
                 alarm_rem_win(lv_scr_act());
                 break;
@@ -283,10 +289,7 @@ static void display_set_scr_dir(uint16_t scr_dir)
  }
 /*************************************************************语言&字体设置*************************************************************/ 
 
-LV_FONT_DECLARE( my_font_12);
-LV_FONT_DECLARE( my_font_16);
-LV_FONT_DECLARE( my_font_24);
-LV_FONT_DECLARE( my_font_32);
+
 
 /*--------------------------------------------------------------------------------↓
 	@函数	  :  设置对应语言和字体大小
@@ -297,93 +300,39 @@ LV_FONT_DECLARE( my_font_32);
 ↑--------------------------------------------------------------------------------*/
 void ui_set_language(DISPLAY_LANGUAGE_ENUM language,DISPLAY_FONT_SIZE_ENUM size)
 {
-  display_cfg.font_size=size; /*更新字体大小配置*/
-  static DISPLAY_LANGUAGE_ENUM Last_language;/*上一次的语言*/
-  static DISPLAY_FONT_SIZE_ENUM Last_Size;/*上一次的字体大小*/
-  free_font(Last_language,Last_Size); /*释放上一次的语言配置*/
-  
+    display_cfg.font_size=size; /*更新字体大小配置*/
+    const lv_font_t*font;
 	switch(language)
 	{
 		case ENGLISH:/*英文*/
 		    {
             switch(size) /*根据对应的语言和大小来设置全局字体大小*/
                 {
-                    case FONT_SIZE_12:set_global_font(&lv_font_montserrat_12);break;
-//                    case FONT_SIZE_14:set_global_font(&lv_font_montserrat_14);break;
-                    case FONT_SIZE_16:set_global_font(&lv_font_montserrat_16);break;  
+                    case FONT_SIZE_12:font=&lv_font_montserrat_12;break;
+                    case FONT_SIZE_16:font=&lv_font_montserrat_16;break;
                     default :break;             
                 }
 		        display_cfg.language=ENGLISH; /*更新配置为英文*/
-
 		        break;
 		    }
 		case CHINESE:
 		    {
-		        const lv_font_t*font;
-                ui_font_cn_load(size);/*加载对应的中文和大小(保存咋sd卡)*/
-//                lv_font_t * my_font = lv_font_load("0:/GitHub_Code/My_STM32_Phone/SD/my_cn_font/Font_CN_12.bin");
-//                my_font->fallback=&lv_font_montserrat_12;
                 switch(size)
                 {
-//                    case FONT_SIZE_12:font=ui_fonts.FONT_SIZE_12;break; 
                     case FONT_SIZE_12:font=&my_font_12;break;
-                     
-                    
-//                   case FONT_SIZE_12:font=my_font;break; 
-                    case FONT_SIZE_14:font=ui_fonts.FONT_SIZE_14;break;
-                    case FONT_SIZE_16:font=ui_fonts.FONT_SIZE_16;break; 
-//                    case FONT_SIZE_16:font=&myFont_16;break; 
+                    case FONT_SIZE_16:font=&my_font_16;break; 
                     default :break;             
                 }       
-                if(font!=NULL)
-                    {
-//                        printf("size:%d\r\n",size);
-                       set_global_font(font);/*设置为全局*/
-                    }
-                        display_cfg.language=CHINESE;/*更新配置为中文*/               
-                        break;
+                display_cfg.language=CHINESE;break;/*更新配置为中文*/                          
 		    }
         default:break;
 	}
-  Last_language=language;/*将此次的语言和大小记录方便下一次改变来释放*/
-  Last_Size=size;
+        if(font!=NULL)
+            {
+               set_global_font(font);/*设置为全局*/
+               
+            }
 }
-
-/*--------------------------------------------------------------------------------↓
-	@函数	  : 加载对应中文
-	@参数	  : 字体大小
-	@返回值 :  无
-	@备注	  :
-↑--------------------------------------------------------------------------------*/
-void ui_font_cn_load(DISPLAY_FONT_SIZE_ENUM size)
-{
-            switch(size)
-                {
-                   case FONT_SIZE_12: 
-                       {
-                           ui_fonts.FONT_SIZE_12=lv_font_load (FONT_Size_12_PATH);/*根据路径加载字体12*/
-                           if(ui_fonts.FONT_SIZE_12==NULL) printf("use FONT_SIZE_12 to error \r\n"); /*如果加载失败就打印*/
-                           else  ui_fonts.FONT_SIZE_12->fallback=&lv_font_montserrat_12;/*英文对应内置的大小*/
-                           break;
-                       }
-                   case FONT_SIZE_14: 
-                       {   
-//                           ui_fonts.FONT_SIZE_14=lv_font_load (FONT_Size_14_PATH);/*根据路径加载字体14*/
-//                           if(ui_fonts.FONT_SIZE_14==NULL) printf("use FONT_SIZE_14 to error \r\n"); /*如果加载失败就打印*/
-//                           else  ui_fonts.FONT_SIZE_14->fallback=&lv_font_montserrat_14;/*英文对应内置的大小*/   
-                           break;
-                       }
-                       
-                   case FONT_SIZE_16: 
-                       {
-                           ui_fonts.FONT_SIZE_16=lv_font_load (FONT_Size_16_PATH);/*根据路径加载字体16*/
-                           if(ui_fonts.FONT_SIZE_16==NULL) printf("use FONT_SIZE_16 to error \r\n"); /*如果加载失败就打印*/
-                           else  ui_fonts.FONT_SIZE_16->fallback=&lv_font_montserrat_16;/*英文对应内置的大小*/
-                           break;           
-                       }  
-                }
-}
-
 
 /*--------------------------------------------------------------------------------↓
 	@函数	  :  将当前的字体设置为全局
@@ -399,25 +348,6 @@ void set_global_font(const lv_font_t *font)
     lv_obj_add_style(lv_scr_act(), &default_style, 0);/*添加为默认样式*/
 }
 
-/*--------------------------------------------------------------------------------↓
-	@函数	  : 释放上一次的字体
-	@参数	  : 中文 字体大小
-	@返回值 : 无
-	@备注	  :
-↑--------------------------------------------------------------------------------*/
-static void free_font(DISPLAY_LANGUAGE_ENUM Last_language,DISPLAY_FONT_SIZE_ENUM Last_size)
-{
-    if(Last_language==CHINESE)
-    {
-        switch(Last_size)
-        {
-        case FONT_SIZE_12:lv_font_free(ui_fonts.FONT_SIZE_12);break;
-        case FONT_SIZE_14:lv_font_free(ui_fonts.FONT_SIZE_14);break;        
-        case FONT_SIZE_16:lv_font_free(ui_fonts.FONT_SIZE_16);break;
-        default :break;      
-        }
-    }
-}
 
 /*--------------------------------------------------------------------------------↓
 	@函数	  :  单独设置文本字体
@@ -434,7 +364,6 @@ void ui_set_obj_text_font(lv_obj_t*parent,DISPLAY_FONT_SIZE_ENUM FONT_SIZE)
                 switch(FONT_SIZE)
             {
                 case FONT_SIZE_12: lv_obj_set_style_text_font(parent,&lv_font_montserrat_12,LV_STATE_DEFAULT); break;
-//                case FONT_SIZE_14: lv_obj_set_style_text_font(parent,&lv_font_montserrat_14,LV_STATE_DEFAULT); break;
                 case FONT_SIZE_16: lv_obj_set_style_text_font(parent,&lv_font_montserrat_16,LV_STATE_DEFAULT); break;
                 case FONT_SIZE_24: lv_obj_set_style_text_font(parent,&lv_font_montserrat_24,LV_STATE_DEFAULT); break;
                 case FONT_SIZE_32: lv_obj_set_style_text_font(parent,&lv_font_montserrat_32,LV_STATE_DEFAULT); break; 
@@ -446,9 +375,10 @@ void ui_set_obj_text_font(lv_obj_t*parent,DISPLAY_FONT_SIZE_ENUM FONT_SIZE)
         {
                     switch(FONT_SIZE)
             {
-                case FONT_SIZE_12: lv_obj_set_style_text_font(parent,ui_fonts.FONT_SIZE_12,LV_STATE_DEFAULT); break;
-                case FONT_SIZE_14: lv_obj_set_style_text_font(parent,ui_fonts.FONT_SIZE_14,LV_STATE_DEFAULT); break;
-                case FONT_SIZE_16: lv_obj_set_style_text_font(parent,ui_fonts.FONT_SIZE_16,LV_STATE_DEFAULT); break;   
+                case FONT_SIZE_12: lv_obj_set_style_text_font(parent,&my_font_12,LV_STATE_DEFAULT); break;
+                case FONT_SIZE_16: lv_obj_set_style_text_font(parent,&my_font_16,LV_STATE_DEFAULT); break; 
+                case FONT_SIZE_24: lv_obj_set_style_text_font(parent,&my_font_24,LV_STATE_DEFAULT); break;
+                case FONT_SIZE_32: lv_obj_set_style_text_font(parent,&my_font_32,LV_STATE_DEFAULT); break;        
                 default:break;           
             }
             break;

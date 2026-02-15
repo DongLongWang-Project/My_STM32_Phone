@@ -5,11 +5,11 @@
 #include "lv_drivers/win32drv/win32drv.h"
 #include <windows.h>
 
-#include "../my_gui/ui_main.h"
+ #include "../my_gui/ui_main.h"
 
 
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int nCmdShow)
-{
+
+int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int nCmdShow){
 
     lv_init();
 

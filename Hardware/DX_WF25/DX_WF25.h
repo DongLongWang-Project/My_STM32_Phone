@@ -25,6 +25,8 @@
 #define WIFI_IP_MAX_LEN           16
 
 
+#define NAME_STR "\"name\":\""
+#define DATA_STR "\"date\":\""
 
 
 typedef struct 

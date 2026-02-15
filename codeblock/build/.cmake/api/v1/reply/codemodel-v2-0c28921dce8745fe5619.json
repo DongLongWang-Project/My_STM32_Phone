@@ -1,0 +1,80 @@
+{
+	"configurations" : 
+	[
+		{
+			"abstractTargets" : [],
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-2786449ad57aea2eed3a.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12.4"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "lvgl",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "lvgl::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-lvgl-Debug-8fd8bb1765d3c55e02a9.json",
+					"name" : "lvgl",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "lvgl_demos::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-lvgl_demos-Debug-e4188e122ef270bc22ed.json",
+					"name" : "lvgl_demos",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "lvgl_examples::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-lvgl_examples-Debug-d86156d2c750c63b4fb9.json",
+					"name" : "lvgl_examples",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "G:/GitHub_Code/My_STM32_Phone/codeblock/build",
+		"source" : "G:/GitHub_Code/My_STM32_Phone/codeblock/lvgl"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	}
+}
