@@ -30,6 +30,7 @@
 #include "stm32f4xx.h"
 #include "SD.h"
 #include "stdio.h"
+#include "usb_dcd_int.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/

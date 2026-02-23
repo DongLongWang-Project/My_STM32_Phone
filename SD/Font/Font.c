@@ -349,7 +349,7 @@ void update_font(void)
      }
      else
      {
-        print("挂载成功\r\n");
+        printf("挂载成功\r\n");
         if(Read_Font_Version(Font_path,FONT_VERSION_ADDR_HEAD)==0)
         {
           Update_Font_to_W25Qxx(Font_path,FONT_VERSION_ADDR_HEAD); 

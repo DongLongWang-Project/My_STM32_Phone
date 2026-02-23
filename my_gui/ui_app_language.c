@@ -43,8 +43,8 @@ const ui_setting_language_t APP_SET_ABOUT_LA_TABLE[APP_SET_ABOUT_NUM]=
              .icon=NULL,
              .text=
              {
-                     [ENGLISH]="RAM:128K+64k+1M",
-                     [CHINESE]="内存:128K+64k+1M",
+                     [ENGLISH]="Flash:1M+16M",
+                     [CHINESE]="Flash:1M+16M",
              },
    },
    [APP_SET_ABOUT_SD]=
@@ -133,8 +133,6 @@ const ui_setting_language_t APP_SET_LA_TABLE[APP_SETTING_NUM]=
              },
    }, 
 };
-
-
 
 const ui_setting_language_t APP_SET_DISPLAY_LA_TABLE[SETTING_DISPLAY_NUM]=
 {

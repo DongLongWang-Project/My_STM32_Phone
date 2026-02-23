@@ -11001,7 +11001,7 @@
 	"ui_main.h"
 	"ui_app_language.h"
 
-1770984029 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
+1771120190 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
 	"lvgl.h"
 	"../ui_main.h"
 	"../ui_app_language.h"
@@ -11069,7 +11069,7 @@
 1770276796 source:g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.c
 	"ui_app_setting.h"
 
-1771036077 source:g:\github_code\my_stm32_phone\my_gui\app_weather\ui_app_weather.c
+1771120918 source:g:\github_code\my_stm32_phone\my_gui\app_weather\ui_app_weather.c
 	"ui_app_weather.h"
 
 1771035516 g:\github_code\my_stm32_phone\my_gui\app_weather\ui_app_weather.h
@@ -13774,7 +13774,7 @@
 	"unity.h"
 	<png.h>
 
-1771030374 source:g:\github_code\my_stm32_phone\codeblock\main.c
+1771122806 source:g:\github_code\my_stm32_phone\codeblock\main.c
 	<stdlib.h>
 	<unistd.h>
 	"lvgl/lvgl.h"
@@ -13785,13 +13785,13 @@
 1770459876 source:g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock_config.c
 	"ui_app_clock_config.h"
 
-1770459635 g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock_config.h
+1771075982 g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock_config.h
 	"lvgl.h"
 
 1771031540 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.h
 	"lvgl.h"
 
-1770904915 source:g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.c
+1771075785 source:g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.c
 	"ui_app_setting_config.h"
 
 1770601013 g:\github_code\my_stm32_phone\sd\font_w25q\myfont.h
@@ -13824,7 +13824,7 @@
 	"lvgl/lvgl.h"
 	"../font_w25q/myFont.h"
 
-1770901436 g:\github_code\my_stm32_phone\sd\font\font.h
+1771075565 g:\github_code\my_stm32_phone\sd\font\font.h
 	"lvgl.h"
 	"stdio.h"
 	"../../my_gui/app_setting/ui_app_setting.h"
@@ -13832,7 +13832,7 @@
 	"USART1.h"
 	"W25Qxx.h"
 
-1770977376 source:g:\github_code\my_stm32_phone\sd\font\font.c
+1771075611 source:g:\github_code\my_stm32_phone\sd\font\font.c
 	"Font.h"
 
 1770716760 source:g:\github_code\my_stm32_phone\sd\font\font\font_12.c

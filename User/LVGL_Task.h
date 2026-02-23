@@ -24,6 +24,12 @@
 #include "Font.h"
 
 //#include "myFont.h"
+#include "usb_dcd_int.h"
+#include "usbd_msc_core.h"
+#include "usbd_usr.h"
+#include "usbd_desc.h"
+#include "usb_conf.h" 
+
 
 void lvgl_demo(void);
 

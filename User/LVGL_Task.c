@@ -31,6 +31,7 @@
    void DX_WF25_task(void *pvParameters);      /* 任务函数 */
    /******************************************************************************************************/
 
+  USB_OTG_CORE_HANDLE  USB_OTG_dev;
 
 void lvgl_demo(void)
 {
@@ -42,16 +43,17 @@ void lvgl_demo(void)
     W25Qxx_SPI_Init();
     FSMC_SRAM_Init();
     DX_WF25_Init();
-//    update_font();
 
+    update_font();
+    printf("前面\r\n");
+    USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
+    printf("后面\r\n");
 //    my_mem_init(SRAMIN);
       lv_init();                                          /* lvgl系统初始化 */
       lv_port_disp_init();                                /* lvgl显示接口初始化,放在lv_init()的后面 */
       lv_port_indev_init();                               /* lvgl输入接口初始化,放在lv_init()的后面 */
 
-//    char*t=lv_mem_alloc(100);
-//    print("新建的测试内存位置:0x%x",(uint32_t)t);
-//    lv_mem_free(t); 
+
     
     xTaskCreate((TaskFunction_t )start_task,            /* 任务函数 */
                 (const char*    )"start_task",          /* 任务名称 */

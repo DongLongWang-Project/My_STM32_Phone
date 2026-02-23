@@ -203,4 +203,11 @@ void SD_SDIO_DMA_IRQHANDLER(void)
   * @}
   */ 
 
+//USB OTG 中断服务函数
+//处理所有USB中断
+extern USB_OTG_CORE_HANDLE  USB_OTG_dev;//在main函数定义！！
+void OTG_FS_IRQHandler(void)
+{
+  	USBD_OTG_ISR_Handler(&USB_OTG_dev);
+}
 

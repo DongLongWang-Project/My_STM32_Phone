@@ -338,9 +338,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--no-multibyte-chars</MiscControls>
-              <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER,LV_LVGL_H_INCLUDE_SIMPLE</Define>
+              <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER,LV_LVGL_H_INCLUDE_SIMPLE,USE_USB_OTG_FS</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Library;.\Start;.\System;.\User;.\FreeRTOS\Library;.\FreeRTOS\portable\MemMang;.\FreeRTOS\portable\RVDS\ARM_CM4F;.\Hardware\LED;.\Hardware\SRAM;.\Hardware\TFTLCD;.\Hardware\USART;.\Hardware\W25QXX;.\Hardware\SD;.\FATFS;.\LVGL\porting;.\LVGL;.\LVGL\src;.\LVGL\src\hal;.\LVGL\demos\widgets\assets;.\LVGL\demos\widgets;.\LVGL\src\misc;.\LVGL\src\extra\libs\png;.\LVGL\src\extra\layouts;.\my_gui;.\MALLOC;.\Hardware\KEY;.\Hardware\DX_WF25;.\my_gui\app_file_sys;.\my_gui\app_net_ass;.\my_gui\app_setting;.\my_gui\app_clock;.\my_gui\app_weather;.\SD\font_w25q;.\SD\Font</IncludePath>
+              <IncludePath>.\Library;.\Start;.\System;.\User;.\FreeRTOS\Library;.\FreeRTOS\portable\MemMang;.\FreeRTOS\portable\RVDS\ARM_CM4F;.\Hardware\LED;.\Hardware\SRAM;.\Hardware\TFTLCD;.\Hardware\USART;.\Hardware\W25QXX;.\Hardware\SD;.\FATFS;.\LVGL\porting;.\LVGL;.\LVGL\src;.\LVGL\src\hal;.\LVGL\demos\widgets\assets;.\LVGL\demos\widgets;.\LVGL\src\misc;.\LVGL\src\extra\libs\png;.\LVGL\src\extra\layouts;.\my_gui;.\MALLOC;.\Hardware\KEY;.\Hardware\DX_WF25;.\my_gui\app_file_sys;.\my_gui\app_net_ass;.\my_gui\app_setting;.\my_gui\app_clock;.\my_gui\app_weather;.\SD\font_w25q;.\SD\Font;.\USB\STM32_USB_OTG_Driver\src;.\USB\STM32_USB_OTG_Driver\inc;.\USB\USB_App;.\USB\STM32_USB_Device_Library\Class\msc\src;.\USB\STM32_USB_Device_Library\Core\src;.\USB\STM32_USB_Device_Library\Class\msc\inc;.\USB\STM32_USB_Device_Library\Core\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1864,6 +1864,16 @@
               <FileType>1</FileType>
               <FilePath>.\Hardware\DX_WF25\DX_WF25.c</FilePath>
             </File>
+            <File>
+              <FileName>ASRPRO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\ASRPRO.c</FilePath>
+            </File>
+            <File>
+              <FileName>ASRPRO.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\ASRPRO.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1938,6 +1948,91 @@
               <FileName>readme.md</FileName>
               <FileType>5</FileType>
               <FilePath>.\docx\readme.md</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>USB_OTG</GroupName>
+          <Files>
+            <File>
+              <FileName>usb_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\STM32_USB_OTG_Driver\src\usb_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_dcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\STM32_USB_OTG_Driver\src\usb_dcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_dcd_int.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\STM32_USB_OTG_Driver\src\usb_dcd_int.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>USB_App</GroupName>
+          <Files>
+            <File>
+              <FileName>usb_bsp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\USB_App\usb_bsp.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\USB_App\usbd_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_storage_msd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\USB_App\usbd_storage_msd.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_usr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\USB_App\usbd_usr.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>USB_Device</GroupName>
+          <Files>
+            <File>
+              <FileName>usbd_msc_bot.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\STM32_USB_Device_Library\Class\msc\src\usbd_msc_bot.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_msc_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\STM32_USB_Device_Library\Class\msc\src\usbd_msc_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_msc_data.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\STM32_USB_Device_Library\Class\msc\src\usbd_msc_data.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_msc_scsi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\STM32_USB_Device_Library\Class\msc\src\usbd_msc_scsi.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\STM32_USB_Device_Library\Core\src\usbd_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_ioreq.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\STM32_USB_Device_Library\Core\src\usbd_ioreq.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_req.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\STM32_USB_Device_Library\Core\src\usbd_req.c</FilePath>
             </File>
           </Files>
         </Group>

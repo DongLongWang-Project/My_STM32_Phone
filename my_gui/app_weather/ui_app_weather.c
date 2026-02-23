@@ -119,12 +119,8 @@ void ui_app_weather_create(lv_obj_t*parent)
 
     #else
      
-
-
-   
-    
-    lv_label_set_text_fmt(weather_widget.next_day1_label,"Next_day 1:%s","晴");
-    lv_label_set_text_fmt(weather_widget.next_day2_label,"Next_day2:%s","阴");
+    lv_label_set_text_fmt(weather_widget.next_day1_label,"day 1:%s","晴转多云");
+    lv_label_set_text_fmt(weather_widget.next_day2_label,"day2:%s","晴转多云");
     
     weather_widget.next_day1_tem=temperature_slider(obj_next_day,-10,20);
     weather_widget.next_day2_tem=temperature_slider(obj_next_day,-20,10);
@@ -149,11 +145,7 @@ lv_obj_t* update_weather_icon(lv_obj_t * parent, uint8_t weather_code,bool is_cu
     #if keil
     snprintf(icon_path, sizeof(icon_path), "0:SD/my_icon/xinzhi_icon/white/%d@1x.png", weather_code);
     #else
-//    snprintf(icon_path, sizeof(icon_path), "0:/GitHub_Code/My_STM32_Phone/SD/my_icon/weather_icon/%d.png", weather_code);
      snprintf(icon_path, sizeof(icon_path), "0:/GitHub_Code/My_STM32_Phone/SD/my_icon/xinzhi_icon/white/%d@1x.png", weather_code);
-//     snprintf(icon_path, sizeof(icon_path), "0:/GitHub_Code/My_STM32_Phone/SD/my_icon/xinzhi_icon/old/%d.png", weather_code);
-   
-//    snprintf(icon_path, sizeof(icon_path), "0:/icon/%d.png", weather_code);
     #endif // keil 
 
     }
@@ -162,11 +154,8 @@ lv_obj_t* update_weather_icon(lv_obj_t * parent, uint8_t weather_code,bool is_cu
     #if keil
     snprintf(icon_path, sizeof(icon_path), "0:SD/my_icon/xinzhi_icon/white/%d@1x.png", weather_code);
     #else
-//    snprintf(icon_path, sizeof(icon_path), "0:/GitHub_Code/My_STM32_Phone/SD/my_icon/weather_icon/%d.png", weather_code);
+
      snprintf(icon_path, sizeof(icon_path), "0:/GitHub_Code/My_STM32_Phone/SD/my_icon/xinzhi_icon/white/%d@1x.png", weather_code);
-//     snprintf(icon_path, sizeof(icon_path), "0:/GitHub_Code/My_STM32_Phone/SD/my_icon/xinzhi_icon/old/%d.png", weather_code);
-   
-//    snprintf(icon_path, sizeof(icon_path), "0:/icon/%d.png", weather_code);
     #endif // keil
     }
     // 关键一步：重新设置图片源

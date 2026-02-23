@@ -7,10 +7,9 @@
 
  #include "../my_gui/ui_main.h"
 
-
-
 int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int nCmdShow){
 
+    system("chcp 65001");
     lv_init();
 
     lv_win32_init(hInstance, SW_SHOWNORMAL, 240, 320, NULL);
@@ -23,3 +22,4 @@ int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int nCmd
     }
     return 0;
 }
+
