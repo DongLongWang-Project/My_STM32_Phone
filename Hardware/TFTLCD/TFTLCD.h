@@ -11,6 +11,11 @@
 #include <stdlib.h>
 #include "SRAM.h"
 #include "LVGL_Timer.h"
+
+#include "FreeRTOS.h"
+#include "Queue.h"
+#include "semphr.h"
+
 //#include "ui_app_setting.h"
 
 //画笔颜色
@@ -135,9 +140,11 @@ void TFTLCD_Drow_Touch_Point(u16 x,u16 y,u16 color);
 void TP_Draw_Big_Point(u16 x,u16 y,u16 color);
 
 void LCD_DMA_Init(void);
-void LCD_DMA_Transform(uint32_t Addr,uint16_t count) ;
+//void LCD_DMA_Transform(uint32_t Addr,uint16_t count) ;
 
-
+void LCD_DMA_Transform(uint32_t Addr, uint32_t total_count);
+extern volatile uint32_t dma_remaining_bytes;
+extern volatile SemaphoreHandle_t TFTLCD_BinSemaphore;
 void LCD_Set_Direction(LCD_Direction Dir);
 
 #endif

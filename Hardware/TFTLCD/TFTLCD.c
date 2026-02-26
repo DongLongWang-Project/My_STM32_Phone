@@ -580,6 +580,8 @@ void TFTLCD_ShowImages(uint16_t X, uint16_t Y, uint16_t width, uint16_t height, 
 	DMA2初始化	        			
 ↑--------------------------------------------------------------------------------*/
 
+volatile SemaphoreHandle_t TFTLCD_BinSemaphore;
+
  void LCD_DMA_Init(void)
  {
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2,ENABLE);
@@ -589,20 +591,21 @@ void TFTLCD_ShowImages(uint16_t X, uint16_t Y, uint16_t width, uint16_t height, 
     DMA_InitTypeDef DMA_InitStruct;
 
     DMA_InitStruct.DMA_PeripheralBaseAddr=0;
-    DMA_InitStruct.DMA_PeripheralBurst=DMA_PeripheralBurst_Single;
+    DMA_InitStruct.DMA_PeripheralBurst=DMA_PeripheralBurst_INC4;
     DMA_InitStruct.DMA_PeripheralDataSize=DMA_PeripheralDataSize_HalfWord;
     DMA_InitStruct.DMA_PeripheralInc=DMA_PeripheralInc_Enable;
 
-    DMA_InitStruct.DMA_Memory0BaseAddr=0;
-    DMA_InitStruct.DMA_MemoryBurst=DMA_MemoryBurst_Single;
+    DMA_InitStruct.DMA_Memory0BaseAddr=(uint32_t)&LCD->LCD_RAM;
+    DMA_InitStruct.DMA_MemoryBurst=DMA_MemoryBurst_INC4;
     DMA_InitStruct.DMA_MemoryDataSize=DMA_MemoryDataSize_HalfWord;
     DMA_InitStruct.DMA_MemoryInc=DMA_MemoryInc_Disable;
+    
     
     DMA_InitStruct.DMA_BufferSize=0;
     DMA_InitStruct.DMA_Channel=DMA_Channel_0;
     DMA_InitStruct.DMA_DIR=DMA_DIR_MemoryToMemory;
     DMA_InitStruct.DMA_FIFOMode=DMA_FIFOMode_Enable;
-    DMA_InitStruct.DMA_FIFOThreshold=DMA_FIFOThreshold_HalfFull;
+    DMA_InitStruct.DMA_FIFOThreshold=DMA_FIFOThreshold_Full;
     DMA_InitStruct.DMA_Mode=DMA_Mode_Normal;
     DMA_InitStruct.DMA_Priority=DMA_Priority_VeryHigh;
 
@@ -614,27 +617,53 @@ void TFTLCD_ShowImages(uint16_t X, uint16_t Y, uint16_t width, uint16_t height, 
     NVIC_InitTypeDef NVIC_InitStruct;
     NVIC_InitStruct.NVIC_IRQChannel=DMA2_Stream6_IRQn;
     NVIC_InitStruct.NVIC_IRQChannelCmd=ENABLE;
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority=0;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority=6;
     NVIC_InitStruct.NVIC_IRQChannelSubPriority=0;
     NVIC_Init(&NVIC_InitStruct);  
+    
+    TFTLCD_BinSemaphore=xSemaphoreCreateBinary();
+    if(TFTLCD_BinSemaphore!=NULL)
+    {
+      xSemaphoreGive(TFTLCD_BinSemaphore);
+    }
  } 
  
- void LCD_DMA_Transform(uint32_t Addr,uint16_t count)
- {
-    DMA_Cmd(DMA2_Stream6,DISABLE);
-    while(DMA_GetCmdStatus(DMA2_Stream6)!=DISABLE);
-   
-    DMA2_Stream6->M0AR = (uint32_t )&LCD->LCD_RAM;    // moar内存地址
-    DMA2_Stream6->PAR= Addr;      //par为外设地址
-    DMA2_Stream6->NDTR = count;      // 数量
- 
-   DMA_Cmd(DMA2_Stream6,ENABLE);
-   
-//   while(DMA_GetFlagStatus(DMA2_Stream6,DMA_FLAG_TCIF6)!=SET);
-//   DMA_ClearFlag(DMA2_Stream6, DMA_FLAG_TCIF6); 
+volatile uint32_t dma_remaining_bytes;
+void LCD_DMA_Transform(uint32_t Addr, uint32_t total_count)
+{
+          // 初始化：剩余字节数 = 总长度
+     dma_remaining_bytes = total_count;
+     
+    uint16_t *cur_dst = (uint16_t *)Addr;/*要以2个字节为步长递增,不然会出现重叠现象*/
+    while(dma_remaining_bytes > 0)
+    {
+          if(xSemaphoreTake(TFTLCD_BinSemaphore,portMAX_DELAY)==pdTRUE)
+          {
+            uint16_t batch = (dma_remaining_bytes > 65535) ? 65535 : dma_remaining_bytes;
+            
+            DMA_Cmd(DMA2_Stream6, DISABLE);
+            while(DMA_GetCmdStatus(DMA2_Stream6) != DISABLE);
+            
+            DMA2_Stream6->PAR  = (uint32_t)cur_dst;
+            DMA2_Stream6->NDTR = batch;
+            // 启动DMA前，更新剩余字节数（本次要传的batch）
+            dma_remaining_bytes -= batch;
+            cur_dst += batch;
+            
+            DMA_Cmd(DMA2_Stream6, ENABLE);
+        }
+  } 
+}
 
- }
+
+/**
+ * @brief  LCD DMA传输函数（自动分批，适配任意长度，单次≤65535）
+ * @param  SrcAddr: 数据源地址（视频数据缓冲区）
+ * @param  DstAddr: 显存目标地址（后台显存）
+ * @param  total_count: 总传输字节数（可超过65535）
+ * @retval 无
+ */
  
- 
+
 /*--------------------------------------------------------------------------------*/
 

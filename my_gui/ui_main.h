@@ -9,6 +9,7 @@
 #include "app_net_ass/ui_app_net.h"
 #include "app_clock/ui_app_clock.h"
 #include "app_weather/ui_app_weather.h"
+#include "app_video/ui_app_video.h"
 
  
 //#include "HX1838.h"
@@ -42,6 +43,7 @@ APP_FILE,
 APP_NET,
 APP_WEATHER,
 APP_CLOCK,
+APP_VIDEO,
 APP_TEMP,
 }UI_APP_ENUM;
 

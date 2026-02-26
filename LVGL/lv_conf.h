@@ -24,8 +24,8 @@
 #define MY_DISP_HOR_RES  240
 #define MY_DISP_VER_RES  320
 
-#define HALF_BUFFER_PIXELS      MY_DISP_HOR_RES*MY_DISP_VER_RES/2
-#define HALF_BUFFER_SIZE        (HALF_BUFFER_PIXELS * sizeof(lv_color_t))
+#define BUFFER_PIXELS      MY_DISP_HOR_RES*MY_DISP_VER_RES
+#define BUFFER_SIZE        (BUFFER_PIXELS * sizeof(lv_color_t))
 /*====================
    COLOR SETTINGS
  *====================*/

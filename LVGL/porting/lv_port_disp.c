@@ -99,9 +99,10 @@ void lv_port_disp_init(void)
 //    lv_disp_draw_buf_init(&draw_buf_dsc_2, buf_2_1, buf_2_2, HALF_BUFFER_PIXELS);   /*Initialize the display buffer*/
 
     static lv_disp_draw_buf_t draw_buf_dsc_2;
-    static lv_color_t buf_2_1[HALF_BUFFER_PIXELS]__attribute__((at(LVGL_DRAW_BUF_1)));                        /*A buffer for 10 rows*/
-    static lv_color_t buf_2_2[HALF_BUFFER_PIXELS]__attribute__((at(LVGL_DRAW_BUF_2)));                        /*An other buffer for 10 rows*/
-    lv_disp_draw_buf_init(&draw_buf_dsc_2, buf_2_1, buf_2_2, HALF_BUFFER_PIXELS);   /*Initialize the display buffer*/
+    static lv_color_t buf_2_1[BUFFER_PIXELS]__attribute__((section(".EXT_SRAM")));                        /*A buffer for 10 rows*/
+    static lv_color_t buf_2_2[BUFFER_PIXELS]__attribute__((section(".EXT_SRAM"))); 
+    /*An other buffer for 10 rows*/
+    lv_disp_draw_buf_init(&draw_buf_dsc_2, buf_2_1, buf_2_2, BUFFER_PIXELS);   /*Initialize the display buffer*/
 
 //static lv_disp_draw_buf_t draw_buf_dsc_2;
 
@@ -193,6 +194,7 @@ void disp_disable_update(void)
 /*Flush the content of the internal buffer the specific area on the display
  *You can use DMA or any hardware acceleration to do this operation in the background but
  *'lv_disp_flush_ready()' has to be called when finished.*/
+  
 static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_color_t * color_p)
 {
     if(disp_flush_enabled) {
@@ -218,9 +220,16 @@ void DMA2_Stream6_IRQHandler(void)
     {
         DMA_ClearITPendingBit(DMA2_Stream6, DMA_IT_TCIF6);
         
-        // 告诉 LVGL 这块区域已经刷完了
-        lv_disp_drv_t * drv = lv_disp_get_default()->driver;
-        lv_disp_flush_ready(drv);   // 正确！
+        if(dma_remaining_bytes==0)
+        {
+          // 告诉 LVGL 这块区域已经刷完了
+          lv_disp_drv_t * drv = lv_disp_get_default()->driver;
+          lv_disp_flush_ready(drv);   // 正确！ 
+        }
+        
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        xSemaphoreGiveFromISR(TFTLCD_BinSemaphore, &xHigherPriorityTaskWoken);
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
     }
 }
 

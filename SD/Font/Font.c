@@ -11,8 +11,9 @@ LV_FONT_DECLARE( my_font_32);
 
 Font_Version_t Font_Data;
 #define FONT_BUFFER_SIZE 256
-static uint8_t Font_Bitmap_1[FONT_BUFFER_SIZE]; 
-
+static uint8_t Font_Bitmap_1[FONT_BUFFER_SIZE];
+#define FONT_INDEX_SIZE 358400  
+static uint8_t Font_EXT_RAM_BUF[FONT_INDEX_SIZE]__attribute__((section(".EXT_SRAM")));
 #if !keil
 //void memory_load_font(void)
 // {
@@ -123,7 +124,7 @@ const uint8_t * __user_font_get_bitmap_external(const lv_font_t * font, uint32_t
     lv_font_fmt_txt_glyph_dsc_t * my_index_array;
     uint8_t * index_ptr = NULL; // 定义一个全局指针存放字库数据
     #if keil
-    index_ptr=(uint8_t *)EXT_SRAM_BASE;   
+    index_ptr=(uint8_t *)Font_EXT_RAM_BUF;   
     #else
     index_ptr=Font_mem;
     #endif
@@ -199,7 +200,7 @@ bool __user_font_get_get_glyph_dsc_fmt_txt(const lv_font_t * font, lv_font_glyph
     lv_font_fmt_txt_glyph_dsc_t * my_index_array;
     uint8_t * index_ptr = NULL; // 定义一个全局指针存放字库数据
     #if keil
-    index_ptr=(uint8_t *)EXT_SRAM_BASE;   
+    index_ptr=(uint8_t *)Font_EXT_RAM_BUF;   
     #else
     index_ptr=Font_mem;
     #endif
@@ -368,9 +369,9 @@ void update_font(void)
         else
         {
           /*字库正常*/
-          if(Font_index_to_SDRAM(FONT_VERSION_ADDR_HEAD,EXT_SRAM_BASE))
+          if(Font_index_to_SDRAM(FONT_VERSION_ADDR_HEAD,(uint32_t)Font_EXT_RAM_BUF))
           {
-           print("字库索引已搬运到SDRAM:0x%x\r\n",(uint32_t)EXT_SRAM_BASE);
+           print("字库索引已搬运到SDRAM:0x%x\r\n",(uint32_t)Font_EXT_RAM_BUF);
 //           uint8_t *p = (uint8_t *)EXT_SRAM_BASE;
 //          for(uint32_t i = 0; i < 10000; i++)
 //              {

@@ -122,6 +122,15 @@ const ui_app_message_t APP_LA_TABLE[APP_TEMP]=
                      [CHINESE]="时钟",
              }
      }, 
+     [APP_VIDEO]=
+     {
+             .icon=LV_SYMBOL_VIDEO,
+             .text=
+             {
+                     [ENGLISH]="Video",
+                     [CHINESE]="视频",
+             }
+     }, 
         
 };
 
@@ -151,7 +160,7 @@ lv_obj_t* ui_page_creat_app(lv_obj_t *parent)
     
     for(uint8_t i=0;i<APP_TEMP;i++)
     {
-        Xpos=i*60;
+        Xpos=(i-(row*4))*60;
         if(Xpos>=scr_width)
         {
             Xpos=0;
@@ -203,7 +212,7 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
                            case APP_NET:      ui_app_net_list_creat(tile_main); break;
                            case APP_WEATHER: ui_app_weather_create(tile_main);break;
                            case APP_CLOCK   : ui_app_clock_creat(tile_main);break;
-                           
+                           case APP_VIDEO :ui_app_video_list_creat(tile_main);break;
                            default:break;
                       }
               break;

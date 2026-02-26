@@ -108,6 +108,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../my_gui/app_setting/ui_app_setting_config.h" />
+		<Unit filename="../my_gui/app_video/ui_app_video.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../my_gui/app_video/ui_app_video.h" />
 		<Unit filename="../my_gui/app_weather/ui_app_weather.c">
 			<Option compilerVar="CC" />
 		</Unit>
