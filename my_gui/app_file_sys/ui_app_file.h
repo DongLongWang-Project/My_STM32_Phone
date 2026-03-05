@@ -14,7 +14,9 @@ typedef enum {
     File_TXT,
     File_C,
     File_H,
-    File_PNG
+    File_PNG,
+    File_RGB,
+    File_WAV
 } FILE_TYPE_ENUM;
 
 

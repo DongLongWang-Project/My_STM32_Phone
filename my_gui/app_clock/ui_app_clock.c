@@ -200,6 +200,7 @@ static void clock_timer(void)
    {
        Cur_Time.sec=0;
        Cur_Time.min++;
+    lv_label_set_text_fmt(label_time,"%.2d:%.2d",Cur_Time.hour,Cur_Time.min); 
        if(Cur_Time.min>=60)
        {
            Cur_Time.min=0;
@@ -208,7 +209,6 @@ static void clock_timer(void)
        }
    }
    
-    lv_label_set_text_fmt(label_time,"%d:%d:%d",Cur_Time.hour,Cur_Time.min,Cur_Time.sec);
    
    if(Clock_time_widget.meter!=NULL)
    {
@@ -216,7 +216,7 @@ static void clock_timer(void)
        lv_meter_set_indicator_value(Clock_time_widget.meter,Clock_time_widget.min_indicator,Cur_Time.min);
        uint8_t hour=(Cur_Time.hour%12)*5+(Cur_Time.min/12);
        lv_meter_set_indicator_value(Clock_time_widget.meter, Clock_time_widget.hour_indicator,hour);
-       lv_label_set_text_fmt(Clock_time_widget.time_label,"Time:%d:%d:%d",Cur_Time.hour,Cur_Time.min,Cur_Time.sec);
+       lv_label_set_text_fmt(Clock_time_widget.time_label,"Time:%.2d:%.2d:%.2d",Cur_Time.hour,Cur_Time.min,Cur_Time.sec);
    }
 }
 static void timer_timer(void)
@@ -422,15 +422,7 @@ static void event_clock_set_cb(lv_event_t*e)
             {
                   /*打开闹钟*/
                alarm_clock.save_alarm_clock_table[alarm_index].alarm_is_on=true;  
-            }
-              
-                
-
-
-               
-                
-
-            
+            } 
         }
         #if keil
             save_alarm_data();

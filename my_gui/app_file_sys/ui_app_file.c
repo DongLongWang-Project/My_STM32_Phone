@@ -4,7 +4,7 @@
 	@备注	:
 ↑--------------------------------------------------------------------------------*/
 #include "ui_app_file.h"
-
+#include "../app_music/ui_app_music.h"
 
 #define Dir_MAX_LEN     512
 char Cure_Path[128]={"0:"};
@@ -48,7 +48,7 @@ lv_obj_t* ui_app_file_list_create(lv_obj_t *parent,const char * path)
 	@返回值 :  父对象
 	@备注	  :
 ↑--------------------------------------------------------------------------------*/
-static lv_obj_t* open_dir_creat_btn(lv_obj_t *parent,const char * path)
+ lv_obj_t* open_dir_creat_btn(lv_obj_t *parent,const char * path)
 {
     lv_fs_res_t res;/*文件打开状态*/
     lv_fs_dir_t dir; /*文件夹*/
@@ -138,6 +138,14 @@ lv_obj_t* ui_app_file_detail_create(lv_obj_t *parent, const char *file_path)
             operation_file_img(page,file_path); /*打开图像文件*/
             break;
         }
+        case File_RGB: {
+            // 图片文件
+            ui_app_video_detail_creat(page,file_path);
+            break;
+        }
+        case File_WAV:
+            ui_app_music_detail_creat(page,file_path);
+            break;
         default:
 
             other_file_message(page); /*其他文件*/
@@ -164,6 +172,9 @@ static FILE_TYPE_ENUM get_file_type(const char *path)
     if(strcmp(ext, ".c")   == 0) return File_C; /*c文件*/
     if(strcmp(ext, ".h")   == 0) return File_H; /*h文件*/
     if(strcmp(ext, ".png") == 0) return File_PNG;/*png文件*/
+    if(strcmp(ext, ".rgb") == 0) return File_RGB;/*rgb文件*/
+    if(strcmp(ext, ".wav") == 0) return File_WAV;/*wav文件*/
+
     return File_Unknow;
 }
 

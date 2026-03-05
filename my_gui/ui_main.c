@@ -6,7 +6,8 @@
 
 
 #include "ui_main.h"
-
+#include "app_video/ui_app_video.h"
+#include "app_music/ui_app_music.h"
 
 
 lv_obj_t*tileview,*tile_main;
@@ -47,6 +48,8 @@ void ui_init(void)
     
     alarm_rem_win(lv_scr_act());
     
+    lv_label_set_text_fmt(label_time,"%.2d:%.2d",Cur_Time.hour,Cur_Time.min); 
+ 
 }
 
 
@@ -95,15 +98,15 @@ const ui_app_message_t APP_LA_TABLE[APP_TEMP]=
                      [CHINESE]="文件",
              }
      }, 
-     [APP_NET]=
-     {
-             .icon=LV_SYMBOL_LOOP,
-             .text=
-             {
-                     [ENGLISH]="Net",
-                     [CHINESE]="网络助手",
-             }
-     }, 
+//     [APP_NET]=
+//     {
+//             .icon=LV_SYMBOL_LOOP,
+//             .text=
+//             {
+//                     [ENGLISH]="Net",
+//                     [CHINESE]="网络助手",
+//             }
+//     }, 
      [APP_WEATHER]=
      {
              .icon=LV_SYMBOL_UPLOAD,
@@ -131,7 +134,15 @@ const ui_app_message_t APP_LA_TABLE[APP_TEMP]=
                      [CHINESE]="视频",
              }
      }, 
-        
+     [APP_MUSIC]=
+     {
+             .icon=LV_SYMBOL_AUDIO,
+             .text=
+             {
+                     [ENGLISH]="Music",
+                     [CHINESE]="音乐",
+             }
+     },    
 };
 
 /******************************************************
@@ -193,7 +204,18 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
         lv_obj_clean(tile_main);
         Clock_time_widget.meter = NULL;
         timer_widget.timer_obj=NULL;
-
+        
+        if(Video_win.timer !=NULL)
+        {
+         lv_timer_del(Video_win.timer);
+         Video_win.timer = NULL; // 清空指针
+        }
+        if(Video_win.file.drv!=NULL)
+        {
+          lv_fs_close(&Video_win.file);
+//          Video_win.file.drv==NULL;
+        }
+    
     switch(Page)
     {
         case PAGE_HOME:
@@ -209,10 +231,12 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
                       {
                            case APP_SETTING:   ui_app_setting_create_list(tile_main);list_wifi=NULL;   break;/**创建wifi **/
                            case APP_FILE:      ui_app_file_list_create(tile_main,Cure_Path);break;/** 创建文件列表**/
-                           case APP_NET:      ui_app_net_list_creat(tile_main); break;
+//                           case APP_NET:      ui_app_net_list_creat(tile_main); break;
                            case APP_WEATHER: ui_app_weather_create(tile_main);break;
                            case APP_CLOCK   : ui_app_clock_creat(tile_main);break;
                            case APP_VIDEO :ui_app_video_list_creat(tile_main);break;
+                           case APP_MUSIC: ui_app_music_list_creat(tile_main);break;
+
                            default:break;
                       }
               break;
@@ -223,6 +247,8 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
                  switch(APP)
                 {
                     case APP_SETTING:   ui_app_setting_create_detail(tile_main);            break;
+                    case APP_VIDEO: 
+                     case APP_MUSIC:   
                     case APP_FILE:      ui_app_file_detail_create(tile_main,Cure_Path);       break;
                     
                     default:  break;
@@ -254,6 +280,8 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
         }
 
       }break;
+    case APP_VIDEO:
+    case APP_MUSIC:  
     case APP_FILE:
 
       if(strcmp(Cure_Path,"0:")==0)
@@ -268,15 +296,16 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
         ui_goto_page(PAGE_APP_LIST,APP_FILE);
         }
         break;
-    case APP_NET:
-        {
-                switch(Cur_Page)
-          {
-            case PAGE_APP_LIST: ui_goto_page(PAGE_HOME,APP_TEMP);break;
-            case PAGE_APP_DETAIL:  ui_app_net_list_creat(tile_main);break;
-            default:break;            
-          }
-            break;
+//    case APP_NET:
+//        {
+//                switch(Cur_Page)
+//          {
+//            case PAGE_APP_LIST: ui_goto_page(PAGE_HOME,APP_TEMP);break;
+//            case PAGE_APP_DETAIL:  ui_app_net_list_creat(tile_main);break;
+//            default:break;            
+//          }
+//            break;
+//          }
     case APP_WEATHER:
         {
           ui_goto_page(PAGE_HOME,APP_TEMP);break;  
@@ -286,6 +315,6 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
             {
              ui_goto_page(PAGE_HOME,APP_TEMP);break;  
             }
-        }
+        
       }
  }

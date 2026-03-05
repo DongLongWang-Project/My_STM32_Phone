@@ -29,9 +29,10 @@
 #include "usbd_usr.h"
 #include "usbd_desc.h"
 #include "usb_conf.h" 
+#include "MAX98357A.h"
 
 
-void lvgl_demo(void);
+void MyPhone_stm32_task(void);
 
 #endif
 

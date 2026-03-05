@@ -15,6 +15,7 @@
 #include "key.h"
 #include "HX1838.h"
 //#include "myFont.h"
+#include "MAX98357A.h"
 
 
 #endif

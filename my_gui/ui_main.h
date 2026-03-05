@@ -40,10 +40,12 @@ typedef enum {
 typedef enum{
 APP_SETTING=0,
 APP_FILE,
-APP_NET,
+//APP_NET,
 APP_WEATHER,
 APP_CLOCK,
 APP_VIDEO,
+APP_MUSIC,
+
 APP_TEMP,
 }UI_APP_ENUM;
 

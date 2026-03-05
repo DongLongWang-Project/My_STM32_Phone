@@ -214,6 +214,9 @@ void DX_WF25_Init(void)
   
   DMA_Cmd(DMA1_Stream1,ENABLE);  /*开启DMA接收(当串口3的接收数据寄存器有数据就自动接收)*/
 
+
+   DX_WF25_CMD_Queue=xQueueCreate(DX_WF25_Queue_MAX_LEN,sizeof(wifi_cmd_t));
+
     Timer_Send_AT_BinSemaphore=xSemaphoreCreateBinary();
     if(Timer_Send_AT_BinSemaphore!=NULL)
     {
@@ -227,6 +230,11 @@ void DX_WF25_Init(void)
     } 
     
     DX_WF25_Rev_AT_RESP_CountSemaphore=xSemaphoreCreateCounting(5,0);
+    
+    
+     DX_WF25_Send_Static(AT_CMD_ATE1);
+     DX_WF25_Send_Static(AT_CMD_CIPMUX_ONE); 
+     DX_WF25_Send_Static(AT_CMD_RST);
 }
 
 void SendByte(uint8_t Byte)
@@ -605,8 +613,8 @@ void wifi_cmd_stateMACHINE(void)
   }
      
       S=0;
-//      Total_Len = 0;
-//      memset(DEAL_BUF,0,sizeof(DEAL_BUF));
+      Total_Len = 0;
+      memset(DEAL_BUF,0,sizeof(DEAL_BUF));
   }
 }
 
@@ -827,5 +835,7 @@ if(p != NULL) {
 );
     }
 }
+
+
 /*--------------------------------------------------------------------------------*/
 
