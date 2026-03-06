@@ -27,11 +27,6 @@ int main(void)
      
     MyPhone_stm32_task();
 
-
-
-
-
-
     while (1)
      {
 

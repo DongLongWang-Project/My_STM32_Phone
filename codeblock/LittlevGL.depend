@@ -11002,7 +11002,7 @@
 	"ui_main.h"
 	"ui_app_language.h"
 
-1772613584 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
+1772800262 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
 	"lvgl.h"
 	"../ui_main.h"
 	"../ui_app_language.h"
@@ -11049,7 +11049,7 @@
 1770777430 source:g:\github_code\my_stm32_phone\my_gui\app_file_sys\file_txt.c
 	"file_txt.h"
 
-1772613775 source:g:\github_code\my_stm32_phone\my_gui\app_file_sys\ui_app_file.c
+1772615500 source:g:\github_code\my_stm32_phone\my_gui\app_file_sys\ui_app_file.c
 	"ui_app_file.h"
 	"../app_music/ui_app_music.h"
 
@@ -11087,7 +11087,7 @@
 1771123518 source:g:\github_code\my_stm32_phone\my_gui\ui_app_language.c
 	"ui_app_language.h"
 
-1772613797 source:g:\github_code\my_stm32_phone\my_gui\ui_main.c
+1772800175 source:g:\github_code\my_stm32_phone\my_gui\ui_main.c
 	"ui_main.h"
 	"app_video/ui_app_video.h"
 	"app_music/ui_app_music.h"
@@ -13903,6 +13903,6 @@
 	"stdio.h"
 	"../app_file_sys/ui_app_file.h"
 
-1772614308 g:\github_code\my_stm32_phone\my_gui\app_music\ui_app_music.h
+1772709018 g:\github_code\my_stm32_phone\my_gui\app_music\ui_app_music.h
 	"lvgl.h"
 

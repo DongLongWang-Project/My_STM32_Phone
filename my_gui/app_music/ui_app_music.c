@@ -1,12 +1,15 @@
 #include "ui_app_music.h"
 #include "stdio.h"
 #include "../app_file_sys/ui_app_file.h"
+#if keil
 #include "MAX98357A.h"
-
+music_control_t music_win;
+#endif
 extern char Cure_Path[128];
 
 
-music_control_t music_win;
+
+
 lv_obj_t* ui_app_music_list_creat(lv_obj_t*parent)
 {
     memcpy(Cure_Path,SD_MUSIC_PATH,strlen(SD_MUSIC_PATH));
@@ -15,6 +18,7 @@ lv_obj_t* ui_app_music_list_creat(lv_obj_t*parent)
 
 void ui_app_music_detail_creat(lv_obj_t*parent,const char*path)
 {
+    #if keil
    lv_fs_res_t res = lv_fs_open(&music_win.file, path, LV_FS_MODE_RD); /*打开文件*/
    if(res==LV_FS_RES_OK) 
    {
@@ -53,4 +57,5 @@ void ui_app_music_detail_creat(lv_obj_t*parent,const char*path)
       printf("打开音频文件失败\r\n");
    }
 //    lv_fs_close(&music_win.file);
+    #endif
 }

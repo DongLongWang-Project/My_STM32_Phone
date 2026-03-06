@@ -27,9 +27,6 @@ void ui_init(void)
 //     lv_obj_t*label=lv_label_create(lv_scr_act());
 //     lv_obj_set_style_text_font(label,&my_font_12,0);
 //     lv_label_set_text(label,"王東龙");
-     
-
-
     ui_set_language(display_cfg.language,display_cfg.font_size);
     #if keil
     TIM12->CCR2=display_cfg.Brightness;
