@@ -1,12 +1,14 @@
 #include "ui_app_video.h"
 #include "stdio.h"
 #include "../app_file_sys/ui_app_file.h"
+#include "../ui_widgets.h"
 
 #define Video_Width  240
 #define Video_Height 160
 
 uint8_t video_buf[Video_Height*Video_Width*2]__attribute__((section(".EXT_SRAM")));
 lv_obj_t*video_win;
+
 static lv_img_dsc_t video_dsc = {
     .header.always_zero = 0,           // 必须为 0
     .header.w = Video_Width,           // 宽
@@ -30,13 +32,16 @@ lv_obj_t* ui_app_video_list_creat(lv_obj_t*parent)
 static void video_timer_cb(lv_timer_t * t) {
     uint32_t num;
     // 读取下一帧
+   
     lv_fs_res_t res = lv_fs_read(&Video_win.file, (void*)video_dsc.data, video_dsc.data_size, &num);
-    
-    if(res != LV_FS_RES_OK || num < video_dsc.data_size) {
+
+        if(res != LV_FS_RES_OK || num < video_dsc.data_size) {
         // 播放完了，关闭文件并停止定时器
         lv_fs_close(&Video_win.file);
-        lv_timer_del(t); 
+        lv_timer_del(t);
+
         Video_win.timer = NULL; // 清空指针
+         lv_label_set_text(lv_obj_get_child(Video_win.view_btn,0),LV_SYMBOL_PLAY);
         printf("视频播放结束\r\n");
         return;
     }
@@ -46,15 +51,39 @@ static void video_timer_cb(lv_timer_t * t) {
     lv_obj_invalidate(Video_win.obj_video);
 }
 
+void event_video_btn(lv_event_t*e)
+{
+    static bool video_state=true;
+    lv_event_code_t code=lv_event_get_code(e);
+    if(code==LV_EVENT_CLICKED)
+    {
+        if(video_state==false)
+        {
+            lv_timer_resume(Video_win.timer);
+            lv_label_set_text(lv_obj_get_child(Video_win.view_btn,0),LV_SYMBOL_PAUSE);
+        }
+        else
+        {
+            lv_timer_pause(Video_win.timer); 
+            lv_label_set_text(lv_obj_get_child(Video_win.view_btn,0),LV_SYMBOL_PLAY);
+
+        }
+        video_state=!video_state;
+    }
+}
 
 void ui_app_video_detail_creat(lv_obj_t*parent,const char*path)
 {
+    memset(video_buf,0,sizeof(video_buf));
     Video_win.obj_video=lv_img_create(parent);
    lv_obj_set_size(Video_win.obj_video,Video_Width,Video_Height);
    lv_obj_center(Video_win.obj_video);
    lv_img_set_src(Video_win.obj_video, &video_dsc);
    
-
+    Video_win.view_btn=ui_widgets_btn_create(parent,LV_SYMBOL_PAUSE);
+    lv_obj_align_to(Video_win.view_btn,Video_win.obj_video,LV_ALIGN_OUT_BOTTOM_MID,0,0);
+    
+    lv_obj_add_event_cb(Video_win.view_btn,event_video_btn,LV_EVENT_CLICKED,NULL);
    lv_fs_res_t res = lv_fs_open(&Video_win.file, path, LV_FS_MODE_RD); /*打开文件*/
    if(res==LV_FS_RES_OK) 
    {

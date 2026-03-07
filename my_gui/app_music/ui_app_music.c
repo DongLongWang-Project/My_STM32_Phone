@@ -1,9 +1,15 @@
 #include "ui_app_music.h"
 #include "stdio.h"
 #include "../app_file_sys/ui_app_file.h"
+
 #if keil
 #include "MAX98357A.h"
 music_control_t music_win;
+#else
+#include <Windows.h>
+#include <mmsystem.h>
+
+#pragma comment(lib, "winmm.lib") // 链接winmm.lib，必须加
 #endif
 extern char Cure_Path[128];
 
@@ -57,5 +63,10 @@ void ui_app_music_detail_creat(lv_obj_t*parent,const char*path)
       printf("打开音频文件失败\r\n");
    }
 //    lv_fs_close(&music_win.file);
+
+#else
+//    PlaySound(TEXT("hualian.wav"), NULL, SND_FILENAME | SND_ASYNC);
+    PlaySound(TEXT("G:\\GitHub_Code\\My_STM32_Phone\\SD\\music\\hualian.wav"), NULL, SND_FILENAME | SND_ASYNC);
+  
     #endif
 }

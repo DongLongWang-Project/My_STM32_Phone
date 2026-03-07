@@ -206,11 +206,13 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
         {
          lv_timer_del(Video_win.timer);
          Video_win.timer = NULL; // 清空指针
+
         }
         if(Video_win.file.drv!=NULL)
         {
           lv_fs_close(&Video_win.file);
 //          Video_win.file.drv==NULL;
+
         }
     
     switch(Page)
