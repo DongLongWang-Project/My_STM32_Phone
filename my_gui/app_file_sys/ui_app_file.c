@@ -6,19 +6,20 @@
 #include "ui_app_file.h"
 #include "../app_music/ui_app_music.h"
 
-#define Dir_MAX_LEN     512
+static FILE_TYPE_ENUM get_file_type(const char *path);
+static void other_file_message(lv_obj_t*parent);
+static void event_ui_app_file_cb(lv_event_t *e);
+static void load_dir_timer(lv_timer_t *timer);
+
+
+
+#define Dir_MAX_LEN     128
+char buf[Dir_MAX_LEN];
+
 char Cure_Path[128]={"0:"};
 
-static FILE_TYPE_ENUM get_file_type(const char *path);
 
-static lv_obj_t* open_dir_creat_btn(lv_obj_t *parent,const char * path);
-
-static void other_file_message(lv_obj_t*parent);
-
-
-static void event_ui_app_file_cb(lv_event_t *e);
-
-
+file_dir_t file_dir;
 /*--------------------------------------------------------------------------------↓
 	@函数	  : 创建文件夹的目录
 	@参数	  : 父对象,当前路径
@@ -27,18 +28,27 @@ static void event_ui_app_file_cb(lv_event_t *e);
 ↑--------------------------------------------------------------------------------*/
 lv_obj_t* ui_app_file_list_create(lv_obj_t *parent,const char * path)
 {
-    lv_obj_t*list = lv_list_create(parent); /*文件目录(以列表形式)*/
+    file_dir.list= lv_list_create(parent); /*文件目录(以列表形式)*/
+     file_dir.res=lv_fs_dir_open(&file_dir.dir,path);  /*打开目录的文件夹*/
+    if(file_dir.res!=LV_FS_RES_OK)/*失败就打印返回*/
+    {
+        printf("open %s  is fail",path);
+        return parent;
+    }
+       
+    lv_obj_set_size(file_dir.list, lv_pct(100), lv_pct(100));           
+    lv_obj_set_style_border_width(file_dir.list, 0, 0);
+    lv_obj_set_style_radius(file_dir.list, 0, 0);
+    lv_obj_set_style_pad_all(file_dir.list, 0, 0);
     
-    lv_obj_set_size(list, lv_pct(100), lv_pct(100));           
-    lv_obj_set_style_border_width(list, 0, 0);
-    lv_obj_set_style_radius(list, 0, 0);
-    lv_obj_set_style_pad_all(list, 0, 0);
+    lv_obj_set_scrollbar_mode(file_dir.list, LV_SCROLLBAR_MODE_OFF); 
+    lv_obj_set_scroll_dir(file_dir.list, LV_DIR_VER); 
     
-    lv_obj_set_scrollbar_mode(list, LV_SCROLLBAR_MODE_OFF); 
-    lv_obj_set_scroll_dir(list, LV_DIR_VER); 
+    lv_list_add_text(file_dir.list, path);/*添加标题(路径)*/
     
-    lv_list_add_text(list, path);/*添加标题(路径)*/
-    return open_dir_creat_btn(list,path);/*打开文件夹创建文件按钮*/
+    file_dir.timer=lv_timer_create(load_dir_timer,10,NULL);
+    
+    return file_dir.list;/*打开文件夹创建文件按钮*/
 }
 
 
@@ -48,36 +58,25 @@ lv_obj_t* ui_app_file_list_create(lv_obj_t *parent,const char * path)
 	@返回值 :  父对象
 	@备注	  :
 ↑--------------------------------------------------------------------------------*/
- lv_obj_t* open_dir_creat_btn(lv_obj_t *parent,const char * path)
+static void load_dir_timer(lv_timer_t *timer)
 {
-    lv_fs_res_t res;/*文件打开状态*/
-    lv_fs_dir_t dir; /*文件夹*/
-    lv_obj_t *btn;   /*按钮*/
-    char buf[Dir_MAX_LEN];
-    res=lv_fs_dir_open(&dir,path);  /*打开目录的文件夹*/
-    if(res!=LV_FS_RES_OK)/*失败就打印返回*/
-    {
-        printf("open %s  is fail",path);
-        return parent;
-    }
-    while(1)
-    {
-        memset(buf,0,sizeof(buf));
-        res=lv_fs_dir_read(&dir,buf);/*读取文件夹的内容*/
-//        printf("%s \r\n",buf);
-        if(res!=LV_FS_RES_OK || buf[0]=='\0') break; /*失败或者读到底就打断循环*/
+        file_dir.res=lv_fs_dir_read(&file_dir.dir,buf);/*读取文件夹的内容*/
+
+        if(file_dir.res!=LV_FS_RES_OK || buf[0]=='\0') 
+        {
+            if(file_dir.dir.drv!=NULL)
+            {
+               lv_fs_dir_close(&file_dir.dir); /*关闭文件夹*/  
+               lv_timer_del(file_dir.timer);  
+            }    
+        }
         else
         {
-            if( buf[0]=='/')btn = lv_list_add_btn(parent, LV_SYMBOL_DIRECTORY, buf); /*  /开头为文件夹*/
-            else btn = lv_list_add_btn(parent, LV_SYMBOL_FILE, buf);/*其他为文件*/
-            lv_obj_add_event_cb(btn, event_ui_app_file_cb, LV_EVENT_CLICKED, NULL);/*添加事件*/
-        }
-    }
-    lv_fs_dir_close(&dir); /*关闭文件夹*/
-    
-    return parent; /*返回父对象(页面,也就是列表)*/
+            if( buf[0]=='/')file_dir.btn = lv_list_add_btn(file_dir.list, LV_SYMBOL_DIRECTORY, buf); /*  /开头为文件夹*/
+            else file_dir.btn = lv_list_add_btn(file_dir.list, LV_SYMBOL_FILE, buf);/*其他为文件*/
+            lv_obj_add_event_cb(file_dir.btn, event_ui_app_file_cb, LV_EVENT_CLICKED, NULL);/*添加事件*/
+        }  
 }
-
 /*--------------------------------------------------------------------------------↓
 	@函数	  : 点击文件夹或者文件的事件回调函数
 	@参数	  : 无

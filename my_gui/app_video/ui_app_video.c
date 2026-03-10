@@ -5,9 +5,9 @@
 
 #define Video_Width  240
 #define Video_Height 160
-
+#define frame_rate  66   //15hz
 uint8_t video_buf[Video_Height*Video_Width*2]__attribute__((section(".EXT_SRAM")));
-lv_obj_t*video_win;
+
 
 static lv_img_dsc_t video_dsc = {
     .header.always_zero = 0,           // 必须为 0
@@ -20,6 +20,7 @@ static lv_img_dsc_t video_dsc = {
 
 
 video_control_t Video_win;
+video_time_t video_time;
 extern char Cure_Path[128];
 
 lv_obj_t* ui_app_video_list_creat(lv_obj_t*parent)
@@ -33,13 +34,17 @@ static void video_timer_cb(lv_timer_t * t) {
     uint32_t num;
     // 读取下一帧
    
+   video_time.view_cur_time++;
+  lv_bar_set_value(Video_win.video_pargress_bar, video_time.view_cur_time,LV_ANIM_ON);
+
+   
     lv_fs_res_t res = lv_fs_read(&Video_win.file, (void*)video_dsc.data, video_dsc.data_size, &num);
 
         if(res != LV_FS_RES_OK || num < video_dsc.data_size) {
         // 播放完了，关闭文件并停止定时器
         lv_fs_close(&Video_win.file);
         lv_timer_del(t);
-
+         video_time.view_cur_time=0;
         Video_win.timer = NULL; // 清空指针
          lv_label_set_text(lv_obj_get_child(Video_win.view_btn,0),LV_SYMBOL_PLAY);
         printf("视频播放结束\r\n");
@@ -70,6 +75,24 @@ void event_video_btn(lv_event_t*e)
         }
         video_state=!video_state;
     }
+    if(code==LV_EVENT_LONG_PRESSED)
+    {
+        video_state=false;
+        lv_timer_set_period(Video_win.timer,frame_rate/2);
+    }
+    else if(code==LV_EVENT_RELEASED)
+    {
+        lv_timer_set_period(Video_win.timer,frame_rate);
+    }
+}
+
+lv_obj_t* video_progress_bar(lv_obj_t*parent)
+{
+    lv_obj_t* progress_bar=lv_bar_create(parent);
+    lv_obj_set_size(progress_bar,lv_pct(100),5);
+    lv_obj_set_style_bg_opa(progress_bar,10,0);
+    lv_bar_set_mode( progress_bar, LV_BAR_MODE_NORMAL );
+    return progress_bar;
 }
 
 void ui_app_video_detail_creat(lv_obj_t*parent,const char*path)
@@ -80,18 +103,40 @@ void ui_app_video_detail_creat(lv_obj_t*parent,const char*path)
    lv_obj_center(Video_win.obj_video);
    lv_img_set_src(Video_win.obj_video, &video_dsc);
    
+    Video_win.video_pargress_bar=video_progress_bar(parent);
+        lv_obj_align_to(Video_win.video_pargress_bar,Video_win.obj_video,LV_ALIGN_OUT_BOTTOM_MID,0,0);
     Video_win.view_btn=ui_widgets_btn_create(parent,LV_SYMBOL_PAUSE);
-    lv_obj_align_to(Video_win.view_btn,Video_win.obj_video,LV_ALIGN_OUT_BOTTOM_MID,0,0);
+    lv_obj_align_to(Video_win.view_btn,Video_win.video_pargress_bar,LV_ALIGN_OUT_BOTTOM_MID,0,0);
+    lv_obj_set_style_bg_opa(Video_win.view_btn,0,0);
+    lv_obj_t*btn_label=lv_obj_get_child(Video_win.view_btn,0);
+    lv_obj_set_style_text_color(btn_label,lv_color_hex(0x007FFE),0);
     
     lv_obj_add_event_cb(Video_win.view_btn,event_video_btn,LV_EVENT_CLICKED,NULL);
+    lv_obj_add_flag(Video_win.obj_video, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_event_cb(Video_win.obj_video,event_video_btn,LV_EVENT_CLICKED,NULL); 
+    lv_obj_add_event_cb(Video_win.obj_video,event_video_btn,LV_EVENT_LONG_PRESSED,NULL); 
+    lv_obj_add_event_cb(Video_win.obj_video,event_video_btn,LV_EVENT_RELEASED,NULL); 
+    
    lv_fs_res_t res = lv_fs_open(&Video_win.file, path, LV_FS_MODE_RD); /*打开文件*/
    if(res==LV_FS_RES_OK) 
    {
-      printf("打开视频文件成功\r\n");
-      Video_win.timer=lv_timer_create(video_timer_cb,66,NULL);
+       lv_fs_seek(&Video_win.file, 0, LV_FS_SEEK_END);
+       uint32_t video_size;
+       lv_fs_tell(&Video_win.file,&video_size);
+       video_time.total_sec=video_size/video_dsc.header.w/video_dsc.header.h/15/2;
+       video_time.hour=video_time.total_sec/3600;
+       video_time.minute=video_time.total_sec/60;
+       video_time.total_sec=video_time.total_sec%60;
+       printf("%d %d %d ",video_time.hour,video_time.minute,video_time.total_sec);
+       lv_bar_set_range( Video_win.video_pargress_bar,0,video_size/video_dsc.header.w/video_dsc.header.h/2);
+       
+       lv_fs_seek(&Video_win.file, 0, LV_FS_SEEK_SET);
+      printf("打开视频文件成功,大小:%u\r\n",video_size);
+      Video_win.timer=lv_timer_create(video_timer_cb,frame_rate,NULL);
       if(Video_win.timer!=NULL)
       {
        printf("视频定时器创建成功\r\n"); 
+        lv_bar_set_start_value( Video_win.video_pargress_bar, 0, LV_ANIM_OFF );
       }
    }
    else
@@ -99,5 +144,5 @@ void ui_app_video_detail_creat(lv_obj_t*parent,const char*path)
       printf("打开视频文件失败\r\n");
 
    }
-    
 }
+

@@ -206,15 +206,20 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
         {
          lv_timer_del(Video_win.timer);
          Video_win.timer = NULL; // 清空指针
-
+          video_time.view_cur_time=0;
+        printf("关闭视频刷新定时器\r\n");
         }
         if(Video_win.file.drv!=NULL)
         {
           lv_fs_close(&Video_win.file);
-//          Video_win.file.drv==NULL;
-
+          Video_win.file.drv==NULL;
+            printf("关闭视频文件\r\n");
         }
-    
+            if(file_dir.dir.drv!=NULL)
+            {
+               lv_fs_dir_close(&file_dir.dir); /*关闭文件夹*/  
+               lv_timer_del(file_dir.timer);  
+            } 
     switch(Page)
     {
         case PAGE_HOME:

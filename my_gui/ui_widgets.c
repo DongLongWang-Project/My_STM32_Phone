@@ -190,6 +190,10 @@ lv_obj_t* creat_statebar_icon(const char*text)
         lv_keyboard_set_textarea(keyboard,target);
         lv_obj_clear_flag(keyboard,LV_OBJ_FLAG_HIDDEN);
     }
+//    if(code == LV_EVENT_RELEASED)
+//    {
+//        lv_obj_add_flag(keyboard,LV_OBJ_FLAG_HIDDEN);
+//    }
 }
 
 static void event_alarm_msgbox_cb(lv_event_t*e);
