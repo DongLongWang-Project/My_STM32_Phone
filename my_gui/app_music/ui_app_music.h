@@ -1,6 +1,7 @@
 #ifndef __UI_APP_MUSIC_H
 #define __UI_APP_MUSIC_H
 #include "lvgl.h"
+#include "ui_app_setting.h"
 
 
 #if keil

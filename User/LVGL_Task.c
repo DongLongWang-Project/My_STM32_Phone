@@ -16,7 +16,7 @@
 
  * 包括: 任务句柄 任务优先级 堆栈大小 创建任务
    */
-   #define LV_DEMO_TASK_PRIO   4           /* 任务优先级 */
+   #define LV_DEMO_TASK_PRIO   3           /* 任务优先级 */
    #define LV_DEMO_STK_SIZE    2048         /* 任务堆栈大小 */
    TaskHandle_t LV_DEMOTask_Handler;       /* 任务句柄 */
    void lv_demo_task(void *pvParameters);  /* 任务函数 */
@@ -35,7 +35,7 @@
 
  * 包括: 任务句柄 任务优先级 堆栈大小 创建任务
    */
-   #define AUDIO_Task_PRIO       3           /* 任务优先级 */
+   #define AUDIO_Task_PRIO       4           /* 任务优先级 */
    #define AUDIO_Task_STK_SIZE        512         /* 任务堆栈大小 */
    TaskHandle_t AUDIO_Task_Handler;           /* 任务句柄 */
    void AUDIO_task(void *pvParameters);      /* 任务函数 */
@@ -114,6 +114,7 @@ void MyPhone_stm32_task(void)
      pvParameters = pvParameters;
 
      ui_init();
+   
 
      while(1)
      {
@@ -154,5 +155,6 @@ void AUDIO_task(void *pvParameters)
   while(1)
   {
       AudioTask();
+       
   }
 }

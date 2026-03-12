@@ -56,7 +56,7 @@ void ui_app_music_detail_creat(lv_obj_t*parent,const char*path)
        music_win.music_time.music_sec=music_win.music_time.music_total_sec%60; 
        printf("music_total_sec:%d NumChannels:%d SampleRate:%d BitsPerSample:%d DataSize:%d\r\n",music_win.music_time.music_total_sec,
        music_win.wav_data.NumChannels,music_win.wav_data.SampleRate,music_win.wav_data.BitsPerSample,music_win.wav_data.DataSize);
-                           
+       DMA_Cmd(DMA1_Stream4,ENABLE);                    
    }
    else
    {

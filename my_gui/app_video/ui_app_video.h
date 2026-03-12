@@ -2,13 +2,13 @@
 #define __UI_APP_VIDEO_H
 
 #include "lvgl.h"
+#include "ui_app_setting.h"
 
 lv_obj_t* ui_app_video_list_creat(lv_obj_t*parent);
 void ui_app_video_detail_creat(lv_obj_t*parent,const char*path);
 
 #if keil
-//#define SD_VIDEO_PATH "0:/SD/video"
-
+#define SD_VIDEO_PATH "0:/SD/video"
 #else
 #define SD_VIDEO_PATH "0:/GitHub_Code/My_STM32_Phone/SD/video"
 #endif // 

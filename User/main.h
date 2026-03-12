@@ -2,6 +2,7 @@
 #define	  __MAIN_H
 
 #include "stm32f4xx.h"
+#include "LED.h"
 #include "Delay.h"
 #include "USART1.h"
 #include "SD.h"
@@ -16,6 +17,7 @@
 #include "HX1838.h"
 //#include "myFont.h"
 #include "MAX98357A.h"
+#include "ui_app_music.h"
 
 
 #endif

@@ -31,6 +31,7 @@
 #include "usb_conf.h" 
 #include "MAX98357A.h"
 
+#include "ui_app_music.h"
 
 void MyPhone_stm32_task(void);
 

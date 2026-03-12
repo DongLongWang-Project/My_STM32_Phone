@@ -607,7 +607,7 @@ volatile SemaphoreHandle_t TFTLCD_BinSemaphore;
     DMA_InitStruct.DMA_FIFOMode=DMA_FIFOMode_Enable;
     DMA_InitStruct.DMA_FIFOThreshold=DMA_FIFOThreshold_Full;
     DMA_InitStruct.DMA_Mode=DMA_Mode_Normal;
-    DMA_InitStruct.DMA_Priority=DMA_Priority_VeryHigh;
+    DMA_InitStruct.DMA_Priority=DMA_Priority_Medium;
 
     DMA_Init(DMA2_Stream6,&DMA_InitStruct);
 
