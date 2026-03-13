@@ -41,7 +41,7 @@ void ui_app_weather_create(lv_obj_t*parent)
     lv_textarea_set_placeholder_text(weather_widget.search_box,"Please to input city...");
     lv_obj_add_event_cb(weather_widget.search_box,event_textarea_cb,LV_EVENT_CLICKED,NULL);
 
-    weather_widget.search_btn=ui_widgets_btn_create(obj_search_box,"OK");
+    weather_widget.search_btn=ui_widgets_btn_create(obj_search_box,"OK",lv_color_hex(0x007FFE));
     lv_obj_set_style_bg_opa(weather_widget.search_btn,100,LV_STATE_DEFAULT);
     lv_obj_set_size(weather_widget.search_btn,lv_pct(20),lv_pct(80)); 
     lv_obj_align_to(weather_widget.search_btn,weather_widget.search_box,LV_ALIGN_OUT_RIGHT_MID,0,0);

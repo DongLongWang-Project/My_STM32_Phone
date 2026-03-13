@@ -21,7 +21,8 @@ static lv_img_dsc_t video_dsc = {
 
 video_control_t Video_win;
 video_time_t video_time;
-extern char Cure_Path[128];
+extern char Cure_Path[Dir_MAX_LEN];
+static void event_video_close_cb(lv_event_t*e);
 
 lv_obj_t* ui_app_video_list_creat(lv_obj_t*parent)
 {
@@ -86,14 +87,7 @@ void event_video_btn(lv_event_t*e)
     }
 }
 
-lv_obj_t* video_progress_bar(lv_obj_t*parent)
-{
-    lv_obj_t* progress_bar=lv_bar_create(parent);
-    lv_obj_set_size(progress_bar,lv_pct(100),5);
-    lv_obj_set_style_bg_opa(progress_bar,10,0);
-    lv_bar_set_mode( progress_bar, LV_BAR_MODE_NORMAL );
-    return progress_bar;
-}
+
 
 void ui_app_video_detail_creat(lv_obj_t*parent,const char*path)
 {
@@ -103,20 +97,21 @@ void ui_app_video_detail_creat(lv_obj_t*parent,const char*path)
    lv_obj_center(Video_win.obj_video);
    lv_img_set_src(Video_win.obj_video, &video_dsc);
    
-    Video_win.video_pargress_bar=video_progress_bar(parent);
+    Video_win.video_pargress_bar=ui_progress_bar(parent);
         lv_obj_align_to(Video_win.video_pargress_bar,Video_win.obj_video,LV_ALIGN_OUT_BOTTOM_MID,0,0);
-    Video_win.view_btn=ui_widgets_btn_create(parent,LV_SYMBOL_PAUSE);
+    Video_win.view_btn=ui_widgets_btn_create(parent,LV_SYMBOL_PAUSE,lv_color_hex(0x007FFE));
     lv_obj_align_to(Video_win.view_btn,Video_win.video_pargress_bar,LV_ALIGN_OUT_BOTTOM_MID,0,0);
-    lv_obj_set_style_bg_opa(Video_win.view_btn,0,0);
-    lv_obj_t*btn_label=lv_obj_get_child(Video_win.view_btn,0);
-    lv_obj_set_style_text_color(btn_label,lv_color_hex(0x007FFE),0);
+//    lv_obj_set_style_bg_opa(Video_win.view_btn,0,0);
+//    lv_obj_t*btn_label=lv_obj_get_child(Video_win.view_btn,0);
+//    lv_obj_set_style_text_color(btn_label,lv_color_hex(0x007FFE),0);
     
     lv_obj_add_event_cb(Video_win.view_btn,event_video_btn,LV_EVENT_CLICKED,NULL);
     lv_obj_add_flag(Video_win.obj_video, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_event_cb(Video_win.obj_video,event_video_btn,LV_EVENT_CLICKED,NULL); 
     lv_obj_add_event_cb(Video_win.obj_video,event_video_btn,LV_EVENT_LONG_PRESSED,NULL); 
     lv_obj_add_event_cb(Video_win.obj_video,event_video_btn,LV_EVENT_RELEASED,NULL); 
-    
+    lv_obj_add_event_cb(Video_win.obj_video,event_video_close_cb,LV_EVENT_DELETE,NULL); 
+   
    lv_fs_res_t res = lv_fs_open(&Video_win.file, path, LV_FS_MODE_RD); /*打开文件*/
    if(res==LV_FS_RES_OK) 
    {
@@ -146,3 +141,19 @@ void ui_app_video_detail_creat(lv_obj_t*parent,const char*path)
    }
 }
 
+static void event_video_close_cb(lv_event_t*e)
+{
+        if(Video_win.timer !=NULL)
+        {
+         lv_timer_del(Video_win.timer);
+         Video_win.timer = NULL; // 清空指针
+          video_time.view_cur_time=0;
+        printf("关闭视频刷新定时器\r\n");
+        }
+        if(Video_win.file.drv!=NULL)
+        {
+          lv_fs_close(&Video_win.file);
+          Video_win.file.drv==NULL;
+            printf("关闭视频文件\r\n");
+        }
+}

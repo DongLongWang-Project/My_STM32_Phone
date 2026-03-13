@@ -2,7 +2,7 @@
 #define __UI_APP_VIDEO_H
 
 #include "lvgl.h"
-#include "ui_app_setting.h"
+#include "../app_setting/ui_app_setting.h"
 
 lv_obj_t* ui_app_video_list_creat(lv_obj_t*parent);
 void ui_app_video_detail_creat(lv_obj_t*parent,const char*path);
@@ -31,4 +31,6 @@ typedef struct {
 
 extern video_control_t Video_win;
 extern video_time_t video_time;
+extern uint8_t video_buf[];
+
 #endif

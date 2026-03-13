@@ -8,7 +8,7 @@
 #include "ui_main.h"
 #include "app_video/ui_app_video.h"
 #include "app_music/ui_app_music.h"
-
+#include "app_file_sys/ui_app_file.h"
 
 lv_obj_t*tileview,*tile_main;
 
@@ -40,7 +40,9 @@ void ui_init(void)
     lv_obj_set_flex_grow(label_time,1);
  
     lv_timer_create(clock_time_timer_cb, 1000, NULL);  
-  
+    file_dir.timer=lv_timer_create(load_dir_timer,10,NULL);
+    lv_timer_pause(file_dir.timer);
+    
     ui_goto_page(PAGE_HOME,APP_TEMP);
     
     alarm_rem_win(lv_scr_act());
@@ -202,24 +204,8 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
         Clock_time_widget.meter = NULL;
         timer_widget.timer_obj=NULL;
         
-        if(Video_win.timer !=NULL)
-        {
-         lv_timer_del(Video_win.timer);
-         Video_win.timer = NULL; // 清空指针
-          video_time.view_cur_time=0;
-        printf("关闭视频刷新定时器\r\n");
-        }
-        if(Video_win.file.drv!=NULL)
-        {
-          lv_fs_close(&Video_win.file);
-          Video_win.file.drv==NULL;
-            printf("关闭视频文件\r\n");
-        }
-            if(file_dir.dir.drv!=NULL)
-            {
-               lv_fs_dir_close(&file_dir.dir); /*关闭文件夹*/  
-               lv_timer_del(file_dir.timer);  
-            } 
+
+  
     switch(Page)
     {
         case PAGE_HOME:

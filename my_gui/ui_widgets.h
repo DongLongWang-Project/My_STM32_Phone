@@ -22,5 +22,6 @@ extern lv_obj_t*alarm_msgbox_obj;
 extern void event_textarea_cb(lv_event_t*e);
 void alarm_rem_win(lv_obj_t* parent);
 
-lv_obj_t* ui_widgets_btn_create(lv_obj_t*parent,const char*btn_text);
+lv_obj_t* ui_widgets_btn_create(lv_obj_t*parent,const char*btn_text,lv_color_t btn_label_color);
+lv_obj_t* ui_progress_bar(lv_obj_t*parent);
 #endif // __UI_WIDGETS_H

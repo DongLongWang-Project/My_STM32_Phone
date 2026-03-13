@@ -1,7 +1,7 @@
 #include "ui_app_clock.h"
 
 
-lv_obj_t* ui_widgets_btn_create(lv_obj_t*parent,const char*btn_text);
+lv_obj_t* ui_widgets_btn_create(lv_obj_t*parent,const char*btn_text,lv_color_t btn_label_color);
 
 static void event_btn_add_clock_cb(lv_event_t*e);
 
@@ -316,10 +316,10 @@ void clock_time_create(lv_obj_t*parent,ALARM_MODE_ENUM alarm_mode)
     lv_obj_align_to(minute_roller,hour_roller,LV_ALIGN_OUT_RIGHT_MID,0,0);
     lv_roller_set_options(minute_roller,clock_set_min_options,LV_ROLLER_MODE_NORMAL);
     /*确定创建闹钟按钮*/
-   lv_obj_t*btn_ok=ui_widgets_btn_create(roller_obj,LV_SYMBOL_OK);
+   lv_obj_t*btn_ok=ui_widgets_btn_create(roller_obj,LV_SYMBOL_OK,lv_color_hex(0x4897E0));
    lv_obj_align(btn_ok,LV_ALIGN_RIGHT_MID,0,-20);
    /*取消创建按钮*/
-   lv_obj_t*btn_cancel=ui_widgets_btn_create(roller_obj,LV_SYMBOL_CLOSE);
+   lv_obj_t*btn_cancel=ui_widgets_btn_create(roller_obj,LV_SYMBOL_CLOSE,lv_color_hex(0x4897E0));
    lv_obj_align(btn_cancel,LV_ALIGN_RIGHT_MID,0,20);
     /*铃声的下拉列表*/
     lv_list_add_text(clock_set_list,"Ringtone");
