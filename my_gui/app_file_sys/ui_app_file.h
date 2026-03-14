@@ -21,15 +21,16 @@ typedef enum {
 } FILE_TYPE_ENUM;
 
 #define SHOW_FILE_MAX_NUM      8
-#define FILE_NAME_MAX_LEN 64
+#define FILE_NAME_MAX_LEN 32
+#define SAVE_FILE_NAME_NUM 100
 #define Dir_MAX_LEN     256
+
 typedef struct
 {
     lv_obj_t*list;
     lv_fs_dir_t dir; /*文件夹*/
     lv_obj_t *btn;   /*按钮*/
     lv_timer_t*timer;
-
 }file_dir_t;
 typedef struct
 {
@@ -37,7 +38,12 @@ typedef struct
     lv_obj_t*pre_page_btn; 
     lv_obj_t*next_page_btn; 
     lv_obj_t*page_label; 
-    uint8_t cur_page; 
+    uint8_t cur_page;
+    uint8_t total_file_num; 
+    uint8_t total_page_num;
+    lv_timer_t*timer;
+    bool creat_enable;
+    
 }file_switch_page_t;
 
 

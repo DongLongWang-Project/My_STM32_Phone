@@ -40,8 +40,6 @@ void ui_init(void)
     lv_obj_set_flex_grow(label_time,1);
  
     lv_timer_create(clock_time_timer_cb, 1000, NULL);  
-    file_dir.timer=lv_timer_create(load_dir_timer,10,NULL);
-    lv_timer_pause(file_dir.timer);
     
     ui_goto_page(PAGE_HOME,APP_TEMP);
     

@@ -1,9 +1,24 @@
 #include "ui_app_weather.h"
 
 
-
 ui_app_weather_widget_t weather_widget;
 static lv_obj_t* temperature_slider(lv_obj_t*parent,int32_t temperature_min,int32_t temperature_max);
+
+#define icon_width      48
+#define icon_height     48
+#define icon_buf_size   icon_width*icon_height*2
+
+uint8_t weather_icon_buf[icon_buf_size]__attribute__((section(".EXT_SRAM")));
+
+ static   lv_img_dsc_t music_record_1x = {
+    .header.always_zero = 0,           // 必须为 0
+    .header.w = icon_width,           // 宽
+    .header.h = icon_height,          // 高
+    .data_size = icon_buf_size,
+    .header.cf = LV_IMG_CF_TRUE_COLOR, // 核心：使用当前系统配置的颜色格式
+    .data = weather_icon_buf,                      // 初始化设为 NULL，稍后在函数里赋值
+};
+
 static void event_weather_search_btn_cb(lv_event_t*e)
 {
     lv_event_code_t code=lv_event_get_code(e);
@@ -30,8 +45,8 @@ void ui_app_weather_create(lv_obj_t*parent)
 
     lv_obj_set_size(obj_search_box,lv_pct(100),lv_pct(15));
    lv_obj_set_scrollbar_mode(obj_search_box,LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_style_bg_opa(obj_search_box,10,LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(obj_search_box,lv_color_hex(0x949494),0); 
+//    lv_obj_set_style_bg_opa(obj_search_box,10,LV_STATE_DEFAULT);
+//    lv_obj_set_style_bg_color(obj_search_box,lv_color_hex(0x949494),0); 
     
     weather_widget.search_box=lv_textarea_create(obj_search_box);
     lv_obj_set_style_bg_opa(weather_widget.search_box,100,LV_STATE_DEFAULT);
@@ -48,8 +63,8 @@ void ui_app_weather_create(lv_obj_t*parent)
     lv_obj_add_event_cb(weather_widget.search_btn,event_weather_search_btn_cb,LV_EVENT_CLICKED,NULL);
     
     lv_obj_t*obj_cur_day=lv_obj_create(list_weather);
-    lv_obj_set_style_bg_opa(obj_cur_day,10,LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(obj_cur_day,lv_color_hex(0x949494),0); 
+//    lv_obj_set_style_bg_opa(obj_cur_day,10,LV_STATE_DEFAULT);
+//    lv_obj_set_style_bg_color(obj_cur_day,lv_color_hex(0x949494),0); 
     lv_obj_set_style_pad_all(obj_cur_day,0,0);
     lv_obj_set_size(obj_cur_day,lv_pct(100),lv_pct(65));
     
@@ -57,7 +72,7 @@ void ui_app_weather_create(lv_obj_t*parent)
     #if keil
     lv_label_set_text(weather_widget.place_label,Cur_Time.place_str);
     #else
-    lv_label_set_text(weather_widget.place_label,"UNKNOW");
+    lv_label_set_text(weather_widget.place_label,"我家");
     #endif // keil
     ui_set_obj_text_font(weather_widget.place_label,FONT_SIZE_16);
     lv_obj_align(weather_widget.place_label,LV_ALIGN_TOP_LEFT,10,20);
@@ -68,12 +83,12 @@ void ui_app_weather_create(lv_obj_t*parent)
     
     #if keil
     lv_label_set_text_fmt(weather_widget.temperature_label,"%s\n%d~%d°C",Cur_Time.three_day_data[0].weather_str,Cur_Time.three_day_data[0].low_temperature,Cur_Time.three_day_data[0].high_temperature);
-     img_icon=update_weather_icon(obj_cur_day,Cur_Time.three_day_data[0].weather_code_day,true);
-    lv_obj_align(img_icon,LV_ALIGN_TOP_RIGHT,-10,5);
-    #else
+     img_icon=update_weather_icon(obj_cur_day,Cur_Time.three_day_data[0].weather_code_day);
+    lv_obj_align(img_icon,LV_ALIGN_TOP_RIGHT,-20,35);
+        #else
     lv_label_set_text(weather_widget.temperature_label,"晴\n0~0°C");
-    img_icon=update_weather_icon(obj_cur_day,0,true);
-    lv_obj_align(img_icon,LV_ALIGN_TOP_RIGHT,-10,5);
+    img_icon=update_weather_icon(obj_cur_day,0);
+    lv_obj_align(img_icon,LV_ALIGN_TOP_RIGHT,-20,35);
     #endif // keil
     
 //    weather_widget.humidity_label=lv_label_create(obj_cur_day);
@@ -92,8 +107,8 @@ void ui_app_weather_create(lv_obj_t*parent)
 
     
     lv_obj_t*obj_next_day=lv_obj_create(list_weather);
-    lv_obj_set_style_bg_opa(obj_next_day,10,LV_STATE_DEFAULT); 
-    lv_obj_set_style_bg_color(obj_next_day,lv_color_hex(0x949494),0);
+//    lv_obj_set_style_bg_opa(obj_next_day,10,LV_STATE_DEFAULT); 
+//    lv_obj_set_style_bg_color(obj_next_day,lv_color_hex(0x949494),0);
     lv_obj_set_style_pad_all(obj_next_day,0,0);
     lv_obj_set_style_radius(obj_next_day,0,0);
     lv_obj_set_size(obj_next_day,lv_pct(100),lv_pct(20));
@@ -136,30 +151,35 @@ void ui_app_weather_create(lv_obj_t*parent)
 //    ui_set_obj_text_font(weather_widget.template_label,FONT_SIZE_32);
 }
 
-lv_obj_t* update_weather_icon(lv_obj_t * parent, uint8_t weather_code,bool is_cur_day) 
+lv_obj_t* update_weather_icon(lv_obj_t * parent, uint8_t weather_code) 
 {
     char icon_path[128];
     lv_obj_t * img_icon = lv_img_create(parent);
-    if(is_cur_day==true)
-    {
+
     #if keil
-    snprintf(icon_path, sizeof(icon_path), "0:SD/my_icon/xinzhi_icon/white/%d@1x.png", weather_code);
+    snprintf(icon_path, sizeof(icon_path), "0:SD/my_icon/icon/output/%d.bin", weather_code);
     #else
-     snprintf(icon_path, sizeof(icon_path), "0:/GitHub_Code/My_STM32_Phone/SD/my_icon/xinzhi_icon/white/%d@1x.png", weather_code);
+     snprintf(icon_path, sizeof(icon_path), "0:/GitHub_Code/My_STM32_Phone/SD/my_icon/icon/output/%d.bin", weather_code);
+     lv_fs_res_t res= lv_fs_open(&weather_widget.file_fp,icon_path,LV_FS_MODE_RD);
+
+         uint32_t num;
+        printf("打开天气图标文件成功\r\n");
+        res=lv_fs_read(&weather_widget.file_fp,weather_icon_buf,icon_buf_size,&num);
+         if(res==LV_FS_RES_OK)
+         {
+             printf("读取天气图标文件成功:%d\r\n",num); 
+            lv_img_set_src(img_icon,&music_record_1x);
+            lv_fs_close(&weather_widget.file_fp);
+         } 
+     
+     else
+     {
+        printf("打开天气图标文件失败\r\n");
+     }
+     
     #endif // keil 
 
-    }
-    else
-    {
-    #if keil
-    snprintf(icon_path, sizeof(icon_path), "0:SD/my_icon/xinzhi_icon/white/%d@1x.png", weather_code);
-    #else
-
-     snprintf(icon_path, sizeof(icon_path), "0:/GitHub_Code/My_STM32_Phone/SD/my_icon/xinzhi_icon/white/%d@1x.png", weather_code);
-    #endif // keil
-    }
-    // 关键一步：重新设置图片源
-    lv_img_set_src(img_icon, icon_path);
+    
     return img_icon;
 }
 

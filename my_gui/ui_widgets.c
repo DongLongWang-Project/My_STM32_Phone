@@ -7,7 +7,7 @@ static const char*btnm_map[]={LV_SYMBOL_HOME,LV_SYMBOL_LEFT,""};
 lv_obj_t*label_time,*label_wifi=NULL,*state_bar;
 lv_obj_t*keyboard;
 lv_obj_t*alarm_msgbox_obj;
-
+play_control_t play_control_bar;
  void event_control_bar_cb(lv_event_t *e);
 /**
  * @brief   创建APP按钮
@@ -254,12 +254,36 @@ lv_obj_t* ui_widgets_btn_create(lv_obj_t*parent,const char*btn_text,lv_color_t b
     return btn;
 }
 
-lv_obj_t* ui_progress_bar(lv_obj_t*parent)
+void ui_play_control(lv_obj_t*parent,play_control_t*play_control)
 {
-    lv_obj_t* progress_bar=lv_bar_create(parent);
+    play_control->obj_play_control=lv_obj_create(parent);
+    play_control->progress_bar=lv_bar_create(play_control->obj_play_control);
+    play_control->progress_label=lv_label_create(play_control->obj_play_control);
+    play_control->pause_btn=ui_widgets_btn_create(play_control->obj_play_control,LV_SYMBOL_PAUSE,lv_color_hex(0x0000A0));
+    play_control->next_btn=ui_widgets_btn_create(play_control->obj_play_control,LV_SYMBOL_NEXT,lv_color_hex(0x0000A0));
+    play_control->pre_btn=ui_widgets_btn_create(play_control->obj_play_control,LV_SYMBOL_PREV,lv_color_hex(0x0000A0));   
+
+    lv_obj_t *obj_play_control=play_control->obj_play_control;
+    lv_obj_t *progress_bar=play_control->progress_bar;
+    lv_obj_t *progress_label=play_control->progress_label;
+     
+    lv_obj_t *pre_btn=play_control->pre_btn;  
+    lv_obj_t *pause_btn=play_control->pause_btn;
+    lv_obj_t *next_btn=play_control->next_btn;
+    
+    
+    lv_obj_set_size(obj_play_control,lv_pct(100),lv_pct(30));
+    lv_obj_set_style_radius(obj_play_control,0,0);
+    lv_obj_set_style_pad_all(obj_play_control,0,0);
+    
     lv_obj_set_size(progress_bar,lv_pct(100),5);
     lv_obj_set_style_bg_opa(progress_bar,10,0);
+    lv_obj_align(progress_bar,LV_ALIGN_TOP_MID,0,0);
     lv_bar_set_mode( progress_bar, LV_BAR_MODE_NORMAL );
-    return progress_bar;
+    
+    lv_obj_align(pre_btn,LV_ALIGN_TOP_LEFT,0,0);
+    lv_obj_align_to(pause_btn,pre_btn,LV_ALIGN_OUT_RIGHT_MID,0,0);
+    lv_obj_align_to(next_btn,pause_btn,LV_ALIGN_OUT_RIGHT_MID,0,0);
+    lv_obj_align_to(progress_label,next_btn,LV_ALIGN_OUT_RIGHT_MID,0,0);
+    
 }
-

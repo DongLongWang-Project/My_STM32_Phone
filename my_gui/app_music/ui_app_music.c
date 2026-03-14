@@ -50,9 +50,9 @@ void ui_app_music_detail_creat(lv_obj_t*parent,const char*path)
     
     char music_name[64];
     get_music_name(path,music_name);
-    
+    lv_fs_res_t res;
     #if keil
-   lv_fs_res_t res = lv_fs_open(&music_win.file, path, LV_FS_MODE_RD); /*打开文件*/
+    res = lv_fs_open(&music_win.file, path, LV_FS_MODE_RD); /*打开文件*/
    if(res==LV_FS_RES_OK) 
    {
         printf("打开音频文件成功\r\n");
@@ -100,7 +100,7 @@ snprintf(music_path,sizeof(music_path),"G:\\GitHub_Code\\My_STM32_Phone\\SD\\mus
     
     music_play.record_icon=lv_img_create(parent);
     
-    lv_fs_res_t res= lv_fs_open(&music_play.file,MUSIC_RECORD_PATH,LV_FS_MODE_RD);
+     res= lv_fs_open(&music_play.file,MUSIC_RECORD_PATH,LV_FS_MODE_RD);
    if(res!=LV_FS_RES_OK)
    {
        printf("打开唱片文件失败 或者唱片文件被删除\r\n");
@@ -128,13 +128,13 @@ snprintf(music_path,sizeof(music_path),"G:\\GitHub_Code\\My_STM32_Phone\\SD\\mus
     
 
     lv_label_set_text(music_play.music_label,music_name);
-   music_play.music_record=ui_progress_bar(parent);
+//   music_play.music_record=ui_progress_bar(parent);
    lv_obj_align_to(music_play.music_record,music_play.music_label,LV_ALIGN_OUT_BOTTOM_MID,0,10);
  music_play.pause_btn=ui_widgets_btn_create(parent,LV_SYMBOL_PAUSE,lv_color_hex(0x007FFE));
  music_play.next_btn=ui_widgets_btn_create(parent,LV_SYMBOL_NEXT,lv_color_hex(0x007FFE));
   music_play.pre_btn=ui_widgets_btn_create(parent,LV_SYMBOL_PREV,lv_color_hex(0x007FFE)); 
   
-  lv_obj_align_to(music_play.pause_btn,music_play.music_record,LV_ALIGN_OUT_BOTTOM_MID,0,0);
+//  lv_obj_align_to(music_play.pause_btn,music_play.music_record,LV_ALIGN_OUT_BOTTOM_MID,0,0);
   lv_obj_align_to(music_play.next_btn,music_play.pause_btn,LV_ALIGN_OUT_RIGHT_MID,0,0);
   lv_obj_align_to(music_play.pre_btn,music_play.pause_btn,LV_ALIGN_OUT_LEFT_MID,0,0);
   
@@ -155,7 +155,7 @@ void music_record_anim_config(void)
 }
 void get_music_name(const char *path,char*buf)
 {
-    char* name_start=strrchr(path,'/');
+    const char* name_start=strrchr(path,'/');
     if(!name_start) name_start=strrchr(path,'\\');
     name_start = (name_start)?(name_start+1) : path;
     char* name_end=strrchr(path,'.');

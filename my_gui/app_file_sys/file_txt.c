@@ -235,3 +235,5 @@ static void event_fle_txt_scroll(lv_event_t* e)
         }
     }
 }
+
+

@@ -17,8 +17,6 @@ typedef struct {
   lv_fs_file_t file;
   lv_obj_t *obj_video;
   lv_timer_t *timer; // 保存定时器指针，方便删除
-  lv_obj_t *view_btn;
-  lv_obj_t*video_pargress_bar;
 }video_control_t;
 
 typedef struct {
@@ -26,7 +24,10 @@ typedef struct {
   uint8_t minute;
   uint8_t second;
   uint32_t total_sec;
-    uint32_t view_cur_time;
+  uint32_t view_cur_time;
+  uint16_t cur_hour;
+  uint8_t cur_minute;
+  uint8_t cur_second;
 }video_time_t;
 
 extern video_control_t Video_win;

@@ -27,9 +27,11 @@ typedef struct
     lv_obj_t*next_day1_tem;
     lv_obj_t*next_day2_tem;
     
+    lv_fs_file_t file_fp;
+    
     
 }ui_app_weather_widget_t;
 
 extern ui_app_weather_widget_t weather_widget;
-lv_obj_t* update_weather_icon(lv_obj_t * parent, uint8_t weather_code,bool is_cur_day); 
+lv_obj_t* update_weather_icon(lv_obj_t * parent, uint8_t weather_code ); 
 #endif
