@@ -15,7 +15,7 @@ lv_obj_t* ui_file_switch_page_create(lv_obj_t*parent);
 static void event_switch_file_page_cb(lv_event_t*e);
 
 
-
+char FILE_BUF[2][FILE_NAME_MAX_LEN];
 
 #if keil 
 char Cure_Path[Dir_MAX_LEN]={"0:"};
@@ -26,6 +26,7 @@ char Cure_Path[Dir_MAX_LEN]={"0:/GitHub_Code/My_STM32_Phone/SD"};
 file_dir_t file_dir;
 file_switch_page_t file_switch_page;
 char name_buf[SAVE_FILE_NAME_NUM][FILE_NAME_MAX_LEN]__attribute__((section(".EXT_SRAM")));
+
 /*--------------------------------------------------------------------------------↓
 	@函数	  : 创建文件夹的目录
 	@参数	  : 父对象,当前路径
@@ -34,6 +35,7 @@ char name_buf[SAVE_FILE_NAME_NUM][FILE_NAME_MAX_LEN]__attribute__((section(".EXT
 ↑--------------------------------------------------------------------------------*/
 lv_obj_t* ui_app_file_list_create(lv_obj_t *parent,const char * path)
 {
+     
                         
     file_dir.list= lv_list_create(parent); /*文件目录(以列表形式)*/
     file_switch_page.obj=ui_file_switch_page_create(parent);
@@ -51,7 +53,7 @@ lv_obj_t* ui_app_file_list_create(lv_obj_t *parent,const char * path)
         if(res!=LV_FS_RES_OK)/*失败就打印返回*/
         {
             printf("open %s  is fail",path);
-            return parent;
+            
         }  
     
 
@@ -124,8 +126,8 @@ void load_dir_timer(lv_timer_t *timer)
                     lv_obj_add_flag(file_switch_page.next_page_btn,LV_OBJ_FLAG_HIDDEN);
                 }
             read_num=0; 
-            printf("文件数量:%d\r\n",file_switch_page.total_file_num);
-            printf("页数:%d\r\n",file_switch_page.total_page_num); 
+//            printf("文件数量:%d\r\n",file_switch_page.total_file_num);
+//            printf("页数:%d\r\n",file_switch_page.total_page_num); 
         }
         else
         {
@@ -144,7 +146,7 @@ void load_dir_timer(lv_timer_t *timer)
                     lv_obj_add_event_cb(file_dir.btn, event_ui_app_file_cb, LV_EVENT_CLICKED, NULL);/*添加事件*/ 
                             
                 }
-                printf("文件:%s\r\n",buf);
+//                printf("文件:%s\r\n",buf);
               read_num++;     
          }
     }
@@ -175,8 +177,8 @@ void load_dir_timer(lv_timer_t *timer)
             lv_obj_add_flag(file_switch_page.next_page_btn,LV_OBJ_FLAG_HIDDEN);
         }
         read_num=0; 
-        printf("文件数量:%d\r\n",file_switch_page.total_file_num);
-        printf("页数:%d\r\n",file_switch_page.total_page_num); 
+//        printf("文件数量:%d\r\n",file_switch_page.total_file_num);
+//        printf("页数:%d\r\n",file_switch_page.total_page_num); 
     }
      
 
@@ -206,6 +208,7 @@ static void event_ui_app_file_cb(lv_event_t *e)
 				ui_goto_page(PAGE_APP_DETAIL,APP_FILE);  /*打开文件*/
 			}
 			printf("Enter in ( %s )\r\n",Cure_Path);/*打印路径*/
+			
 }
 
 
@@ -395,7 +398,7 @@ static void return_to_pre_page_timer_cb(lv_timer_t*t)
     static uint8_t run_num=0;
     uint8_t num=(uint8_t)t->user_data;
     char*buf=name_buf[(SHOW_FILE_MAX_NUM*(file_switch_page.cur_page-1))+run_num];
-     printf("文件:%s\r\n",buf);
+//     printf("文件:%s\r\n",buf);
     if( buf[0]=='/')
     {
     file_dir.btn = lv_list_add_btn(file_dir.list, LV_SYMBOL_DIRECTORY, buf); /*  /开头为文件夹*/ 
@@ -412,3 +415,5 @@ static void return_to_pre_page_timer_cb(lv_timer_t*t)
     }
     lv_obj_add_event_cb(file_dir.btn, event_ui_app_file_cb, LV_EVENT_CLICKED, NULL);/*添加事件*/ 
 }
+
+

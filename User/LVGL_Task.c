@@ -119,7 +119,7 @@ void MyPhone_stm32_task(void)
      while(1)
      {
          lv_timer_handler(); /* LVGL计时器 */
-         vTaskDelay(5);
+         vTaskDelay(2);
      }
    }
 
@@ -154,7 +154,6 @@ void AUDIO_task(void *pvParameters)
   
   while(1)
   {
-      AudioTask();
-       
+      AudioTask(); 
   }
 }

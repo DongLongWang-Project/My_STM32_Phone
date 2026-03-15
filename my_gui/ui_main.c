@@ -218,7 +218,10 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
                       switch(APP)
                       {
                            case APP_SETTING:   ui_app_setting_create_list(tile_main);list_wifi=NULL;   break;/**创建wifi **/
-                           case APP_FILE:      ui_app_file_list_create(tile_main,Cure_Path);break;/** 创建文件列表**/
+                           case APP_FILE:      ui_app_file_list_create(tile_main,Cure_Path);
+                           
+
+                           break;/** 创建文件列表**/
 //                           case APP_NET:      ui_app_net_list_creat(tile_main); break;
                            case APP_WEATHER: ui_app_weather_create(tile_main);break;
                            case APP_CLOCK   : ui_app_clock_creat(tile_main);break;

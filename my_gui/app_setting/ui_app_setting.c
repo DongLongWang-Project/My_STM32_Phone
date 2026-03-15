@@ -55,10 +55,10 @@ lv_obj_t* ui_app_setting_create_list(lv_obj_t *parent)
 UI_APP_SETTING_ENUM ui_app_get_setting_list_btnname(const char *btn_name)
 {
 
-	 if(strcmp(btn_name,APP_SET_LA_TABLE[APP_SETTING_ABOUT].text[display_cfg.language])==0) return APP_SETTING_ABOUT;
-	else if(strcmp(btn_name,APP_SET_LA_TABLE[APP_SETTING_DISPLAY].text[display_cfg.language])==0) return APP_SETTING_DISPLAY;
-    else if(strcmp(btn_name,APP_SET_LA_TABLE[APP_SETTING_WLAN].text[display_cfg.language])==0) return APP_SETTING_WLAN;
-    else if(strcmp(btn_name,APP_SET_LA_TABLE[APP_SETTING_HOTSPOT].text[display_cfg.language])==0) return APP_SETTING_HOTSPOT;
+  if(strcmp(btn_name,APP_SET_LA_TABLE[APP_SETTING_ABOUT].text[display_cfg.language])==0) return APP_SETTING_ABOUT;
+  else if(strcmp(btn_name,APP_SET_LA_TABLE[APP_SETTING_DISPLAY].text[display_cfg.language])==0) return APP_SETTING_DISPLAY;
+  else if(strcmp(btn_name,APP_SET_LA_TABLE[APP_SETTING_WLAN].text[display_cfg.language])==0) return APP_SETTING_WLAN;
+  else if(strcmp(btn_name,APP_SET_LA_TABLE[APP_SETTING_HOTSPOT].text[display_cfg.language])==0) return APP_SETTING_HOTSPOT;
     
 	return APP_SETTING_NUM;
 }

@@ -16,17 +16,7 @@
 
 lv_obj_t* ui_app_music_list_creat(lv_obj_t*parent);
 void ui_app_music_detail_creat(lv_obj_t*parent,const char*path);
+void music_progress_timer_cb(lv_timer_t*t);
 
-typedef struct
-{
-    lv_obj_t*record_icon;
-    lv_fs_file_t file;
-    lv_anim_t record_anim;
-    lv_obj_t*pause_btn;
-    lv_obj_t*next_btn;
-    lv_obj_t*pre_btn;
-    lv_obj_t*music_record;
-    lv_obj_t*music_label;
-}music_player_t;
 #endif
 

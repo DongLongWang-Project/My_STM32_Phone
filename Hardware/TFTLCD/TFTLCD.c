@@ -617,7 +617,7 @@ volatile SemaphoreHandle_t TFTLCD_BinSemaphore;
     NVIC_InitTypeDef NVIC_InitStruct;
     NVIC_InitStruct.NVIC_IRQChannel=DMA2_Stream6_IRQn;
     NVIC_InitStruct.NVIC_IRQChannelCmd=ENABLE;
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority=6;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority=8;
     NVIC_InitStruct.NVIC_IRQChannelSubPriority=0;
     NVIC_Init(&NVIC_InitStruct);  
     

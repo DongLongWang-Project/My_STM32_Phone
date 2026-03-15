@@ -26,7 +26,7 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static void fs_init(void);
+ void fs_init(void);
 
 static void * fs_open(lv_fs_drv_t * drv, const char * path, lv_fs_mode_t mode);
 static lv_fs_res_t fs_close(lv_fs_drv_t * drv, void * file_p);
@@ -88,7 +88,7 @@ void lv_fs_fatfs_init(void)
  **********************/
 
 /*Initialize your Storage device and File system.*/
-static void fs_init(void)
+ void fs_init(void)
 {
     static FATFS fs;
     FRESULT res;

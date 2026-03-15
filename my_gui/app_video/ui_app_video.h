@@ -17,6 +17,7 @@ typedef struct {
   lv_fs_file_t file;
   lv_obj_t *obj_video;
   lv_timer_t *timer; // 保存定时器指针，方便删除
+  bool is_playing;
 }video_control_t;
 
 typedef struct {
@@ -33,5 +34,6 @@ typedef struct {
 extern video_control_t Video_win;
 extern video_time_t video_time;
 extern uint8_t video_buf[];
+
 
 #endif

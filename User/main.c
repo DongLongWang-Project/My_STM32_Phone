@@ -1,5 +1,6 @@
 #include "main.h"
 
+extern  void fs_init(void);
 void my_phone_config(void);
 
 USB_OTG_CORE_HANDLE  USB_OTG_dev;
@@ -12,7 +13,6 @@ int main(void)
    
     Serial_Init();
 
-    
 
     TIM2_Int_Init(10000-1,8400-1);
     Key_Init();

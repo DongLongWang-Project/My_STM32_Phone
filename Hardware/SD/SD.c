@@ -2865,13 +2865,13 @@ static void SD_NVIC_Configuration(void)
 
     /* SDIO 中断 */
     NVIC_InitStructure.NVIC_IRQChannel = SDIO_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
     /* SDIO 使用的 DMA 中断 */
     NVIC_InitStructure.NVIC_IRQChannel = SD_SDIO_DMA_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
     NVIC_Init(&NVIC_InitStructure);
 }

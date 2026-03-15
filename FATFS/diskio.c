@@ -43,7 +43,8 @@ DSTATUS disk_initialize (BYTE pdrv)
       switch (pdrv) 
       {
         case SD:  if (SD_Init()==SD_OK)        status &= ~STA_NOINIT;        
-                  else                           status = STA_NOINIT;   break;                
+                  else                           status = STA_NOINIT;   break; 
+//         case SD:  status &= ~STA_NOINIT;  break;  
         case SPI_FLASH: W25Qxx_SPI_Init();    
                          W25Qxx_ReadID(&W25Qxx);
                          if(W25Qxx.MID==W25Qxx_MID && W25Qxx.DID ==W25Qxx_DID )

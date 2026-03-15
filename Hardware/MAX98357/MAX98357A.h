@@ -4,6 +4,8 @@
 #include "lvgl.h"
 #include "USART1.h"
 
+
+#define Audio_Fill_Buf_Queue_MAX_Len 4
 extern volatile SemaphoreHandle_t Audio_BinSemaphore;
 typedef struct {
     uint32_t SampleRate;   // 采样率
@@ -13,14 +15,17 @@ typedef struct {
 } audio_Info;
 typedef struct {
   uint16_t music_total_sec;
+  uint8_t  music_hour;
   uint8_t  music_min;
-  uint8_t  music_sec;  
+  uint8_t  music_sec;
+  uint32_t cur_time_ms;  
 }music_time_t;
 typedef struct {
   audio_Info wav_data;  
   music_time_t music_time;
   lv_fs_file_t file;
   lv_obj_t *obj_music;
+  lv_timer_t*music_timer;
 }music_control_t;
 extern music_control_t music_win;
 

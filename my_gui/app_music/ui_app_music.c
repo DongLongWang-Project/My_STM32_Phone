@@ -16,33 +16,18 @@ music_control_t music_win;
 #endif
 extern char Cure_Path[Dir_MAX_LEN];
 
-#define record_width   160
-#define record_length   160
-
-#define record_buf_size 160*160*2
-
-uint8_t musci_record_buf[record_buf_size]__attribute__((section(".EXT_SRAM")));
 LV_FONT_DECLARE( my_font_16);
 
-music_player_t music_play;
-     static   lv_img_dsc_t music_record = {
-        .header.always_zero = 0,           // 必须为 0
-        .header.w = record_width,           // 宽
-        .header.h = record_length,          // 高
-        .data_size = record_buf_size,
-        .header.cf = LV_IMG_CF_TRUE_COLOR, // 核心：使用当前系统配置的颜色格式
-        .data = musci_record_buf,                      // 初始化设为 NULL，稍后在函数里赋值
-    };
- 
- 
- void get_music_name(const char *path,char*buf);
- static void event_music_btn_cb(lv_event_t*e);
-void music_record_anim_config(void);
+void get_music_name(const char *path,char*buf);
+static void event_music_btn_cb(lv_event_t*e);
 
 lv_obj_t* ui_app_music_list_creat(lv_obj_t*parent)
 {
+    
     memcpy(Cure_Path,SD_MUSIC_PATH,strlen(SD_MUSIC_PATH));
-    return ui_app_file_list_create(parent,SD_MUSIC_PATH);
+    Cure_Path[strlen(SD_MUSIC_PATH)]='\0';
+     printf("当前路径:%s\r\n",Cure_Path);
+    ui_goto_page(PAGE_APP_LIST,APP_FILE);
 }
 
 void ui_app_music_detail_creat(lv_obj_t*parent,const char*path)
@@ -50,6 +35,25 @@ void ui_app_music_detail_creat(lv_obj_t*parent,const char*path)
     
     char music_name[64];
     get_music_name(path,music_name);
+   uint8_t file_index=video_get_list_to_file(path,FILE_BUF[0],FILE_BUF[1]);
+   printf("上一个文件:%s\r\下一个文件:%s\r\n",FILE_BUF[0],FILE_BUF[1]);
+   
+    ui_play_control_create(parent,&play_control_bar); 
+   lv_label_set_text(play_control_bar.progress_label,"");
+    if(file_index==0 && file_switch_page.total_file_num==1)
+    {
+      lv_obj_add_flag(play_control_bar.next_btn,LV_OBJ_FLAG_HIDDEN);
+      lv_obj_add_flag(play_control_bar.pre_btn,LV_OBJ_FLAG_HIDDEN);   
+    }
+    if(file_index==0 && file_switch_page.total_file_num>1)
+    {
+         lv_obj_add_flag(play_control_bar.pre_btn,LV_OBJ_FLAG_HIDDEN);
+    }
+    if(file_index==file_switch_page.total_file_num-1)
+    {
+       lv_obj_add_flag(play_control_bar.next_btn,LV_OBJ_FLAG_HIDDEN);
+    }
+    
     lv_fs_res_t res;
     #if keil
     res = lv_fs_open(&music_win.file, path, LV_FS_MODE_RD); /*打开文件*/
@@ -79,7 +83,8 @@ void ui_app_music_detail_creat(lv_obj_t*parent,const char*path)
              
            }
        music_win.music_time.music_total_sec=music_win.wav_data.DataSize/(music_win.wav_data.SampleRate*music_win.wav_data.NumChannels*music_win.wav_data.BitsPerSample/8);  
-       music_win.music_time.music_min=music_win.music_time.music_total_sec/60;
+       music_win.music_time.music_hour=music_win.music_time.music_total_sec/3600;
+       music_win.music_time.music_min=(music_win.music_time.music_total_sec%3600)/60;
        music_win.music_time.music_sec=music_win.music_time.music_total_sec%60; 
        printf("music_total_sec:%d NumChannels:%d SampleRate:%d BitsPerSample:%d DataSize:%d\r\n",music_win.music_time.music_total_sec,
        music_win.wav_data.NumChannels,music_win.wav_data.SampleRate,music_win.wav_data.BitsPerSample,music_win.wav_data.DataSize);
@@ -92,66 +97,24 @@ void ui_app_music_detail_creat(lv_obj_t*parent,const char*path)
 //    lv_fs_close(&music_win.file);
 
 #else
-char music_path[256];
-snprintf(music_path,sizeof(music_path),"G:\\GitHub_Code\\My_STM32_Phone\\SD\\music\\%s.wav",music_name);
-    PlaySound(TEXT(music_path), NULL, SND_FILENAME | SND_ASYNC);
-  
-    #endif
+    char music_path[256];
+    snprintf(music_path,sizeof(music_path),"G:\\GitHub_Code\\My_STM32_Phone\\SD\\music\\%s",lv_fs_get_last(path));
+        PlaySound(TEXT(music_path), NULL, SND_FILENAME | SND_ASYNC);
+#endif
     
-    music_play.record_icon=lv_img_create(parent);
-    
-     res= lv_fs_open(&music_play.file,MUSIC_RECORD_PATH,LV_FS_MODE_RD);
-   if(res!=LV_FS_RES_OK)
-   {
-       printf("打开唱片文件失败 或者唱片文件被删除\r\n");
-       //return ;
-   }
-   else
-   {
-       uint32_t len;
-        res=lv_fs_read(&music_play.file,musci_record_buf,record_buf_size,&len);
-        if(res==LV_FS_RES_OK)
-        {
-            printf("打开唱片\r\n");
-            lv_fs_close(&music_play.file);
-            lv_img_set_src(music_play.record_icon,&music_record);
-            lv_obj_align(music_play.record_icon,LV_ALIGN_CENTER,0,-30);
-                
-            music_record_anim_config();
-             lv_anim_start(&music_play.record_anim);
-        }
-   }
+
+   lv_obj_align(play_control_bar.obj_play_control,LV_ALIGN_BOTTOM_MID,0,0);
    
-   music_play.music_label=lv_label_create(parent);
-   lv_obj_align(music_play.music_label,LV_ALIGN_CENTER,0,80);
-    lv_obj_set_style_text_font(music_play.music_label,&my_font_16,0);
+    lv_obj_set_style_text_font(play_control_bar.progress_label,&my_font_16,0);
     
 
-    lv_label_set_text(music_play.music_label,music_name);
-//   music_play.music_record=ui_progress_bar(parent);
-   lv_obj_align_to(music_play.music_record,music_play.music_label,LV_ALIGN_OUT_BOTTOM_MID,0,10);
- music_play.pause_btn=ui_widgets_btn_create(parent,LV_SYMBOL_PAUSE,lv_color_hex(0x007FFE));
- music_play.next_btn=ui_widgets_btn_create(parent,LV_SYMBOL_NEXT,lv_color_hex(0x007FFE));
-  music_play.pre_btn=ui_widgets_btn_create(parent,LV_SYMBOL_PREV,lv_color_hex(0x007FFE)); 
+    lv_label_set_text(play_control_bar.progress_label,music_name);
+    
+  lv_obj_add_event_cb(play_control_bar.pause_btn,event_music_btn_cb,LV_EVENT_CLICKED,NULL);
+  lv_obj_add_event_cb(play_control_bar.pre_btn,event_music_btn_cb,LV_EVENT_CLICKED,NULL);
+  lv_obj_add_event_cb(play_control_bar.next_btn,event_music_btn_cb,LV_EVENT_CLICKED,NULL);
   
-//  lv_obj_align_to(music_play.pause_btn,music_play.music_record,LV_ALIGN_OUT_BOTTOM_MID,0,0);
-  lv_obj_align_to(music_play.next_btn,music_play.pause_btn,LV_ALIGN_OUT_RIGHT_MID,0,0);
-  lv_obj_align_to(music_play.pre_btn,music_play.pause_btn,LV_ALIGN_OUT_LEFT_MID,0,0);
-  
-  lv_obj_add_event_cb(music_play.pause_btn,event_music_btn_cb,LV_EVENT_CLICKED,NULL);
-  lv_obj_add_event_cb(music_play.pre_btn,event_music_btn_cb,LV_EVENT_CLICKED,NULL);
-  lv_obj_add_event_cb(music_play.next_btn,event_music_btn_cb,LV_EVENT_CLICKED,NULL);
-}
-
-void music_record_anim_config(void)
-{
-            lv_anim_init(&music_play.record_anim);
-            lv_anim_set_var(&music_play.record_anim, music_play.record_icon);
-            lv_anim_set_exec_cb(&music_play.record_anim,(lv_anim_exec_xcb_t)lv_img_set_angle);
-            lv_anim_set_values(&music_play.record_anim,0,3600);
-            lv_anim_set_time(&music_play.record_anim,3000);
-            lv_anim_set_repeat_count(&music_play.record_anim,LV_ANIM_REPEAT_INFINITE);
-            lv_anim_start(&music_play.record_anim);
+  music_win.music_timer=lv_timer_create(music_progress_timer_cb,200,NULL);
 }
 void get_music_name(const char *path,char*buf)
 {
@@ -176,46 +139,66 @@ static void event_music_btn_cb(lv_event_t*e)
 {
         static bool music_state=true;
     lv_obj_t*target=lv_event_get_target(e);
-    if(target==music_play.pause_btn)
+    if(target==play_control_bar.pause_btn)
     {
-          lv_obj_t *label=lv_obj_get_child(music_play.pause_btn,0);
+          lv_obj_t *label=lv_obj_get_child(play_control_bar.pause_btn,0);
         if(music_state==true)
         {
             printf("暂停音乐\r\n");
+             DMA_Cmd(DMA1_Stream4,DISABLE); 
             music_state=false;
-         
-          lv_label_set_text(label,LV_SYMBOL_PLAY);
-
-               lv_anim_del(music_play.record_icon,(lv_anim_exec_xcb_t)lv_img_set_angle); 
-             
-            
+            lv_label_set_text(label,LV_SYMBOL_PLAY);    
         }
         else
         {
             music_state=true;
             printf("继续播放\r\n");
-            music_record_anim_config();
+             DMA_Cmd(DMA1_Stream4,ENABLE); 
              lv_label_set_text(label,LV_SYMBOL_PAUSE);
         }   
     }
-    else if(target==music_play.next_btn)
+    else if(target==play_control_bar.next_btn)
     {
         printf("下一首\r\n");
         music_state=true;
-            if(music_play.file.drv!=NULL)
-            {
-                lv_fs_close(&music_play.file);
-                music_play.file.drv=NULL;
-            }
+        DMA_Cmd(DMA1_Stream4,DISABLE);
+         
+				snprintf(Cure_Path, sizeof(Cure_Path), "%s/%s",  lv_fs_up(Cure_Path), FILE_BUF[1]);  /*将当前的按钮名称和缓冲区合并添加到当前路径*/
+				ui_goto_page(PAGE_APP_DETAIL,APP_FILE);  /*打开文件*/
     }
-    else if(target==music_play.pre_btn)
+    else if(target==play_control_bar.pre_btn)
     {
           printf("上一首\r\n");
           music_state=true;
-            if(music_play.file.drv!=NULL)
-            {
-                lv_fs_close(&music_play.file);
-                music_play.file.drv=NULL;
-            }   
+          DMA_Cmd(DMA1_Stream4,DISABLE);
+				snprintf(Cure_Path, sizeof(Cure_Path), "%s/%s",  lv_fs_up(Cure_Path), FILE_BUF[0]);  /*将当前的按钮名称和缓冲区合并添加到当前路径*/
+				ui_goto_page(PAGE_APP_DETAIL,APP_FILE);  /*打开文件*/   
     }
+}
+
+void music_progress_timer_cb(lv_timer_t*t)
+{
+  static uint8_t run_tick=0;
+  run_tick++;
+  uint32_t total_sec=music_win.music_time.cur_time_ms/1000;
+  uint8_t  cur_hour=total_sec/3600;
+  uint8_t  cur_min=(total_sec%3600)/60;
+  uint8_t  cur_sec=total_sec%60;
+  
+  if(run_tick>5)
+  {
+    run_tick=0;
+    if(cur_hour)
+    {
+      lv_label_set_text_fmt(play_control_bar.progress_label,"%02d:%02d:%02d / %02d:02d:%02d",cur_hour,cur_min,cur_sec,
+      music_win.music_time.music_hour,music_win.music_time.music_min,music_win.music_time.music_sec);
+    }
+    else
+    {
+      lv_label_set_text_fmt(play_control_bar.progress_label,"%02d:%02d / %02d:%02d",cur_min,cur_sec,
+      music_win.music_time.music_min,music_win.music_time.music_sec);
+    }  
+  }
+
+
 }

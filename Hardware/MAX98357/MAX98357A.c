@@ -16,11 +16,10 @@ typedef enum {
     SRAM_FILL_SECOND_HALF
 } SRAM_FillHalf_t;
 
-volatile SRAM_FillHalf_t sram_need_fill_half = SRAM_FILL_NONE;
-volatile SRAM_FillHalf_t sram_need_sd_fill   = SRAM_FILL_NONE;
+
 
 // FreeRTOS 信号量
-volatile SemaphoreHandle_t Audio_BinSemaphore;
+volatile SemaphoreHandle_t Audio_Fill_Buf_Queue;
 
 //ffmpeg -i hualian.wav -acodec pcm_s16le -ar 44100 -ac 2 hualian1.wav
 
@@ -92,9 +91,9 @@ void MAX98357_Init(void)
     DMA_InitStruct.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;       // 16位
     DMA_InitStruct.DMA_Mode = DMA_Mode_Circular;          // 循环模式（关键！）
     DMA_InitStruct.DMA_Priority = DMA_Priority_VeryHigh;      // 高优先级
-    DMA_InitStruct.DMA_FIFOMode = DMA_FIFOMode_Disable;
+    DMA_InitStruct.DMA_FIFOMode = DMA_FIFOMode_Enable;
     DMA_InitStruct.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
-    DMA_InitStruct.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+    DMA_InitStruct.DMA_MemoryBurst = DMA_MemoryBurst_INC4;
     DMA_InitStruct.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
     
     DMA_Init(DMA1_Stream4, &DMA_InitStruct);
@@ -133,7 +132,8 @@ void MAX98357_Init(void)
     
     I2S_Cmd(SPI2, ENABLE);
      
-    Audio_BinSemaphore=xSemaphoreCreateBinary();
+    Audio_Fill_Buf_Queue=xQueueCreate(Audio_Fill_Buf_Queue_MAX_Len,sizeof(SRAM_FillHalf_t));
+
 //    if(Audio_BinSemaphore!=NULL)
 //    {
 //      xSemaphoreGive(Audio_BinSemaphore);
@@ -144,23 +144,26 @@ void MAX98357_Init(void)
 // ------------------- DMA中断 ----------------------
 void DMA1_Stream4_IRQHandler(void)
 {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-
     if(DMA_GetITStatus(DMA1_Stream4, DMA_IT_HTIF4) == SET)
     {
         DMA_ClearITPendingBit(DMA1_Stream4, DMA_IT_HTIF4);
-        sram_need_fill_half = SRAM_FILL_FIRST_HALF;
-        xSemaphoreGiveFromISR(Audio_BinSemaphore, &xHigherPriorityTaskWoken);
+        SRAM_FillHalf_t sram_need_fill_half = SRAM_FILL_FIRST_HALF;
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        xQueueSendFromISR(Audio_Fill_Buf_Queue,&sram_need_fill_half,&xHigherPriorityTaskWoken);
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+        
     }
 
     if(DMA_GetITStatus(DMA1_Stream4, DMA_IT_TCIF4) == SET)
     {
        DMA_ClearITPendingBit(DMA1_Stream4, DMA_IT_TCIF4);
-        sram_need_fill_half = SRAM_FILL_SECOND_HALF;
-        xSemaphoreGiveFromISR(Audio_BinSemaphore, &xHigherPriorityTaskWoken);
+        SRAM_FillHalf_t sram_need_fill_half = SRAM_FILL_SECOND_HALF;
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        xQueueSendFromISR(Audio_Fill_Buf_Queue,&sram_need_fill_half,&xHigherPriorityTaskWoken);
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);   
     }
 
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+
 }
 
 // ------------------- 单任务处理播放 + SRAM补充 ----------------------
@@ -170,32 +173,29 @@ void AudioTask(void)
     // 1. total_read 必须严格等于“已发送给 DMA 播放”的总量
     static uint32_t total_played = 0; 
     static uint8_t closing_cnt = 0;
-    
+    SRAM_FillHalf_t sram_need_fill_half;
 
         // 关键点：必须死等信号量！没收到 DMA 的 HT/TC 中断信号，坚决不动
-        if(xSemaphoreTake(Audio_BinSemaphore, portMAX_DELAY) == pdTRUE)
+        if(xQueueReceive(Audio_Fill_Buf_Queue,&sram_need_fill_half,portMAX_DELAY) == pdTRUE)
         {
-        
                if (closing_cnt == 0) 
                 {
-            // 记录当前 DMA 搬完的那一截
-            uint8_t current_section = sram_need_fill_half;
-            sram_need_fill_half = SRAM_FILL_NONE;
+
 
             // --- 步骤 A：同步搬运 ---
-            if(current_section == SRAM_FILL_FIRST_HALF)
+            if(sram_need_fill_half == SRAM_FILL_FIRST_HALF)
             {
                 memcpy(play_buf, sram_ring_buf + sram_ring_buf_index, PLAY_BUF_HALF_SIZE);
                 sram_ring_buf_index += PLAY_BUF_HALF_SIZE;
                 total_played += PLAY_BUF_HALF_SIZE; // 这里才是真实的进度
             }
-            else if(current_section == SRAM_FILL_SECOND_HALF)
+            else if(sram_need_fill_half == SRAM_FILL_SECOND_HALF)
             {
                 memcpy(play_buf + PLAY_BUF_HALF_SIZE, sram_ring_buf + sram_ring_buf_index, PLAY_BUF_HALF_SIZE);
                 sram_ring_buf_index += PLAY_BUF_HALF_SIZE;
                 total_played += PLAY_BUF_HALF_SIZE;
             }
-
+               music_win.music_time.cur_time_ms=(uint32_t)((uint64_t)(total_played*1000)/music_win.wav_data.DataSize);
             // --- 步骤 B：检查 SRAM 环形缓冲区是否需要从 SD 卡“拉货” ---
             // 只要 sram_ring_buf_index 跑完了一半 (64KB)，就去填 SRAM
             if(sram_ring_buf_index == SRAM_BUF_SIZE / 2)

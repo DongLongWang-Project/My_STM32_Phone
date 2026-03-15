@@ -96,7 +96,9 @@ lv_obj_t* ui_creat_control_bar(lv_obj_t *parent)
     }
 	else if(id ==0 )
 		{
-      ui_goto_page(PAGE_HOME,APP_TEMP);
+            memcpy(Cure_Path,SD_PATH,strlen(SD_PATH));
+            Cure_Path[strlen(SD_PATH)]='\0';
+            ui_goto_page(PAGE_HOME,APP_TEMP);
 		}
 }
 
@@ -254,7 +256,7 @@ lv_obj_t* ui_widgets_btn_create(lv_obj_t*parent,const char*btn_text,lv_color_t b
     return btn;
 }
 
-void ui_play_control(lv_obj_t*parent,play_control_t*play_control)
+void ui_play_control_create(lv_obj_t*parent,play_control_t*play_control)
 {
     play_control->obj_play_control=lv_obj_create(parent);
     play_control->progress_bar=lv_bar_create(play_control->obj_play_control);
@@ -286,4 +288,31 @@ void ui_play_control(lv_obj_t*parent,play_control_t*play_control)
     lv_obj_align_to(next_btn,pause_btn,LV_ALIGN_OUT_RIGHT_MID,0,0);
     lv_obj_align_to(progress_label,next_btn,LV_ALIGN_OUT_RIGHT_MID,0,0);
     
+}
+
+// 注意：参数依然是 char*，因为 FILE_BUF[0] 传递过去就是这一行的首地址
+uint8_t video_get_list_to_file(const char* path, char* pre_file, char* next_file)
+{
+  const char* cur_file = lv_fs_get_last(path);
+  if (!cur_file) return false;
+    uint8_t i=0;
+  for( i= 0; i < SAVE_FILE_NAME_NUM; i++)
+  {
+    if(strcmp(cur_file, name_buf[i]) == 0)
+    {
+        // 关键点：使用 strcpy 拷贝内容，而不是修改指针指向
+        if (i > 0) {
+            strcpy(pre_file, name_buf[i-1]);
+        } else {
+            pre_file[0] = '\0'; // 如果没有上一个，清空字符串
+        }
+
+        if (i < SAVE_FILE_NAME_NUM - 1) {
+            strcpy(next_file, name_buf[i+1]);
+        } else {
+            next_file[0] = '\0'; // 如果没有下一个，清空字符串
+        }
+        return i;
+    }
+  }
 }
