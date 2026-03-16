@@ -9,6 +9,7 @@
 
 uint8_t video_buf[Video_Height*Video_Width*2]__attribute__((section(".EXT_SRAM")));
 
+play_control_t video_play_control_bar;
 
 static lv_img_dsc_t video_dsc = {
     .header.always_zero = 0,           // 必须为 0
@@ -33,6 +34,7 @@ lv_obj_t* ui_app_video_list_creat(lv_obj_t*parent)
     
 //    return ui_app_file_list_create(parent,SD_VIDEO_PATH);
     ui_goto_page(PAGE_APP_LIST,APP_FILE);
+    return NULL;
 }
 
 
@@ -56,14 +58,14 @@ if(tick>=15)
         video_time.cur_hour++;
       }
    }
-  lv_bar_set_value(play_control_bar.progress_bar, video_time.view_cur_time,LV_ANIM_OFF);
+  lv_bar_set_value(video_play_control_bar.progress_bar, video_time.view_cur_time,LV_ANIM_OFF);
   if(video_time.hour==0)
   {
-        lv_label_set_text_fmt(play_control_bar.progress_label,"%02d:%02d / %02d:%02d",video_time.cur_minute,video_time.cur_second,video_time.minute,video_time.second);
+        lv_label_set_text_fmt(video_play_control_bar.progress_label,"%02d:%02d / %02d:%02d",video_time.cur_minute,video_time.cur_second,video_time.minute,video_time.second);
   }
   else
   {
-    lv_label_set_text_fmt(play_control_bar.progress_label,"%02d:%02d:%02d / %02d:%02d:%02d",video_time.cur_hour,video_time.cur_minute,video_time.cur_second,video_time.hour,video_time.minute,video_time.second);
+    lv_label_set_text_fmt(video_play_control_bar.progress_label,"%02d:%02d:%02d / %02d:%02d:%02d",video_time.cur_hour,video_time.cur_minute,video_time.cur_second,video_time.hour,video_time.minute,video_time.second);
  
   }
 }
@@ -87,7 +89,7 @@ if(tick>=15)
         video_time.view_cur_time=0;
         Video_win.is_playing=false;
         lv_fs_seek(&Video_win.file,0,LV_FS_SEEK_SET);
-         lv_label_set_text(lv_obj_get_child(play_control_bar.pause_btn,0),LV_SYMBOL_REFRESH);
+         lv_label_set_text(lv_obj_get_child(video_play_control_bar.pause_btn,0),LV_SYMBOL_REFRESH);
          
         printf("视频播放结束,点击重新播放\r\n");
         return;
@@ -122,19 +124,19 @@ void event_video_btn(lv_event_t*e)
 
     lv_obj_t*target=lv_event_get_target(e);
     lv_event_code_t code=lv_event_get_code(e);
-    if(target==play_control_bar.pause_btn)
+    if(target==video_play_control_bar.pause_btn)
     {
             if(code==LV_EVENT_CLICKED)
             {
                 if(Video_win.is_playing==false)
                 {
                     lv_timer_resume(Video_win.timer);
-                    lv_label_set_text(lv_obj_get_child(play_control_bar.pause_btn,0),LV_SYMBOL_PAUSE);
+                    lv_label_set_text(lv_obj_get_child(video_play_control_bar.pause_btn,0),LV_SYMBOL_PAUSE);
                 }
                 else
                 {
                     lv_timer_pause(Video_win.timer); 
-                    lv_label_set_text(lv_obj_get_child(play_control_bar.pause_btn,0),LV_SYMBOL_PLAY);
+                    lv_label_set_text(lv_obj_get_child(video_play_control_bar.pause_btn,0),LV_SYMBOL_PLAY);
 
                 }
                 Video_win.is_playing=!Video_win.is_playing;
@@ -149,7 +151,7 @@ void event_video_btn(lv_event_t*e)
                 lv_timer_set_period(Video_win.timer,frame_rate);
             }
     }
-    if(target==play_control_bar.next_btn)
+    if(target==video_play_control_bar.next_btn)
     {
 				snprintf(Cure_Path, sizeof(Cure_Path), "%s/%s",  lv_fs_up(Cure_Path), FILE_BUF[1]);  /*将当前的按钮名称和缓冲区合并添加到当前路径*/
 				ui_goto_page(PAGE_APP_DETAIL,APP_FILE);  /*打开文件*/
@@ -157,7 +159,7 @@ void event_video_btn(lv_event_t*e)
 
     
     }
-    if(target==play_control_bar.pre_btn)
+    if(target==video_play_control_bar.pre_btn)
     {
 				snprintf(Cure_Path, sizeof(Cure_Path), "%s/%s",  lv_fs_up(Cure_Path), FILE_BUF[0]);  /*将当前的按钮名称和缓冲区合并添加到当前路径*/
 				ui_goto_page(PAGE_APP_DETAIL,APP_FILE);  /*打开文件*/
@@ -172,38 +174,38 @@ void ui_app_video_detail_creat(lv_obj_t*parent,const char*path)
    memset(video_buf,0,sizeof(video_buf));
    memset(&video_time,0,sizeof(video_time_t));
    uint8_t file_index=video_get_list_to_file(path,FILE_BUF[0],FILE_BUF[1]);
-   printf("上一个文件:%s\r\下一个文件:%s\r\n",FILE_BUF[0],FILE_BUF[1]);
+   printf("上一个文件:%s\r\n下一个文件:%s\r\n",FILE_BUF[0],FILE_BUF[1]);
   
    Video_win.obj_video=lv_img_create(parent);
 //   lv_obj_add_flag(Video_win.obj_video,LV_OBJ_FLAG_HIDDEN); 
    lv_obj_set_size(Video_win.obj_video,Video_Width,Video_Height);
    lv_obj_center(Video_win.obj_video);
    lv_img_set_src(Video_win.obj_video, &video_dsc);
-   ui_play_control_create(parent,&play_control_bar);
-   lv_label_set_text(play_control_bar.progress_label,"");
+   ui_play_control_create(parent,&video_play_control_bar);
+   lv_label_set_text(video_play_control_bar.progress_label,"");
     if(file_index==0 && file_switch_page.total_file_num==1)
     {
-      lv_obj_add_flag(play_control_bar.next_btn,LV_OBJ_FLAG_HIDDEN);
-      lv_obj_add_flag(play_control_bar.pre_btn,LV_OBJ_FLAG_HIDDEN);   
+      lv_obj_add_flag(video_play_control_bar.next_btn,LV_OBJ_FLAG_HIDDEN);
+      lv_obj_add_flag(video_play_control_bar.pre_btn,LV_OBJ_FLAG_HIDDEN);   
     }
     if(file_index==0 && file_switch_page.total_file_num>1)
     {
-         lv_obj_add_flag(play_control_bar.pre_btn,LV_OBJ_FLAG_HIDDEN);
+         lv_obj_add_flag(video_play_control_bar.pre_btn,LV_OBJ_FLAG_HIDDEN);
     }
     if(file_index==file_switch_page.total_file_num-1)
     {
-       lv_obj_add_flag(play_control_bar.next_btn,LV_OBJ_FLAG_HIDDEN);
+       lv_obj_add_flag(video_play_control_bar.next_btn,LV_OBJ_FLAG_HIDDEN);
     }
     
 //    Video_win.pargress_bar_label=lv_obj_get_child(bar_obj,1); 
-        lv_obj_align_to(play_control_bar.obj_play_control,Video_win.obj_video,LV_ALIGN_OUT_BOTTOM_MID,0,0);
+        lv_obj_align_to(video_play_control_bar.obj_play_control,Video_win.obj_video,LV_ALIGN_OUT_BOTTOM_MID,0,0);
 
 //    lv_obj_set_style_bg_opa(Video_win.view_btn,0,0);
 //    lv_obj_t*btn_label=lv_obj_get_child(Video_win.view_btn,0);
 //    lv_obj_set_style_text_color(btn_label,lv_color_hex(0x007FFE),0);
-    lv_obj_add_event_cb(play_control_bar.pre_btn,event_video_btn,LV_EVENT_CLICKED,NULL);
-    lv_obj_add_event_cb(play_control_bar.next_btn,event_video_btn,LV_EVENT_CLICKED,NULL);
-    lv_obj_add_event_cb(play_control_bar.pause_btn,event_video_btn,LV_EVENT_CLICKED,NULL);
+    lv_obj_add_event_cb(video_play_control_bar.pre_btn,event_video_btn,LV_EVENT_CLICKED,NULL);
+    lv_obj_add_event_cb(video_play_control_bar.next_btn,event_video_btn,LV_EVENT_CLICKED,NULL);
+    lv_obj_add_event_cb(video_play_control_bar.pause_btn,event_video_btn,LV_EVENT_CLICKED,NULL);
     
     lv_obj_add_flag(Video_win.obj_video, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_event_cb(Video_win.obj_video,event_video_btn,LV_EVENT_CLICKED,NULL); 
@@ -223,7 +225,7 @@ void ui_app_video_detail_creat(lv_obj_t*parent,const char*path)
        video_time.minute=video_time.total_sec/60;
        video_time.second=video_time.total_sec%60;
        printf("%d %d %d ",video_time.hour,video_time.minute,video_time.second);
-       lv_bar_set_range( play_control_bar.progress_bar,0,video_size/video_dsc.header.w/video_dsc.header.h/2);
+       lv_bar_set_range( video_play_control_bar.progress_bar,0,video_size/video_dsc.header.w/video_dsc.header.h/2);
        
        lv_fs_seek(&Video_win.file, 0, LV_FS_SEEK_SET);
       printf("打开视频文件成功,大小:%u\r\n",video_size);
@@ -231,7 +233,7 @@ void ui_app_video_detail_creat(lv_obj_t*parent,const char*path)
       if(Video_win.timer!=NULL)
       {
        printf("视频定时器创建成功\r\n"); 
-        lv_bar_set_start_value( play_control_bar.progress_bar, 0, LV_ANIM_OFF );
+        lv_bar_set_start_value( video_play_control_bar.progress_bar, 0, LV_ANIM_OFF );
       }
    }
    else

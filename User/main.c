@@ -12,7 +12,7 @@ int main(void)
     Delay_init(168);
    
     Serial_Init();
-
+//    my_mem_init(SRAMIN);
 
     TIM2_Int_Init(10000-1,8400-1);
     Key_Init();

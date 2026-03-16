@@ -9,6 +9,7 @@
 #include "app_video/ui_app_video.h"
 #include "app_music/ui_app_music.h"
 #include "app_file_sys/ui_app_file.h"
+#include "MAX98357A.h"
 
 lv_obj_t*tileview,*tile_main;
 
@@ -40,7 +41,9 @@ void ui_init(void)
     lv_obj_set_flex_grow(label_time,1);
  
     lv_timer_create(clock_time_timer_cb, 1000, NULL);  
-    
+    music_win.music_timer=lv_timer_create(music_progress_timer_cb,200,NULL);
+    lv_timer_pause(music_win.music_timer); 
+     
     ui_goto_page(PAGE_HOME,APP_TEMP);
     
     alarm_rem_win(lv_scr_act());

@@ -2,9 +2,7 @@
 #include "stdio.h"
 
 // ---------------------- 配置 ----------------------
-#define PLAY_BUF_HALF_SIZE   4096    // 内部播放缓冲半区大小（字节数）
-#define PLAY_BUF_FULL_SIZE   (PLAY_BUF_HALF_SIZE*2)
-#define SRAM_BUF_SIZE        (128*1024)  // 外部SRAM总大小
+
 uint8_t play_buf[PLAY_BUF_FULL_SIZE]__attribute__((aligned(4))); // 内部DMA播放缓冲
 uint8_t sram_ring_buf[SRAM_BUF_SIZE]__attribute__((section(".EXT_SRAM"))) __attribute__((aligned(4)));  // 外部SRAM大缓冲
 
@@ -171,7 +169,7 @@ void AudioTask(void)
 {
     uint32_t num;
     // 1. total_read 必须严格等于“已发送给 DMA 播放”的总量
-    static uint32_t total_played = 0; 
+     
     static uint8_t closing_cnt = 0;
     SRAM_FillHalf_t sram_need_fill_half;
 
@@ -187,15 +185,15 @@ void AudioTask(void)
             {
                 memcpy(play_buf, sram_ring_buf + sram_ring_buf_index, PLAY_BUF_HALF_SIZE);
                 sram_ring_buf_index += PLAY_BUF_HALF_SIZE;
-                total_played += PLAY_BUF_HALF_SIZE; // 这里才是真实的进度
+                music_win.music_time.total_played += PLAY_BUF_HALF_SIZE; // 这里才是真实的进度
             }
             else if(sram_need_fill_half == SRAM_FILL_SECOND_HALF)
             {
                 memcpy(play_buf + PLAY_BUF_HALF_SIZE, sram_ring_buf + sram_ring_buf_index, PLAY_BUF_HALF_SIZE);
                 sram_ring_buf_index += PLAY_BUF_HALF_SIZE;
-                total_played += PLAY_BUF_HALF_SIZE;
+                music_win.music_time.total_played += PLAY_BUF_HALF_SIZE;
             }
-               music_win.music_time.cur_time_ms=(uint32_t)((uint64_t)(total_played*1000)/music_win.wav_data.DataSize);
+               music_win.music_time.cur_time_ms=(uint32_t)((uint64_t)music_win.music_time.total_played*1000/music_win.music_time.byte_sec);
             // --- 步骤 B：检查 SRAM 环形缓冲区是否需要从 SD 卡“拉货” ---
             // 只要 sram_ring_buf_index 跑完了一半 (64KB)，就去填 SRAM
             if(sram_ring_buf_index == SRAM_BUF_SIZE / 2)
@@ -211,7 +209,7 @@ void AudioTask(void)
             }
 
             // --- 步骤 C：文件末尾判断 ---
-            if(total_played >= music_win.wav_data.DataSize)
+            if(music_win.music_time.total_played >= music_win.wav_data.DataSize)
             {
 
                     closing_cnt=1;                  
@@ -224,22 +222,50 @@ void AudioTask(void)
 //              printf("closing_cnt:%d\r\n",closing_cnt);
                if(closing_cnt>5)
                {
-                 if(music_win.file.drv!=NULL)
-                  {
+                    music_stop();
                     
-                    lv_fs_close(&music_win.file);
-                    music_win.file.drv=NULL;
-                    total_played=0;
-                    sram_ring_buf_index=0;
                     closing_cnt=0; 
-                    DMA_Cmd(DMA1_Stream4,DISABLE); 
-                    memset(play_buf,0,sizeof(play_buf));
-                    memset(sram_ring_buf,0,sizeof(sram_ring_buf));
-                  }
                }
 
 
           }
         }
 
+}
+
+
+void music_playing(void)
+{
+   DMA_Cmd(DMA1_Stream4,ENABLE);
+   lv_timer_resume(music_win.music_timer);
+   music_win.state=MUSIC_STATE_PLAYING;  
+}
+void music_pause(void)
+{
+   DMA_Cmd(DMA1_Stream4,DISABLE);
+   while(DMA_GetCmdStatus(DMA1_Stream4) != DISABLE);
+   lv_timer_pause(music_win.music_timer);
+   music_win.state=MUSIC_STATE_PAUSED; 
+}
+void music_stop(void)                     
+{
+   DMA_Cmd(DMA1_Stream4,DISABLE);
+   while(DMA_GetCmdStatus(DMA1_Stream4) != DISABLE);
+   lv_timer_pause(music_win.music_timer);
+   music_win.state=MUSIC_STATE_STOP; 
+   
+   if(music_win.file.drv!=NULL)
+   {
+    lv_fs_close(&music_win.file);
+    music_win.file.drv=NULL;
+   }
+    music_win.music_time.total_played=0;
+    sram_ring_buf_index=0;
+    memset(play_buf,0,sizeof(play_buf));
+    memset(sram_ring_buf,0,sizeof(sram_ring_buf)); 
+}
+
+void music_refresh(void)
+{
+  
 }

@@ -33,7 +33,7 @@ extern lv_obj_t*label_time,*label_wifi,*state_bar;
 extern lv_obj_t*keyboard;
 extern lv_obj_t*alarm_msgbox_obj;
 extern void event_textarea_cb(lv_event_t*e);
-extern play_control_t play_control_bar;
+
 void alarm_rem_win(lv_obj_t* parent);
 
 

@@ -7,8 +7,9 @@ static const char*btnm_map[]={LV_SYMBOL_HOME,LV_SYMBOL_LEFT,""};
 lv_obj_t*label_time,*label_wifi=NULL,*state_bar;
 lv_obj_t*keyboard;
 lv_obj_t*alarm_msgbox_obj;
-play_control_t play_control_bar;
+
  void event_control_bar_cb(lv_event_t *e);
+ LV_FONT_DECLARE(my_font_16);
 /**
  * @brief   创建APP按钮
  * @param 父对象,对应图标,app文本
@@ -287,7 +288,9 @@ void ui_play_control_create(lv_obj_t*parent,play_control_t*play_control)
     lv_obj_align_to(pause_btn,pre_btn,LV_ALIGN_OUT_RIGHT_MID,0,0);
     lv_obj_align_to(next_btn,pause_btn,LV_ALIGN_OUT_RIGHT_MID,0,0);
     lv_obj_align_to(progress_label,next_btn,LV_ALIGN_OUT_RIGHT_MID,0,0);
-    
+    lv_obj_set_style_text_font(progress_label,&my_font_16,0);
+    lv_label_set_text(progress_label,"");
+    lv_obj_align(obj_play_control,LV_ALIGN_BOTTOM_MID,0,0);   
 }
 
 // 注意：参数依然是 char*，因为 FILE_BUF[0] 传递过去就是这一行的首地址
@@ -315,4 +318,5 @@ uint8_t video_get_list_to_file(const char* path, char* pre_file, char* next_file
         return i;
     }
   }
+  return 0xFF;
 }

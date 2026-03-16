@@ -54,7 +54,7 @@ lv_obj_t* ui_app_file_list_create(lv_obj_t *parent,const char * path);
 lv_obj_t* ui_app_file_detail_create(lv_obj_t *parent, const char *file_path);
 
 void load_dir_timer(lv_timer_t *timer);
- 
+void get_file_name(const char *path,char*buf); 
 extern char Cure_Path[Dir_MAX_LEN];
 extern file_dir_t file_dir;
 extern file_switch_page_t file_switch_page;
