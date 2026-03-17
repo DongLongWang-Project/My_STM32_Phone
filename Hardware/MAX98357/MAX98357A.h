@@ -14,7 +14,8 @@ extern volatile SemaphoreHandle_t Audio_BinSemaphore;
 typedef enum {
     MUSIC_STATE_STOP = 0,
     MUSIC_STATE_PLAYING,
-    MUSIC_STATE_PAUSED
+    MUSIC_STATE_PAUSED,
+    MUSIC_STATE_ERROR,
 } music_run_state_t;
 
 typedef struct {

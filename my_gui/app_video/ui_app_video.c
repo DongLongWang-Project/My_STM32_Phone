@@ -31,7 +31,7 @@ lv_obj_t* ui_app_video_list_creat(lv_obj_t*parent)
     memcpy(Cure_Path,SD_VIDEO_PATH,strlen(SD_VIDEO_PATH));
     Cure_Path[strlen(SD_VIDEO_PATH)]='\0';
     printf("当前路径:%s\r\n",Cure_Path);
-    
+//     file_dir.timer->user_data="rgb";
 //    return ui_app_file_list_create(parent,SD_VIDEO_PATH);
     ui_goto_page(PAGE_APP_LIST,APP_FILE);
     return NULL;
@@ -154,7 +154,7 @@ void event_video_btn(lv_event_t*e)
     if(target==video_play_control_bar.next_btn)
     {
 				snprintf(Cure_Path, sizeof(Cure_Path), "%s/%s",  lv_fs_up(Cure_Path), FILE_BUF[1]);  /*将当前的按钮名称和缓冲区合并添加到当前路径*/
-				ui_goto_page(PAGE_APP_DETAIL,APP_FILE);  /*打开文件*/
+				ui_goto_page(PAGE_APP_DETAIL,APP_VIDEO);  /*打开文件*/
       
 
     
@@ -162,7 +162,7 @@ void event_video_btn(lv_event_t*e)
     if(target==video_play_control_bar.pre_btn)
     {
 				snprintf(Cure_Path, sizeof(Cure_Path), "%s/%s",  lv_fs_up(Cure_Path), FILE_BUF[0]);  /*将当前的按钮名称和缓冲区合并添加到当前路径*/
-				ui_goto_page(PAGE_APP_DETAIL,APP_FILE);  /*打开文件*/
+				ui_goto_page(PAGE_APP_DETAIL,APP_VIDEO);  /*打开文件*/
     }
     lv_obj_invalidate(lv_scr_act());
 }
@@ -173,7 +173,7 @@ void ui_app_video_detail_creat(lv_obj_t*parent,const char*path)
 {
    memset(video_buf,0,sizeof(video_buf));
    memset(&video_time,0,sizeof(video_time_t));
-   uint8_t file_index=video_get_list_to_file(path,FILE_BUF[0],FILE_BUF[1]);
+   uint8_t file_index=video_get_list_to_file(path,FILE_BUF[0],FILE_BUF[1],"rgb");
    printf("上一个文件:%s\r\n下一个文件:%s\r\n",FILE_BUF[0],FILE_BUF[1]);
   
    Video_win.obj_video=lv_img_create(parent);

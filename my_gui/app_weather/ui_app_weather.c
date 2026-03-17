@@ -160,6 +160,7 @@ lv_obj_t* update_weather_icon(lv_obj_t * parent, uint8_t weather_code)
     snprintf(icon_path, sizeof(icon_path), "0:SD/my_icon/icon/output/%d.bin", weather_code);
     #else
      snprintf(icon_path, sizeof(icon_path), "0:/GitHub_Code/My_STM32_Phone/SD/my_icon/icon/output/%d.bin", weather_code);
+    #endif // keil 
      lv_fs_res_t res= lv_fs_open(&weather_widget.file_fp,icon_path,LV_FS_MODE_RD);
 
          uint32_t num;
@@ -176,10 +177,6 @@ lv_obj_t* update_weather_icon(lv_obj_t * parent, uint8_t weather_code)
      {
         printf("打开天气图标文件失败\r\n");
      }
-     
-    #endif // keil 
-
-    
     return img_icon;
 }
 

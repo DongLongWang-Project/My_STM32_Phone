@@ -41,5 +41,5 @@ void alarm_rem_win(lv_obj_t* parent);
 
 lv_obj_t* ui_widgets_btn_create(lv_obj_t*parent,const char*btn_text,lv_color_t btn_label_color);
 void ui_play_control_create(lv_obj_t*parent,play_control_t*play_control);
-uint8_t video_get_list_to_file(const char* path, char* pre_file, char* next_file);
+uint8_t video_get_list_to_file(const char* path, char* pre_file, char* next_file,char*file_type);
 #endif // __UI_WIDGETS_H

@@ -174,7 +174,7 @@ void AudioTask(void)
     SRAM_FillHalf_t sram_need_fill_half;
 
         // 关键点：必须死等信号量！没收到 DMA 的 HT/TC 中断信号，坚决不动
-        if(xQueueReceive(Audio_Fill_Buf_Queue,&sram_need_fill_half,portMAX_DELAY) == pdTRUE)
+        if(xQueueReceive(Audio_Fill_Buf_Queue,&sram_need_fill_half,pdMS_TO_TICKS(1000)) == pdTRUE)
         {
                if (closing_cnt == 0) 
                 {
@@ -228,6 +228,17 @@ void AudioTask(void)
                }
 
 
+          }
+        }
+        else
+        {
+          if(music_win.state==MUSIC_STATE_PLAYING)
+          {
+            music_win.state=MUSIC_STATE_ERROR;
+            music_stop();
+            closing_cnt=0;
+            xQueueReset(Audio_Fill_Buf_Queue);
+            printf("播放音乐途中,sd卡抽风,播放失败,自动关闭音乐\r\n");
           }
         }
 

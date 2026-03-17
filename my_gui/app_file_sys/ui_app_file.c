@@ -34,9 +34,7 @@ char name_buf[SAVE_FILE_NAME_NUM][FILE_NAME_MAX_LEN]__attribute__((section(".EXT
 	@备注	  :
 ↑--------------------------------------------------------------------------------*/
 lv_obj_t* ui_app_file_list_create(lv_obj_t *parent,const char * path)
-{
-     
-                        
+{       
     file_dir.list= lv_list_create(parent); /*文件目录(以列表形式)*/
     file_switch_page.obj=ui_file_switch_page_create(parent);
     file_switch_page.next_page_btn=lv_obj_get_child(file_switch_page.obj,1);
@@ -75,10 +73,9 @@ lv_obj_t* ui_app_file_list_create(lv_obj_t *parent,const char * path)
     
     lv_list_add_text(file_dir.list, path);/*添加标题(路径)*/
     
-    file_dir.timer=lv_timer_create(load_dir_timer,10,NULL);
+
     memset(name_buf,0,sizeof(name_buf));
-//    lv_timer_pause(file_dir.timer);
-//
+    file_dir.timer=lv_timer_create(load_dir_timer,10,NULL);
 //    lv_timer_resume(file_dir.timer);
 
     lv_obj_add_event_cb(file_dir.list,event_file_close_cb,LV_EVENT_DELETE,NULL);
@@ -106,6 +103,8 @@ void load_dir_timer(lv_timer_t *timer)
             lv_timer_del(file_dir.timer); 
             file_dir.timer=NULL; 
             }
+            
+//             lv_timer_pause(file_dir.timer);
             if(file_dir.dir.drv!=NULL)
             {
             lv_fs_dir_close(&file_dir.dir); /*关闭文件夹*/  
@@ -131,30 +130,49 @@ void load_dir_timer(lv_timer_t *timer)
         }
         else
         {
+            
+//            printf("文件后缀名:%s\r\n",);
               if(read_num<SHOW_FILE_MAX_NUM)
                 {
+
                   if(strlen(buf)==1 || strcmp(buf,"/System Volume Information")==0)
                   {
                     return;
+                  }
+                  else if(timer->user_data!=NULL)
+                  {
+                      if(strcmp(lv_fs_get_ext(buf),timer->user_data)!=0) 
+                      {
+                            return;
+                      }
+                      else
+                      {
+                      if( buf[0]=='/')
+                      {
+                              file_dir.btn = lv_list_add_btn(file_dir.list, LV_SYMBOL_DIRECTORY, buf); /*  /开头为文件夹*/ 
+                              }
+                              else 
+                              {
+                              file_dir.btn = lv_list_add_btn(file_dir.list, LV_SYMBOL_FILE, buf);/*其他为文件*/
+                              }
+                              lv_obj_add_event_cb(file_dir.btn, event_ui_app_file_cb, LV_EVENT_CLICKED, NULL);/*添加事件*/
+                      }
                   }
                   else
                   {
                       if( buf[0]=='/')
                       {
                       file_dir.btn = lv_list_add_btn(file_dir.list, LV_SYMBOL_DIRECTORY, buf); /*  /开头为文件夹*/ 
-//                      printf("文件夹:%s 长度:%d\r\n",buf,strlen(buf));
                       }
                       else 
                       {
                       file_dir.btn = lv_list_add_btn(file_dir.list, LV_SYMBOL_FILE, buf);/*其他为文件*/
-//                      printf("文件:%s\r\n长度:%d\r\n",buf,strlen(buf)); 
                       }
                       lv_obj_add_event_cb(file_dir.btn, event_ui_app_file_cb, LV_EVENT_CLICKED, NULL);/*添加事件*/                        
-                  }
-                 
+                  }  
                 }
                 read_num++; 
-//                printf("文件:%s\r\n",buf);
+
                   
          }
     }
@@ -165,6 +183,8 @@ void load_dir_timer(lv_timer_t *timer)
         lv_timer_del(file_dir.timer); 
         file_dir.timer=NULL; 
         }
+//        timer->user_data=NULL;
+//         lv_timer_pause(file_dir.timer);
         if(file_dir.dir.drv!=NULL)
         {
         lv_fs_dir_close(&file_dir.dir); /*关闭文件夹*/  
@@ -238,6 +258,7 @@ lv_obj_t* ui_app_file_detail_create(lv_obj_t *parent, const char *file_path)
         FILE_TYPE_ENUM FILE_TYPE=get_file_type(file_path); /*获得文件类型*/
     // 5. 根据文件类型创建控件
     switch(FILE_TYPE) {
+        case FILE_LRC :
         case File_TXT:
         case File_C:
         case File_H: {
@@ -287,7 +308,7 @@ static FILE_TYPE_ENUM get_file_type(const char *path)
     if(strcmp(ext, ".png") == 0) return File_PNG;/*png文件*/
     if(strcmp(ext, ".rgb") == 0) return File_RGB;/*rgb文件*/
     if(strcmp(ext, ".wav") == 0) return File_WAV;/*wav文件*/
-
+    if(strcmp(ext, ".lrc") == 0) return FILE_LRC;/*wav文件*/
     return File_Unknow;
 }
 
@@ -317,6 +338,8 @@ static void event_file_close_cb(lv_event_t*e)
             lv_timer_del(file_dir.timer); 
             file_dir.timer=NULL; 
         }
+//          file_dir.timer->user_data=NULL;  
+//         lv_timer_pause(file_dir.timer);
         if(file_dir.dir.drv!=NULL)
         {
             lv_fs_dir_close(&file_dir.dir); /*关闭文件夹*/  

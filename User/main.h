@@ -19,5 +19,5 @@
 #include "MAX98357A.h"
 #include "ui_app_music.h"
 
-
+void my_phone_config(void);
 #endif

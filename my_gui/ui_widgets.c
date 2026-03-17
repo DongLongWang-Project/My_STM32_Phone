@@ -294,29 +294,40 @@ void ui_play_control_create(lv_obj_t*parent,play_control_t*play_control)
 }
 
 // 注意：参数依然是 char*，因为 FILE_BUF[0] 传递过去就是这一行的首地址
-uint8_t video_get_list_to_file(const char* path, char* pre_file, char* next_file)
+uint8_t video_get_list_to_file(const char* path, char* pre_file, char* next_file, char* file_type)
 {
-  const char* cur_file = lv_fs_get_last(path);
-  if (!cur_file) return false;
-    uint8_t i=0;
-  for( i= 0; i < SAVE_FILE_NAME_NUM; i++)
-  {
-    if(strcmp(cur_file, name_buf[i]) == 0)
-    {
-        // 关键点：使用 strcpy 拷贝内容，而不是修改指针指向
-        if (i > 0) {
-            strcpy(pre_file, name_buf[i-1]);
-        } else {
-            pre_file[0] = '\0'; // 如果没有上一个，清空字符串
-        }
+    const char* cur_file = lv_fs_get_last(path);
+    if (!cur_file) return 0xFF;
 
-        if (i < SAVE_FILE_NAME_NUM - 1) {
-            strcpy(next_file, name_buf[i+1]);
-        } else {
-            next_file[0] = '\0'; // 如果没有下一个，清空字符串
+    // 先初始化为空字符串，避免逻辑错误
+    if(pre_file) pre_file[0] = '\0';
+    if(next_file) next_file[0] = '\0';
+
+    for(uint8_t i = 0; i < file_switch_page.total_file_num; i++)
+    {
+        if(strcmp(cur_file, name_buf[i]) == 0)
+        { 
+            // 向上寻找 (使用 int16_t 避免 0 减 1 后的溢出死循环)
+            for(int16_t j = i - 1; j >= 0; j--)
+            {
+                if(strcmp(lv_fs_get_ext(name_buf[j]), file_type) == 0)
+                {
+                    strcpy(pre_file, name_buf[j]);
+                    break; // 找到即止
+                }
+            } 
+
+            // 向下寻找
+            for(uint16_t j = i + 1; j < file_switch_page.total_file_num; j++)
+            {
+                if(strcmp(lv_fs_get_ext(name_buf[j]), file_type) == 0)
+                {
+                    strcpy(next_file, name_buf[j]);
+                    break; // 找到即止
+                }
+            }
+            return i; // 返回当前索引
         }
-        return i;
     }
-  }
-  return 0xFF;
+    return 0xFF;
 }

@@ -34,6 +34,6 @@ typedef struct {
 extern video_control_t Video_win;
 extern video_time_t video_time;
 extern uint8_t video_buf[];
-
+void ui_app_video_detail_creat(lv_obj_t*parent,const char*path);
 
 #endif

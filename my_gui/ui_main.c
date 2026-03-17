@@ -9,7 +9,9 @@
 #include "app_video/ui_app_video.h"
 #include "app_music/ui_app_music.h"
 #include "app_file_sys/ui_app_file.h"
+#if keil
 #include "MAX98357A.h"
+#endif // keil
 
 lv_obj_t*tileview,*tile_main;
 
@@ -40,10 +42,14 @@ void ui_init(void)
     label_time= creat_statebar_icon("");
     lv_obj_set_flex_grow(label_time,1);
  
-    lv_timer_create(clock_time_timer_cb, 1000, NULL);  
+    lv_timer_create(clock_time_timer_cb, 1000, NULL); 
+//    file_dir.timer=lv_timer_create(load_dir_timer,10,NULL);
+//    lv_timer_pause(file_dir.timer);
+    
+    #if keil 
     music_win.music_timer=lv_timer_create(music_progress_timer_cb,200,NULL);
     lv_timer_pause(music_win.music_timer); 
-     
+    #endif // keil
     ui_goto_page(PAGE_HOME,APP_TEMP);
     
     alarm_rem_win(lv_scr_act());
@@ -221,15 +227,12 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
                       switch(APP)
                       {
                            case APP_SETTING:   ui_app_setting_create_list(tile_main);list_wifi=NULL;   break;/**创建wifi **/
-                           case APP_FILE:      ui_app_file_list_create(tile_main,Cure_Path);
-                           
-
-                           break;/** 创建文件列表**/
-//                           case APP_NET:      ui_app_net_list_creat(tile_main); break;
-                           case APP_WEATHER: ui_app_weather_create(tile_main);break;
+                           case APP_FILE:      ui_app_file_list_create(tile_main,Cure_Path); break;/** 创建文件列表**/                                                    
+//                         case APP_NET:      ui_app_net_list_creat(tile_main); break;
+                           case APP_WEATHER:  ui_app_weather_create(tile_main);break;
                            case APP_CLOCK   : ui_app_clock_creat(tile_main);break;
-                           case APP_VIDEO :ui_app_video_list_creat(tile_main);break;
-                           case APP_MUSIC: ui_app_music_list_creat(tile_main);break;
+                           case APP_VIDEO :   ui_app_video_list_creat(tile_main);break;
+                           case APP_MUSIC:    ui_app_music_list_creat(tile_main);break;
 
                            default:break;
                       }
@@ -240,10 +243,10 @@ void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP)
                 Cur_Page = PAGE_APP_DETAIL;
                  switch(APP)
                 {
-                    case APP_SETTING:   ui_app_setting_create_detail(tile_main);            break;
-                    case APP_VIDEO: 
-                     case APP_MUSIC:   
-                    case APP_FILE:      ui_app_file_detail_create(tile_main,Cure_Path);       break;
+                    case APP_SETTING:  ui_app_setting_create_detail(tile_main);             break;
+                    case APP_VIDEO:    
+                    case APP_MUSIC:    
+                    case APP_FILE:     ui_app_file_detail_create(tile_main,Cure_Path);      break;
                     
                     default:  break;
                 }

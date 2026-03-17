@@ -18,6 +18,7 @@ typedef enum {
     File_RGB,
     File_WAV,
     FILE_BIN,
+    FILE_LRC,
 } FILE_TYPE_ENUM;
 
 #define SHOW_FILE_MAX_NUM      8
