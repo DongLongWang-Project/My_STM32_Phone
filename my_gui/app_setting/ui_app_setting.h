@@ -42,7 +42,7 @@ FONT
 
 #endif 
 
-extern lv_obj_t*list_wifi;
+//extern lv_obj_t*list_wifi;
 
 lv_obj_t* ui_app_setting_create_list(lv_obj_t *parent);
 lv_obj_t* ui_app_setting_create_detail(lv_obj_t *parent );

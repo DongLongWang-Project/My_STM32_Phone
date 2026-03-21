@@ -253,7 +253,8 @@ lv_obj_t* ui_app_file_detail_create(lv_obj_t *parent, const char *file_path)
     lv_obj_set_size(page, lv_pct(100), lv_pct(100));
     lv_obj_set_style_pad_all(page, 0, 0);
 	lv_obj_clear_flag (page, LV_OBJ_FLAG_SCROLLABLE);
-	
+    lv_obj_set_style_border_width(page,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(page,0,0); 
 
         FILE_TYPE_ENUM FILE_TYPE=get_file_type(file_path); /*获得文件类型*/
     // 5. 根据文件类型创建控件

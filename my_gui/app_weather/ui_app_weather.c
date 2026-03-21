@@ -1,12 +1,22 @@
 #include "ui_app_weather.h"
+#include "../ui_app_language.h"
 
 
 ui_app_weather_widget_t weather_widget;
 static lv_obj_t* temperature_slider(lv_obj_t*parent,int32_t temperature_min,int32_t temperature_max);
 
-#define icon_width      48
-#define icon_height     48
-#define icon_buf_size   icon_width*icon_height*2
+const ui_setting_language_t WEATHER_LA_TABLE[UI_WEATHER_LA_MAX]=
+{
+   [TEXTAREA_LABEL]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Please to input city...",
+                     [CHINESE]="请输入城市",
+             },
+   }, 
+};
 
 uint8_t weather_icon_buf[icon_buf_size]__attribute__((section(".EXT_SRAM")));
 
@@ -39,6 +49,8 @@ void ui_app_weather_create(lv_obj_t*parent)
     lv_obj_set_size(list_weather,lv_pct(100),lv_pct(100));
     lv_obj_set_style_pad_all(list_weather,0,0);
     lv_obj_set_style_bg_opa(list_weather,100,LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(list_weather,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(list_weather,0,0);  
     /*搜索框(文本区域部件)*/
     lv_obj_t*obj_search_box=lv_obj_create(list_weather);
     lv_obj_set_style_pad_all(obj_search_box,0,0);
@@ -47,13 +59,17 @@ void ui_app_weather_create(lv_obj_t*parent)
    lv_obj_set_scrollbar_mode(obj_search_box,LV_SCROLLBAR_MODE_OFF);
 //    lv_obj_set_style_bg_opa(obj_search_box,10,LV_STATE_DEFAULT);
 //    lv_obj_set_style_bg_color(obj_search_box,lv_color_hex(0x949494),0); 
+    lv_obj_set_style_radius(obj_search_box,0,0);
     
     weather_widget.search_box=lv_textarea_create(obj_search_box);
+     lv_obj_set_style_border_width(obj_search_box,0,LV_STATE_DEFAULT);
+     lv_obj_set_style_border_width(weather_widget.search_box,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(weather_widget.search_box,0,0);
     lv_obj_set_style_bg_opa(weather_widget.search_box,100,LV_STATE_DEFAULT);
     lv_obj_set_size(weather_widget.search_box,lv_pct(80),lv_pct(100));
     lv_obj_align(weather_widget.search_box,LV_ALIGN_LEFT_MID,0,0);
     lv_textarea_set_one_line(weather_widget.search_box, true); 
-    lv_textarea_set_placeholder_text(weather_widget.search_box,"Please to input city...");
+    lv_textarea_set_placeholder_text(weather_widget.search_box,_GET_UI_TEXT(WEATHER_LA_TABLE,TEXTAREA_LABEL));
     lv_obj_add_event_cb(weather_widget.search_box,event_textarea_cb,LV_EVENT_CLICKED,NULL);
 
     weather_widget.search_btn=ui_widgets_btn_create(obj_search_box,"OK",lv_color_hex(0x007FFE));
@@ -66,8 +82,9 @@ void ui_app_weather_create(lv_obj_t*parent)
 //    lv_obj_set_style_bg_opa(obj_cur_day,10,LV_STATE_DEFAULT);
 //    lv_obj_set_style_bg_color(obj_cur_day,lv_color_hex(0x949494),0); 
     lv_obj_set_style_pad_all(obj_cur_day,0,0);
-    lv_obj_set_size(obj_cur_day,lv_pct(100),lv_pct(65));
-    
+    lv_obj_set_style_border_width(obj_cur_day,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(obj_cur_day,0,0); 
+    lv_obj_set_size(obj_cur_day,lv_pct(100),lv_pct(65));  
     weather_widget.place_label=lv_label_create(obj_cur_day);
     #if keil
     lv_label_set_text(weather_widget.place_label,Cur_Time.place_str);
@@ -112,7 +129,9 @@ void ui_app_weather_create(lv_obj_t*parent)
     lv_obj_set_style_pad_all(obj_next_day,0,0);
     lv_obj_set_style_radius(obj_next_day,0,0);
     lv_obj_set_size(obj_next_day,lv_pct(100),lv_pct(20));
-    
+    lv_obj_set_style_pad_all(obj_next_day,0,0);
+    lv_obj_set_style_border_width(obj_next_day,0,LV_STATE_DEFAULT); 
+     
     weather_widget.next_day1_label=lv_label_create(obj_next_day);
     weather_widget.next_day2_label=lv_label_create(obj_next_day);
     lv_obj_set_size(weather_widget.next_day1_label,lv_pct(50),lv_pct(50));

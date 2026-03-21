@@ -41,6 +41,7 @@ typedef struct
     lv_meter_indicator_t *min_indicator;
     lv_meter_indicator_t *sec_indicator; 
     lv_obj_t*time_label;
+    lv_obj_t*date_label;
 }ui_clock_widget_t;
 
 
@@ -94,6 +95,18 @@ typedef enum
     ALARM_SETTING,
     
 }ALARM_MODE_ENUM;
+typedef enum
+{
+    TIME_OBJ_ALARM=0,
+    TIME_OBJ_CLOCK,
+    TIME_OBJ_CLOCK_FMT_LABEL,
+    TIME_OBJ_TIMER,
+    TIME_OBJ_ALARM_ADD_TITLE,
+    TIME_OBJ_ALARM_ADD_RINGTONE,
+    TIME_OBJ_ALARM_ADD_REPEART, 
+    TIME_OBJ_ALARM_ADD_REPEART_, 
+    TIME_OBJ_MAX,
+}TIME_OBJ_ENUM;
 
 extern ui_clock_widget_t Clock_time_widget;
 extern ui_timer_widget_t timer_widget;

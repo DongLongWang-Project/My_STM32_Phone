@@ -1,5 +1,9 @@
 #include "ui_app_clock.h"
 
+LV_FONT_DECLARE( my_font_12);
+LV_FONT_DECLARE( my_font_16);
+LV_FONT_DECLARE( my_font_24);
+LV_FONT_DECLARE( my_font_32);
 
 lv_obj_t* ui_widgets_btn_create(lv_obj_t*parent,const char*btn_text,lv_color_t btn_label_color);
 
@@ -12,14 +16,39 @@ static void timer_create(lv_obj_t*parent);
 static void event_add_alarm_cb(lv_event_t*e);
 static void event_timer_cb(lv_event_t *e);
 static void event_clock_set_cb(lv_event_t*e);
-     
+// 索引 0 对应刻度 0，索引 5 对应刻度 5... 以此类推
+//static const char * hour_map[] = {
+//    "12", "", "", "", "", "1", "", "", "", "", "2", "", "", "", "", "3", 
+//    "", "", "", "", "4", "", "", "", "", "5", "", "", "", "", "6",
+//    "", "", "", "", "7", "", "", "", "", "8", "", "", "", "", "9",
+//    "", "", "", "", "10", "", "", "", "", "11", "", "", "", ""
+//};
+//void clock_screen_meter_draw_event_cb(lv_event_t * e)
+//{
+//    lv_obj_draw_part_dsc_t * dsc = lv_event_get_draw_part_dsc(e);
+//
+//    // 1. 修改宏定义：使用 LV_METER_DRAW_PART_LABEL
+//    if(dsc->part == LV_PART_INDICATOR && dsc->id == LV_METER_DRAW_PART_LABEL) {
+//        
+//        // 2. 这里的 dsc->value 是 0, 5, 10...
+//        int32_t hour_val = dsc->value / 5;
+//        if(hour_val == 0) hour_val = 12;
+//
+//        // 3. 针对报错：使用 lv_snprintf 直接修改 dsc->text_array 或者通过 text 重新赋值
+//        // 注意：在有些版本中是 dsc->label_dsc->text，有些是直接操作
+//        if(dsc->label_dsc) {
+//            // 将数字 0-60 重新映射为 1-12 并写回
+//            lv_snprintf(dsc->label_dsc->text, 4, "%d", (int)hour_val);
+//        }
+//    }
+//}  
 void ui_app_clock_creat(lv_obj_t*parent)
 {
     lv_obj_t*clock_tabview=lv_tabview_create(parent,LV_DIR_BOTTOM,30);
     
-    lv_obj_t*tab_Clock=lv_tabview_add_tab(clock_tabview,"Alarm Clock");
-    lv_obj_t*tab_Time=lv_tabview_add_tab(clock_tabview,"Clock");
-    lv_obj_t*tab_Timing=lv_tabview_add_tab(clock_tabview,"Timer");
+    lv_obj_t*tab_Clock=lv_tabview_add_tab(clock_tabview,_GET_UI_TEXT(TIME_OBJ__LA_TABLE,TIME_OBJ_ALARM));
+    lv_obj_t*tab_Time=lv_tabview_add_tab(clock_tabview,_GET_UI_TEXT(TIME_OBJ__LA_TABLE,TIME_OBJ_CLOCK));
+    lv_obj_t*tab_Timing=lv_tabview_add_tab(clock_tabview,_GET_UI_TEXT(TIME_OBJ__LA_TABLE,TIME_OBJ_TIMER));
     
     lv_obj_set_style_pad_all(tab_Clock,0,0);  
     lv_obj_set_style_pad_all(tab_Time,0,0);  
@@ -35,14 +64,19 @@ static void alarm_clock_create(lv_obj_t*parent)
     lv_obj_t*Clock_list=lv_list_create(parent);
     lv_obj_set_size(Clock_list,lv_pct(100),lv_pct(100));
     lv_obj_set_style_pad_all(Clock_list,0,0);
-    lv_list_add_text(Clock_list,"Alarm Clock");
+    lv_obj_set_style_border_width(Clock_list,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(Clock_list,0,0);  
+    
+    lv_list_add_text(Clock_list,_GET_UI_TEXT(TIME_OBJ__LA_TABLE,TIME_OBJ_CLOCK));
+    
     lv_obj_t*btn_add_clock=lv_btn_create(parent);
-    lv_obj_set_size(btn_add_clock,lv_pct(20),lv_pct(7));
+    lv_obj_set_size(btn_add_clock,lv_pct(15),lv_pct(15));
     lv_obj_t*btn_add_clock_label=lv_label_create(btn_add_clock);
     lv_label_set_text(btn_add_clock_label,LV_SYMBOL_PLUS);
     lv_obj_center(btn_add_clock_label);
-    lv_obj_align(btn_add_clock,LV_ALIGN_TOP_RIGHT,0,0);
-
+    lv_obj_align(btn_add_clock,LV_ALIGN_BOTTOM_RIGHT,0,0);
+//    lv_obj_set_style_pad_all(btn_add_clock,0,0);
+    
    for(uint8_t i=0;i<alarm_clock.save_alarm_num;i++)
    {
         tab_clock_creat(Clock_list,&alarm_clock.save_alarm_clock_table[i],(void*)i);
@@ -56,30 +90,38 @@ static void clock_create(lv_obj_t*parent)
     lv_obj_t*Time_list=lv_list_create(parent);
     lv_obj_set_size(Time_list,lv_pct(100),lv_pct(100));
     lv_obj_set_style_pad_all(Time_list,0,0);
-    lv_list_add_text(Time_list,"Clock");
-   
+    lv_list_add_text(Time_list,_GET_UI_TEXT(TIME_OBJ__LA_TABLE,TIME_OBJ_ALARM));
+    lv_obj_set_style_border_width(Time_list,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(Time_list,0,0);  
+     
     lv_obj_t*time_obj=lv_obj_create(Time_list);
     lv_obj_set_size(time_obj,lv_pct(100),lv_pct(90));
     lv_obj_set_style_pad_all(time_obj,0,0);
-    
+    lv_obj_set_style_border_width(time_obj,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(time_obj,0,0); 
     
     Clock_time_widget.meter=lv_meter_create(time_obj);
      lv_obj_set_size(Clock_time_widget.meter,160,160);
-     lv_obj_center(Clock_time_widget.meter);
+//     lv_obj_center(Clock_time_widget.meter);
+     lv_obj_align(Clock_time_widget.meter,LV_ALIGN_CENTER,0,-20);
 //    lv_obj_align(Clock_time_widget.meter,LV_ALIGN_TOP_MID,0,5);
     lv_meter_scale_t *scale= lv_meter_add_scale(Clock_time_widget.meter);
 
   
-  lv_meter_set_scale_ticks(Clock_time_widget.meter,scale,60,1,8,lv_color_hex(0x9D9D9D));
-   lv_meter_set_scale_major_ticks(Clock_time_widget.meter,scale,5,2,8,lv_color_hex(0),10);
-   
-    lv_meter_set_scale_range(Clock_time_widget.meter,scale,0,60,360,270);
+    lv_meter_set_scale_ticks(Clock_time_widget.meter,scale,60,1,8,lv_color_hex(0x9D9D9D));
+    lv_meter_set_scale_major_ticks(Clock_time_widget.meter,scale,5,2,8,lv_color_hex(0),10);
+    lv_meter_set_scale_range(Clock_time_widget.meter,scale,0,60,360,269);  
+    
+//lv_meter_set_scale_ticks(Clock_time_widget.meter, scale, 12, 0, 10, lv_palette_main(LV_PALETTE_GREY)); // 小刻度设为0
+//lv_meter_set_scale_major_ticks(Clock_time_widget.meter, scale, 1, 3, 15, lv_color_black(), 15); // 大刻度带数字
+//lv_meter_set_scale_range(Clock_time_widget.meter, scale, 0, 12, 360, 270);
    
    Clock_time_widget.sec_indicator=lv_meter_add_needle_line(Clock_time_widget.meter,scale,2,lv_color_hex(0x599FFD),0);
    Clock_time_widget.min_indicator=lv_meter_add_needle_line(Clock_time_widget.meter,scale,3,lv_color_hex(0),-6);
     Clock_time_widget.hour_indicator=lv_meter_add_needle_line(Clock_time_widget.meter,scale,4,lv_color_hex(0),-30);
    
-   
+//lv_obj_add_event_cb(Clock_time_widget.meter, clock_screen_meter_draw_event_cb, LV_EVENT_DRAW_PART_BEGIN, NULL);
+
    lv_meter_set_indicator_value(Clock_time_widget.meter,Clock_time_widget.sec_indicator,Cur_Time.sec);
    lv_meter_set_indicator_value(Clock_time_widget.meter,Clock_time_widget.min_indicator,Cur_Time.min);
    
@@ -87,9 +129,13 @@ static void clock_create(lv_obj_t*parent)
     lv_meter_set_indicator_value(Clock_time_widget.meter, Clock_time_widget.hour_indicator,hour);
    
    Clock_time_widget.time_label=lv_label_create(time_obj);
-   lv_obj_align_to(Clock_time_widget.time_label,Clock_time_widget.meter,LV_ALIGN_OUT_BOTTOM_LEFT,45,10);
-   lv_label_set_text_fmt(Clock_time_widget.time_label,"Time:%d:%d:%d",Cur_Time.hour,Cur_Time.min,Cur_Time.sec);
-  
+   lv_obj_set_style_text_font(Clock_time_widget.time_label,&my_font_24,0);
+   lv_obj_align_to(Clock_time_widget.time_label,Clock_time_widget.meter,LV_ALIGN_OUT_BOTTOM_MID,-20,10);
+   lv_label_set_text_fmt(Clock_time_widget.time_label,"%02d:%02d:%02d",Cur_Time.hour,Cur_Time.min,Cur_Time.sec);
+   
+   Clock_time_widget.date_label=lv_label_create(time_obj);
+   lv_obj_set_style_text_font(Clock_time_widget.date_label,&my_font_16,0);
+   lv_label_set_text_fmt(Clock_time_widget.date_label,_GET_UI_TEXT(TIME_OBJ__LA_TABLE,TIME_OBJ_CLOCK_FMT_LABEL),Cur_Time.three_day_data[0].month,Cur_Time.three_day_data[0].day); 
 
 }
 
@@ -98,10 +144,14 @@ static void timer_create(lv_obj_t*parent)
     lv_obj_t*timer_list=lv_list_create(parent);
     lv_obj_set_size(timer_list,lv_pct(100),lv_pct(100));
     lv_obj_set_style_pad_all(timer_list,0,0);
-    lv_list_add_text(timer_list,"Timer");
-    
+    lv_list_add_text(timer_list,_GET_UI_TEXT(TIME_OBJ__LA_TABLE,TIME_OBJ_TIMER));
+    lv_obj_set_style_border_width(timer_list,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(timer_list,0,0); 
+     
     timer_widget.timer_obj=lv_obj_create(timer_list);
     lv_obj_set_size(timer_widget.timer_obj,lv_pct(100),lv_pct(90));
+    lv_obj_set_style_border_width(timer_widget.timer_obj,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(timer_widget.timer_obj,0,0); 
     
     /*创建小时滚动条*/
     timer_widget.hour_roller=lv_roller_create(timer_widget.timer_obj);
@@ -216,7 +266,7 @@ static void clock_timer(void)
        lv_meter_set_indicator_value(Clock_time_widget.meter,Clock_time_widget.min_indicator,Cur_Time.min);
        uint8_t hour=(Cur_Time.hour%12)*5+(Cur_Time.min/12);
        lv_meter_set_indicator_value(Clock_time_widget.meter, Clock_time_widget.hour_indicator,hour);
-       lv_label_set_text_fmt(Clock_time_widget.time_label,"Time:%.2d:%.2d:%.2d",Cur_Time.hour,Cur_Time.min,Cur_Time.sec);
+       lv_label_set_text_fmt(Clock_time_widget.time_label,"%02d:%02d:%02d",Cur_Time.hour,Cur_Time.min,Cur_Time.sec);
    }
 }
 static void timer_timer(void)
@@ -289,15 +339,15 @@ void clock_time_create(lv_obj_t*parent,ALARM_MODE_ENUM alarm_mode)
     lv_obj_set_size(clock_set_list,lv_pct(100),lv_pct(100));
     if(alarm_mode==ALARM_ADD)
     {
-          lv_list_add_text(clock_set_list,"Add Clock");  
+          lv_list_add_text(clock_set_list,_GET_UI_TEXT(TIME_OBJ__LA_TABLE,TIME_OBJ_ALARM_ADD_TITLE));  
     }
     else if(alarm_mode == ALARM_SETTING)
     {
         lv_list_add_text(clock_set_list,"Clock Setting");   
     }
 
-    lv_obj_t*clock_label=lv_label_create(clock_set_list);/**/
-    lv_obj_set_align(clock_label,LV_ALIGN_TOP_MID); 
+//    lv_obj_t*clock_label=lv_label_create(clock_set_list);/**/
+//    lv_obj_set_align(clock_label,LV_ALIGN_TOP_MID); 
 
     /*滚动条区域*/
     lv_obj_t*roller_obj=lv_obj_create(clock_set_list);
@@ -322,15 +372,15 @@ void clock_time_create(lv_obj_t*parent,ALARM_MODE_ENUM alarm_mode)
    lv_obj_t*btn_cancel=ui_widgets_btn_create(roller_obj,LV_SYMBOL_CLOSE,lv_color_hex(0x4897E0));
    lv_obj_align(btn_cancel,LV_ALIGN_RIGHT_MID,0,20);
     /*铃声的下拉列表*/
-    lv_list_add_text(clock_set_list,"Ringtone");
+    lv_list_add_text(clock_set_list,_GET_UI_TEXT(TIME_OBJ__LA_TABLE,TIME_OBJ_ALARM_ADD_RINGTONE));
     lv_obj_t*Ringtone_drop=lv_dropdown_create(clock_set_list);
     lv_obj_set_width(Ringtone_drop,lv_pct(100));
     lv_dropdown_set_options(Ringtone_drop,"1\n2");
     /*重复次数的下拉列表*/
-    lv_list_add_text(clock_set_list,"Repeat");
+    lv_list_add_text(clock_set_list,_GET_UI_TEXT(TIME_OBJ__LA_TABLE,TIME_OBJ_ALARM_ADD_REPEART));
     lv_obj_t*Repeat_drop=lv_dropdown_create(clock_set_list);
     lv_obj_set_width(Repeat_drop,lv_pct(100));
-    lv_dropdown_set_options(Repeat_drop,"Everyday\nSingle");
+    lv_dropdown_set_options(Repeat_drop,_GET_UI_TEXT(TIME_OBJ__LA_TABLE,TIME_OBJ_ALARM_ADD_REPEART_));
     
     lv_obj_add_event_cb(btn_ok,event_add_alarm_cb,LV_EVENT_CLICKED,(void *)"OK");
     lv_obj_add_event_cb(btn_cancel,event_add_alarm_cb,LV_EVENT_CLICKED,(void *)"OFF");
@@ -400,7 +450,7 @@ static void event_clock_set_cb(lv_event_t*e)
         {
             lv_obj_t*Clock_list=lv_obj_get_parent(target);
             lv_obj_clean(Clock_list); 
-            lv_list_add_text(Clock_list,"Alarm Clock");
+            lv_list_add_text(Clock_list,_GET_UI_TEXT(TIME_OBJ__LA_TABLE,TIME_OBJ_ALARM));
 
              del_alarm_and_shift(alarm_index); 
            for(uint8_t i=0;i<alarm_clock.save_alarm_num;i++)

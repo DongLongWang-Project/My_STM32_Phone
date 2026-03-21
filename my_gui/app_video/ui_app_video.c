@@ -175,7 +175,8 @@ void ui_app_video_detail_creat(lv_obj_t*parent,const char*path)
    memset(&video_time,0,sizeof(video_time_t));
    uint8_t file_index=video_get_list_to_file(path,FILE_BUF[0],FILE_BUF[1],"rgb");
    printf("上一个文件:%s\r\n下一个文件:%s\r\n",FILE_BUF[0],FILE_BUF[1]);
-  
+
+    
    Video_win.obj_video=lv_img_create(parent);
 //   lv_obj_add_flag(Video_win.obj_video,LV_OBJ_FLAG_HIDDEN); 
    lv_obj_set_size(Video_win.obj_video,Video_Width,Video_Height);

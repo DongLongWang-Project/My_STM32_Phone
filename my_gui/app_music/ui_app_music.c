@@ -401,7 +401,9 @@ lv_obj_t* lrc_obj_create(lv_obj_t*parent)
  lv_obj_align(obj,LV_ALIGN_TOP_MID,0,0); 
   lv_obj_set_flex_flow(obj,LV_FLEX_FLOW_COLUMN);
   lv_obj_set_flex_align(obj,LV_FLEX_ALIGN_START,LV_FLEX_ALIGN_CENTER,LV_FLEX_ALIGN_CENTER);
-  
+     lv_obj_set_style_border_width(obj,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(obj,0,0); 
+     
   lv_obj_set_scrollbar_mode(obj,LV_SCROLLBAR_MODE_OFF);
   lv_obj_set_scroll_snap_y(obj,LV_SCROLL_SNAP_CENTER);
   

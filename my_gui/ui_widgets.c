@@ -276,8 +276,10 @@ void ui_play_control_create(lv_obj_t*parent,play_control_t*play_control)
     
     
     lv_obj_set_size(obj_play_control,lv_pct(100),lv_pct(30));
-    lv_obj_set_style_radius(obj_play_control,0,0);
     lv_obj_set_style_pad_all(obj_play_control,0,0);
+    lv_obj_set_style_border_width(obj_play_control,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(obj_play_control,0,0); 
+
     
     lv_obj_set_size(progress_bar,lv_pct(100),5);
     lv_obj_set_style_bg_opa(progress_bar,10,0);

@@ -4,6 +4,10 @@
 	@备注	:
 ↑--------------------------------------------------------------------------------*/
 #include "setting_wifi.h"
+LV_FONT_DECLARE( my_font_12);
+LV_FONT_DECLARE( my_font_16);
+LV_FONT_DECLARE( my_font_24);
+LV_FONT_DECLARE( my_font_32);
 
 /*************************************************************WIFI*************************************************************/
 
@@ -11,7 +15,7 @@
 static void ui_event_wifi_refresh_btn_cb(lv_event_t*e);
 static void event_wifi_switch_cb(lv_event_t*e);
 void ui_app_setting_wifi(lv_obj_t*parent);
-
+ static void ui_event_wifi_btn_cb(lv_event_t*e);
 lv_obj_t*list_wifi;
 
 static lv_obj_t* ui_app_setting_wifi_refresh_btn_creat(lv_obj_t*parent);/*wifi扫描刷新按钮*/
@@ -62,9 +66,11 @@ void ui_app_setting_wifi(lv_obj_t* parent)
     lv_obj_add_event_cb(wifi_switch,event_wifi_switch_cb,LV_EVENT_VALUE_CHANGED,NULL);/*开关的回调函数*/
     
     // 添加 WiFi 项
-//    lv_obj_t* btn_wifi;
-//    btn_wifi = lv_list_add_btn(list_wifi, LV_SYMBOL_WIFI, "ww"); 
-//    lv_obj_add_event_cb(btn_wifi, ui_event_wifi_btn_cb, LV_EVENT_CLICKED, NULL);
+    #if !keil
+    lv_obj_t* btn_wifi;
+    btn_wifi = lv_list_add_btn(list_wifi, LV_SYMBOL_WIFI, "无线网"); 
+    lv_obj_add_event_cb(btn_wifi, ui_event_wifi_btn_cb, LV_EVENT_CLICKED, NULL);
+    #endif
      if(display_cfg.wifi_switch_state==true) /*如果wifi是打开的就自动*/
      {
         wifi_scan_done_cb(NULL);/*自己添加环境中的wifi到列表中*/
@@ -101,7 +107,11 @@ static void event_wifi_connect_btn_cb(lv_event_t*e)
 //           wifi_scan_list.connected=0;
         }
        lv_obj_add_flag(keyboard,LV_OBJ_FLAG_HIDDEN);/*自动隐藏键盘*/         
-       lv_obj_del(parent);/*删除对话框*/   
+       lv_obj_del(parent);/*删除对话框*/  
+       
+       #else
+       lv_obj_add_flag(keyboard,LV_OBJ_FLAG_HIDDEN);/*自动隐藏键盘*/         
+       lv_obj_del(parent);/*删除对话框*/  
        #endif // keil
     }
 }
@@ -139,6 +149,10 @@ static void event_textarea_pass_cb(lv_event_t*e)
         if(strlen(lv_textarea_get_text(target))>=8) /*如果密码输入长度大于=8*/
         { 
            lv_obj_clear_state(lv_obj_get_child(obj,2),LV_STATE_DISABLED);/*解除对连接按钮的无法选中状态*/
+        }
+        else
+        {
+           lv_obj_add_state(lv_obj_get_child(obj,2),LV_STATE_DISABLED);/*解除对连接按钮的无法选中状态*/ 
         }
     }
 }
@@ -181,27 +195,32 @@ static void event_seepass_btn_cb(lv_event_t*e)
 void ui_creat_wifi_textarea(lv_obj_t *parent,const char*ssid)
 {
     lv_obj_t*obj=lv_obj_create(parent);/*创建背景区域*/
-    lv_obj_set_size(obj,lv_pct(90),lv_pct(90));
-    lv_obj_set_pos(obj,lv_pct(5),lv_pct(5));
+    lv_obj_set_size(obj,lv_pct(100),lv_pct(100));
+    
     lv_obj_set_style_border_width(obj,0,LV_STATE_DEFAULT);
     lv_obj_set_style_pad_all(obj,0,LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(obj,100,LV_STATE_DEFAULT);
     lv_obj_add_event_cb(obj,event_bg_clicked_cb,LV_EVENT_CLICKED,NULL);/*添加背景点击回调*/
     
     lv_obj_t*win_passText=lv_obj_create(obj); /*创建密码输入框区域*/
-    lv_obj_set_size(win_passText,lv_pct(100),lv_pct(50));
+    lv_obj_set_size(win_passText,lv_pct(80),lv_pct(50));
+    lv_obj_align(win_passText,LV_ALIGN_CENTER,0,0);
     lv_obj_set_style_pad_all(win_passText,0,LV_STATE_DEFAULT);
-    lv_obj_set_flex_flow(win_passText,LV_FLEX_FLOW_COLUMN);/*在里面新建的子对象为纵向排列*/
+//    lv_obj_set_flex_flow(win_passText,LV_FLEX_FLOW_COLUMN);/*在里面新建的子对象为纵向排列*/
       
     lv_obj_t*label_ssid=lv_label_create(win_passText);/*创建wifi名称的label在密码输入框*/
     lv_label_set_text(label_ssid,ssid);/*设置对应wifi的文本*/
-    lv_obj_set_align(label_ssid,LV_ALIGN_TOP_RIGHT);
+//    lv_obj_set_align(label_ssid,LV_ALIGN_TOP_RIGHT);
     lv_obj_set_size(label_ssid,lv_pct(100),lv_pct(15));
-    lv_obj_set_style_text_font(label_ssid,&lv_font_montserrat_24,LV_STATE_DEFAULT);/*设置对应字体*/
-    
+    lv_obj_set_style_text_font(label_ssid,&my_font_16,LV_STATE_DEFAULT);/*设置对应字体*/
+    lv_obj_set_style_text_align(label_ssid, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_set_width(label_ssid, LV_PCT(100)); // 
+        
      lv_obj_t*wifi_pass=lv_textarea_create(win_passText);/*创建密码输入textarea*/
-     lv_obj_set_size(wifi_pass,lv_pct(100),lv_pct(10));
-     lv_textarea_set_placeholder_text(wifi_pass,"PASSWORD:");/*textarea 的背景为密码*/
+     lv_obj_set_size(wifi_pass,lv_pct(100),lv_pct(8));
+     lv_obj_set_style_border_width(wifi_pass,0,0);
+     lv_textarea_set_placeholder_text(wifi_pass,_GET_UI_TEXT(WIFI_LA_TABLE,LABEL_WIFI_PASS));/*textarea 的背景为密码*/
+     
      lv_textarea_set_one_line(wifi_pass,true);/*单行模式*/
      lv_textarea_set_password_mode(wifi_pass,true);/*密码模式*/
      lv_textarea_set_password_show_time(wifi_pass,400);/*密码显示时间*/
@@ -224,13 +243,23 @@ void ui_creat_wifi_textarea(lv_obj_t *parent,const char*ssid)
      lv_obj_add_event_cb(wifi_pass,event_textarea_pass_cb,LV_EVENT_VALUE_CHANGED,NULL);/*密码textarea的变化回调*/
      
      lv_obj_t*btn_connect=lv_btn_create(win_passText);/*创建连接按钮*/
+     lv_obj_set_align(btn_connect,LV_ALIGN_BOTTOM_MID);
+    lv_obj_set_style_pad_all(btn_connect,0,LV_STATE_DEFAULT);
+ 
      lv_obj_t*btn_text=lv_label_create(btn_connect);/*按钮文本*/
 //     lv_obj_set_size(btn_connect,scr_width*2/3,scr_height/10);
      lv_obj_set_size(btn_connect,lv_pct(100),lv_pct(20));
 //     lv_obj_align(btn_text,LV_ALIGN_TOP_MID,-10,-5);
-     lv_label_set_text(btn_text,"Connect");
+     lv_label_set_text(btn_text,_GET_UI_TEXT(WIFI_LA_TABLE,BTNAA_LABEL));
      lv_obj_center(btn_text);
      lv_obj_add_state(btn_connect,LV_STATE_DISABLED);/*连接按钮默认为无法操作*/
+     
+     
+     
+     lv_obj_align(label_ssid,LV_ALIGN_TOP_MID,0,20);
+     lv_obj_align(wifi_pass,LV_ALIGN_CENTER,0,0);
+//     lv_obj_align_to(btn_connect,wifi_pass,LV_ALIGN_OUT_BOTTOM_MID,0,0);
+     lv_obj_align(btn_connect,LV_ALIGN_BOTTOM_MID,0,-10);
      
      lv_obj_add_event_cb(btn_connect,event_wifi_connect_btn_cb,LV_EVENT_CLICKED,NULL); /*添加连接按钮的回调函数*/
 }
@@ -246,7 +275,8 @@ void ui_creat_wifi_textarea(lv_obj_t *parent,const char*ssid)
    uint8_t found=0;/*判断是否找到密码在w25q*/
     lv_obj_t* btn=lv_event_get_target(e);/*wifi按钮*/
     lv_obj_t* list=lv_obj_get_parent(btn);/*wifi所在列表*/
-      lv_obj_t* parent_list=lv_obj_get_parent(list);/*获得最外层列表(list_wifi)*/
+      lv_obj_t* obj=lv_obj_get_parent(list);/*获得最外层列表(list_wifi)*/
+      
     if(lv_event_get_code(e)==LV_EVENT_CLICKED)
     {
         #if keil
@@ -267,8 +297,10 @@ void ui_creat_wifi_textarea(lv_obj_t *parent,const char*ssid)
       }
       if(!found)/*没找到,创建密码输入框,点击连接按钮连接wifi*/
       {
-        ui_creat_wifi_textarea(list_wifi,lv_list_get_btn_text(list,btn));
+        ui_creat_wifi_textarea(obj,lv_list_get_btn_text(list,btn));
       } 
+      #else
+        ui_creat_wifi_textarea(obj,lv_list_get_btn_text(list,btn));
       #endif // keil
       
     }
@@ -353,7 +385,7 @@ void wifi_scan_done_cb(void *user_data)
     else      /*连接了wifi*/
     {      
        btn_wifi=lv_list_add_btn(list,LV_SYMBOL_OK,connected_wifi.ssid);/*单独先添加这个wifi*/
-        for(uint8_t i=0;i<wifi_scan_list.scan_count;i++) /*接着便利*/
+        for(uint8_t i=0;i<wifi_scan_list.scan_count;i++) /*接着遍历*/
         {
            if(strcmp(connected_wifi.ssid,wifi_scan_list.scan_list[i].ssid)==0) /*如果是已添加的已连接的wifi,就跳过*/
            {

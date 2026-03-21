@@ -41,6 +41,8 @@ static void event_hotspot_addr_cb(lv_event_t*e);
     lv_obj_t*obj=lv_obj_create(hotspot_list);
     lv_obj_set_scrollbar_mode(obj, LV_SCROLLBAR_MODE_OFF); 
     lv_obj_set_size(obj, lv_pct(100), lv_pct(15)); 
+     lv_obj_set_style_border_width(obj,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(obj,0,0); 
     /*热点开关标题1.0*/
     lv_obj_t*hotspot_label=lv_label_create(obj);
     lv_obj_align(hotspot_label,LV_ALIGN_LEFT_MID,0,0); 
@@ -53,42 +55,53 @@ static void event_hotspot_addr_cb(lv_event_t*e);
     lv_list_add_text(hotspot_list,_GET_UI_TEXT(HOTSPOT_LV_TABLE,HOTSPOT_NAME));
     lv_obj_t*hotspot_name=lv_textarea_create(hotspot_list);
     lv_obj_set_size(hotspot_name, lv_pct(100), lv_pct(15)); 
-
+     lv_obj_set_style_border_width(hotspot_name,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(hotspot_name,0,0); 
+    
     lv_obj_t*label_check_name=lv_label_create(hotspot_name);
     lv_obj_set_align(label_check_name,LV_ALIGN_RIGHT_MID);
-
+    lv_label_set_text(label_check_name,"");
 
 
     lv_list_add_text(hotspot_list,_GET_UI_TEXT(HOTSPOT_LV_TABLE,HOTSPOT_PASS));
     lv_obj_t*hotspot_pass=lv_textarea_create(hotspot_list);
-
     lv_obj_set_size(hotspot_pass, lv_pct(100), lv_pct(15)); 
+     lv_obj_set_style_border_width(hotspot_pass,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(hotspot_pass,0,0); 
+    
     lv_obj_t*label_check_pass=lv_label_create(hotspot_pass);
     lv_obj_set_align(label_check_pass,LV_ALIGN_RIGHT_MID);
-                
+    lv_label_set_text(label_check_pass,"");
+             
     lv_list_add_text(hotspot_list,_GET_UI_TEXT(HOTSPOT_LV_TABLE,HOTSPOT_CHANNEL));
     lv_obj_t*hotspot_channel=lv_dropdown_create(hotspot_list);
     lv_obj_set_size(hotspot_channel, lv_pct(100), lv_pct(15)); 
-
+     lv_obj_set_style_border_width(hotspot_channel,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(hotspot_channel,0,0); 
 
     
     lv_list_add_text(hotspot_list,_GET_UI_TEXT(HOTSPOT_LV_TABLE,HOTSPOT_METHOD));
     lv_obj_t*hotspot_method=lv_dropdown_create(hotspot_list);
     lv_obj_set_size(hotspot_method, lv_pct(100), lv_pct(15)); 
-
+     lv_obj_set_style_border_width(hotspot_method,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(hotspot_method,0,0); 
 
     lv_list_add_text(hotspot_list,_GET_UI_TEXT(HOTSPOT_LV_TABLE,HOTSPOT_USERS));
     lv_obj_t*hotspot_users=lv_dropdown_create(hotspot_list);
     lv_obj_set_size(hotspot_users, lv_pct(100), lv_pct(15)); 
-
+     lv_obj_set_style_border_width(hotspot_users,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(hotspot_users,0,0); 
 
     lv_list_add_text(hotspot_list,_GET_UI_TEXT(HOTSPOT_LV_TABLE,HOTSPOT_IP));
     lv_obj_t*hotspot_addr=lv_textarea_create(hotspot_list);
     lv_textarea_set_accepted_chars(hotspot_addr,"0123456789.");
+     lv_obj_set_style_border_width(hotspot_addr,0,LV_STATE_DEFAULT); 
+    lv_obj_set_style_radius(hotspot_addr,0,0); 
     
     lv_obj_set_size(hotspot_addr, lv_pct(100), lv_pct(15)); 
     lv_obj_t*label_check_ip_addr=lv_label_create(hotspot_addr);
     lv_obj_set_align(label_check_ip_addr,LV_ALIGN_RIGHT_MID);
+    lv_label_set_text(label_check_ip_addr,"");
     
 /*--------------------------------------------------------------------------------*/
     #if keil

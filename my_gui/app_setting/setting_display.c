@@ -53,7 +53,9 @@ void ui_app_setting_display(lv_obj_t *parent)
             lv_list_add_text (list_display, _GET_UI_TEXT(APP_SET_DISPLAY_LA_TABLE,i));/*在循环里面添加标题(语言,字体大小,屏幕方向)*/  
             droplist=lv_dropdown_create(list_display);/*在循环里面添加(语言,字体大小,屏幕方向)*/
             lv_obj_set_style_radius(droplist, 0, 0);/*无圆角*/
-
+             lv_obj_set_style_border_width(droplist,0,LV_STATE_DEFAULT); 
+            lv_obj_set_style_radius(droplist,0,0); 
+            
             lv_dropdown_set_options(droplist,_GET_UI_TEXT(APP_SET_DISPLAY_LA_TABLE,i+1));/*给下拉列表添加选项*/
             lv_obj_set_size(droplist,lv_pct(100),lv_pct(12)); 
             lv_obj_add_event_cb(droplist,event_ui_app_setting_display_cb,LV_EVENT_VALUE_CHANGED,(void*)(i+1));/*添加事件*/
@@ -105,10 +107,12 @@ void ui_app_setting_display(lv_obj_t *parent)
  {
      lv_obj_t*bright_slider=lv_slider_create(parent);/*创建滑动条*/
 
-      lv_obj_set_size(bright_slider,lv_pct(100),lv_pct(8)); 
+      lv_obj_set_size(bright_slider,lv_pct(100),lv_pct(5)); 
       lv_slider_set_range(bright_slider,0,100);/*设置范围0~100*/
       lv_slider_set_value(bright_slider,display_cfg.Brightness,LV_ANIM_ON);/*根据配置设置初始滑动条值*/
-      lv_obj_set_style_opa(bright_slider,0,LV_PART_KNOB);/*将滑动条的按钮去掉*/
+//      lv_obj_set_style_opa(bright_slider,0,LV_PART_KNOB);/*将滑动条的按钮去掉*/
+        lv_obj_set_style_pad_all(bright_slider, 1, LV_PART_KNOB);
+        lv_obj_set_style_bg_color(bright_slider,lv_color_hex(0xB4B4B4),LV_PART_KNOB);
 
       lv_obj_t*bringht_label=lv_label_create(bright_slider);/*在滑动条里面添加一个亮度值显示*/
       lv_obj_align_to(bringht_label,bright_slider,LV_ALIGN_CENTER,0,0);/*位于滑动条中间*/
@@ -306,32 +310,25 @@ void ui_set_language(DISPLAY_LANGUAGE_ENUM language,DISPLAY_FONT_SIZE_ENUM size)
 	{
 		case ENGLISH:/*英文*/
 		    {
-            switch(size) /*根据对应的语言和大小来设置全局字体大小*/
-                {
-                    case FONT_SIZE_12:font=&lv_font_montserrat_12;break;
-                    case FONT_SIZE_16:font=&lv_font_montserrat_16;break;
-                    default :break;             
-                }
 		        display_cfg.language=ENGLISH; /*更新配置为英文*/
 		        break;
 		    }
 		case CHINESE:
 		    {
-                switch(size)
-                {
-                    case FONT_SIZE_12:font=&my_font_12;break;
-                    case FONT_SIZE_16:font=&my_font_16;break; 
-                    default :break;             
-                }       
                 display_cfg.language=CHINESE;break;/*更新配置为中文*/                          
 		    }
         default:break;
 	}
-        if(font!=NULL)
-            {
-               set_global_font(font);/*设置为全局*/
-               
-            }
+    switch(size)
+    {
+        case FONT_SIZE_12:font=&my_font_12;break;
+        case FONT_SIZE_16:font=&my_font_16;break; 
+        default :break;             
+    }  
+    if(font!=NULL)
+        {
+           set_global_font(font);/*设置为全局*/
+        }
 }
 
 /*--------------------------------------------------------------------------------↓
@@ -357,22 +354,22 @@ void set_global_font(const lv_font_t *font)
 ↑--------------------------------------------------------------------------------*/
 void ui_set_obj_text_font(lv_obj_t*parent,DISPLAY_FONT_SIZE_ENUM FONT_SIZE)
 {
-    switch(display_cfg.language)                       /*根据参数设置大小*/
-    {
-    case ENGLISH:
-        {
-                switch(FONT_SIZE)
-            {
-                case FONT_SIZE_12: lv_obj_set_style_text_font(parent,&lv_font_montserrat_12,LV_STATE_DEFAULT); break;
-                case FONT_SIZE_16: lv_obj_set_style_text_font(parent,&lv_font_montserrat_16,LV_STATE_DEFAULT); break;
-                case FONT_SIZE_24: lv_obj_set_style_text_font(parent,&lv_font_montserrat_24,LV_STATE_DEFAULT); break;
-                case FONT_SIZE_32: lv_obj_set_style_text_font(parent,&lv_font_montserrat_32,LV_STATE_DEFAULT); break; 
-                default:break;                   
-            }
-            break;
-        }
-    case CHINESE:
-        {
+//    switch(display_cfg.language)                       /*根据参数设置大小*/
+//    {
+//    case ENGLISH:
+//        {
+//                switch(FONT_SIZE)
+//            {
+//                case FONT_SIZE_12: lv_obj_set_style_text_font(parent,&lv_font_montserrat_12,LV_STATE_DEFAULT); break;
+//                case FONT_SIZE_16: lv_obj_set_style_text_font(parent,&lv_font_montserrat_16,LV_STATE_DEFAULT); break;
+//                case FONT_SIZE_24: lv_obj_set_style_text_font(parent,&lv_font_montserrat_24,LV_STATE_DEFAULT); break;
+//                case FONT_SIZE_32: lv_obj_set_style_text_font(parent,&lv_font_montserrat_32,LV_STATE_DEFAULT); break; 
+//                default:break;                   
+//            }
+//            break;
+//        }
+//    case CHINESE:
+//        {
                     switch(FONT_SIZE)
             {
                 case FONT_SIZE_12: lv_obj_set_style_text_font(parent,&my_font_12,LV_STATE_DEFAULT); break;
@@ -381,9 +378,9 @@ void ui_set_obj_text_font(lv_obj_t*parent,DISPLAY_FONT_SIZE_ENUM FONT_SIZE)
                 case FONT_SIZE_32: lv_obj_set_style_text_font(parent,&my_font_32,LV_STATE_DEFAULT); break;        
                 default:break;           
             }
-            break;
-        }
-        default:break;
-    }
+//            break;
+//        }
+//        default:break;
+//    }
 
 }

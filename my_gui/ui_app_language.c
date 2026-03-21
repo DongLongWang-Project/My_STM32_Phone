@@ -114,6 +114,15 @@ const ui_setting_language_t APP_SET_LA_TABLE[APP_SETTING_NUM]=
                      [CHINESE]="显示",
              },
    }, 
+   [APP_SETTING_AUDIO]=
+   {
+             .icon=LV_SYMBOL_AUDIO,
+             .text=
+             {
+                     [ENGLISH]="Aduio",
+                     [CHINESE]="铃声",
+             },
+   }, 
    [APP_SETTING_HOTSPOT]=
    {
              .icon=LV_SYMBOL_SHUFFLE,
@@ -363,6 +372,103 @@ const ui_setting_language_t ALARM_MSGBOX_LA_TABLE[ALARM_MSGBOX_NUM]=
              {
                      [ENGLISH]="The alarm clock time has come!",
                      [CHINESE]="主人,闹钟时间到了!",
+             },
+   }, 
+};
+
+const ui_setting_language_t TIME_OBJ__LA_TABLE[TIME_OBJ_MAX]=
+{
+   [TIME_OBJ_ALARM]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Alarm_clock",
+                     [CHINESE]="闹钟",
+             },
+   }, 
+   [TIME_OBJ_CLOCK]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Clock",
+                     [CHINESE]="时钟",
+             },
+   }, 
+   [TIME_OBJ_CLOCK_FMT_LABEL]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Local Time:%dM%dD",
+                     [CHINESE]="本地时间:%d月%d日",
+             },
+   }, 
+   [TIME_OBJ_TIMER]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Timer",
+                     [CHINESE]="计时",
+             },
+   }, 
+   [TIME_OBJ_ALARM_ADD_TITLE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Add Alarm",
+                     [CHINESE]="添加闹钟",
+             },
+   }, 
+   [TIME_OBJ_ALARM_ADD_RINGTONE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Ringtone",
+                     [CHINESE]="铃声",
+             },
+   }, 
+   [TIME_OBJ_ALARM_ADD_REPEART]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Repeat",
+                     [CHINESE]="重复",
+             },
+   }, 
+   [TIME_OBJ_ALARM_ADD_REPEART_]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Everyday\nSingle",
+                     [CHINESE]="每天\n单次",
+             },
+   }, 
+};
+const ui_setting_language_t WIFI_LA_TABLE[WIFI_LABEL_MAX]=
+{
+   [LABEL_WIFI_PASS]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Please input password",
+                     [CHINESE]="请输入密码",
+             },
+   }, 
+   [BTNAA_LABEL]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Connect",
+                     [CHINESE]="连接",
              },
    }, 
 };
