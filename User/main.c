@@ -6,6 +6,8 @@ USB_OTG_CORE_HANDLE  USB_OTG_dev;
 int main(void)
 {  
 
+    __enable_irq();
+    NVIC_SetVectorTable(NVIC_VectTab_FLASH,0x10000);
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
     Delay_init(168);
    
