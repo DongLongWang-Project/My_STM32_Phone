@@ -11004,7 +11004,7 @@
 	"ui_main.h"
 	"ui_app_language.h"
 
-1774061119 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
+1774355699 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
 	"lvgl.h"
 	"../ui_main.h"
 	"../ui_app_language.h"
@@ -11024,8 +11024,9 @@
 	"../ui_app_language.h"
 	"../ui_widgets.h"
 
-1770276796 g:\github_code\my_stm32_phone\my_gui\app_setting\setting_about.h
+1774355839 g:\github_code\my_stm32_phone\my_gui\app_setting\setting_about.h
 	"../ui_app_language.h"
+	"stdio.h"
 
 1773747521 g:\github_code\my_stm32_phone\my_gui\app_file_sys\ui_app_file.h
 	<lvgl.h>
@@ -11058,7 +11059,7 @@
 1770276796 source:g:\github_code\my_stm32_phone\my_gui\app_net_ass\ui_app_net.c
 	"ui_app_net.h"
 
-1770276796 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_about.c
+1774355839 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_about.c
 	"setting_about.h"
 
 1774060198 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_display.c
@@ -11070,7 +11071,7 @@
 1774073638 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_wifi.c
 	"setting_wifi.h"
 
-1773576695 source:g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.c
+1774355864 source:g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.c
 	"ui_app_setting.h"
 
 1774074139 source:g:\github_code\my_stm32_phone\my_gui\app_weather\ui_app_weather.c
@@ -11087,7 +11088,7 @@
 1770276796 source:g:\github_code\my_stm32_phone\my_gui\ui_app_config.c
 	"ui_app_config.h"
 
-1774072881 source:g:\github_code\my_stm32_phone\my_gui\ui_app_language.c
+1774356286 source:g:\github_code\my_stm32_phone\my_gui\ui_app_language.c
 	"ui_app_language.h"
 
 1774057114 source:g:\github_code\my_stm32_phone\my_gui\ui_main.c
@@ -13797,7 +13798,7 @@
 1774062991 g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock_config.h
 	"lvgl.h"
 
-1774072793 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.h
+1774356301 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.h
 	"lvgl.h"
 
 1771075785 source:g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.c
@@ -13920,4 +13921,11 @@
 	"lvgl.h"
 	"../app_setting/ui_app_setting.h"
 	"../ui_widgets.h"
+
+1774355565 g:\github_code\my_stm32_phone\my_gui\app_setting\setting_checkupdate.h
+	"lvgl.h"
+
+1774353382 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_checkupdate.c
+	"setting_checkupdate.h"
+	"ui_app_setting.h"
 

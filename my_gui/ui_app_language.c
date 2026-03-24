@@ -11,15 +11,15 @@ const ui_setting_language_t APP_SET_ABOUT_LA_TABLE[APP_SET_ABOUT_NUM]=
                      [CHINESE]="关于设备",
              },
    }, 
-   [APP_SET_ABOUT_DEVICE]=
-   {
-             .icon=NULL,
-             .text=
-             {
-                     [ENGLISH]="Device",
-                     [CHINESE]="毕业设计",
-             },
-   }, 
+//   [APP_SET_ABOUT_DEVICE]=
+//   {
+//             .icon=NULL,
+//             .text=
+//             {
+//                     [ENGLISH]="Device",
+//                     [CHINESE]="毕业设计",
+//             },
+//   }, 
    [APP_SET_ABOUT_MCU]=
    {
              .icon=NULL,
@@ -83,6 +83,15 @@ const ui_setting_language_t APP_SET_ABOUT_LA_TABLE[APP_SET_ABOUT_NUM]=
                      [CHINESE]="界面:LVGL V8.3",
              },
    },
+   [APP_SET_ABOUT_UPDATE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Check Update",
+                     [CHINESE]="检查更新",
+             },
+   },   
 };
 
 const ui_setting_language_t APP_SET_LA_TABLE[APP_SETTING_NUM]=
