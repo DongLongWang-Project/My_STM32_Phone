@@ -4,8 +4,7 @@
 #include <stdint.h>
 #include "W25Qxx.h"
 
-//0x4C11DB7
-uint8_t buf[1024*1024];
+
 typedef enum
 {
     update_none=0xFF,
@@ -18,7 +17,8 @@ typedef struct
     uint32_t CRC32;
     uint32_t file_size;
     char name[16];
-    update_state_t update_state;   
+    update_state_t update_state; 
+    uint8_t reserved[256-32];     
 }head_t;
 typedef enum
 {
@@ -53,9 +53,3 @@ uint32_t Continue_CRC32(uint32_t last_crc, uint8_t* data, uint32_t len) {
     }
     return crc;
 }
-
-//void get_update_file_head(uint32_t addr)
-//{
-////  W25Qxx_ReadData(Application_Addr_1,(uint8_t*)&head[HEAD_W25Q],sizeof(head_t));
-////  printf();
-//}

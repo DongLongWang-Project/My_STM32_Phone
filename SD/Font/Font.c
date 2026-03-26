@@ -396,7 +396,7 @@ uint8_t Font_index_to_SDRAM(uint32_t Font_Index_Addr,uint32_t SDRAM_Addr)
     while(total_size>0)
     {
       cur_size=total_size>65532 ? 65532 :total_size;
-      if(W25Qxx_DMA_ReadData(Font_Index_Addr+total_num,SDRAM_Addr+total_num,cur_size))
+      if(W25Qxx_DMA_ReadData(Font_Index_Addr+total_num,(uint8_t*)(SDRAM_Addr)+total_num,cur_size))
       {
             total_size-=cur_size;
             total_num+=cur_size;

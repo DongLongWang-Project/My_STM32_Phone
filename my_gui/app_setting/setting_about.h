@@ -4,6 +4,11 @@
 
 #include "../ui_app_language.h"
 #include "stdio.h"
+#include "ui_app_setting.h"
+#include "../ui_widgets.h"
+
+#define APP_HEAD_Addr 0x08010000
+#define APP_Addr 0x08010200
 
 typedef enum
 {
@@ -17,7 +22,8 @@ typedef struct
     uint32_t crc32;
     uint32_t file_size;
     char name[16];
-    update_state_t update_state;   
+    update_state_t update_state;  
+    uint8_t reserved[256-32];     
 }head_t;
 
 

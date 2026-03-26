@@ -19,8 +19,9 @@ const uint8_t w25q_dummy_byte=W25Qxx_DUMMY_BYTE;
 
 volatile SemaphoreHandle_t W25Qxx_Read_BinSemaphore;
 volatile SemaphoreHandle_t W25Qxx_Read_MutexSemaphore;
-
-void W25Qxx_Read_DMA_config(void);
+volatile SemaphoreHandle_t W25Qxx_Write_BinSemaphore;
+volatile SemaphoreHandle_t W25Qxx_Write_MutexSemaphore;
+void W25Qxx_DMA_config(void);
 /*
 	@函数	  : 设置spi的片选引脚cs
 	@参数	  : State->状态
@@ -104,7 +105,7 @@ void W25Qxx_SPI_Init(void)
 
   SPI_Set_CS(1);//拉高CS,空闲著状态
   
-  W25Qxx_Read_DMA_config();
+   W25Qxx_DMA_config();
 }
 
 /*
@@ -334,7 +335,7 @@ uint8_t W25Qxx_Write_Sector(uint32_t SectorNo, const uint8_t *DataArray, uint32_
 	@备注	  :
 ↑--------------------------------------------------------------------------------*/
 
-void W25Qxx_Read_DMA_config(void)
+void W25Qxx_DMA_config(void)
 {
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2,ENABLE);
   
@@ -345,7 +346,7 @@ void W25Qxx_Read_DMA_config(void)
   DMA_InitTypeDef W25Qxx_Send_DMA_Initstruct;
   DMA_InitTypeDef W25Qxx_Read_DMA_Initstruct;
   
-  W25Qxx_Send_DMA_Initstruct.DMA_Memory0BaseAddr=(uint32_t)&w25q_dummy_byte;
+  W25Qxx_Send_DMA_Initstruct.DMA_Memory0BaseAddr=0;
   W25Qxx_Send_DMA_Initstruct.DMA_MemoryBurst=DMA_MemoryBurst_Single;
   W25Qxx_Send_DMA_Initstruct.DMA_MemoryDataSize=DMA_MemoryDataSize_Byte;
   W25Qxx_Send_DMA_Initstruct.DMA_MemoryInc=DMA_MemoryInc_Disable;
@@ -389,6 +390,7 @@ void W25Qxx_Read_DMA_config(void)
   DMA_Init(DMA2_Stream0,&W25Qxx_Read_DMA_Initstruct);
   
   DMA_ITConfig(DMA2_Stream0,DMA_IT_TC,ENABLE); 
+  DMA_ITConfig(DMA2_Stream5,DMA_IT_TC,ENABLE); 
   
   NVIC_InitTypeDef NVIC_W25Qxx_Read_DMA_Initstruct;
   NVIC_W25Qxx_Read_DMA_Initstruct.NVIC_IRQChannel=DMA2_Stream0_IRQn;
@@ -396,9 +398,23 @@ void W25Qxx_Read_DMA_config(void)
   NVIC_W25Qxx_Read_DMA_Initstruct.NVIC_IRQChannelPreemptionPriority=7;
   NVIC_W25Qxx_Read_DMA_Initstruct.NVIC_IRQChannelSubPriority=0;
   NVIC_Init(&NVIC_W25Qxx_Read_DMA_Initstruct);
+
+  NVIC_InitTypeDef NVIC_W25Qxx_Write_DMA_Initstruct;
+  NVIC_W25Qxx_Write_DMA_Initstruct.NVIC_IRQChannel=DMA2_Stream5_IRQn;
+  NVIC_W25Qxx_Write_DMA_Initstruct.NVIC_IRQChannelCmd=ENABLE;
+  NVIC_W25Qxx_Write_DMA_Initstruct.NVIC_IRQChannelPreemptionPriority=6;
+  NVIC_W25Qxx_Write_DMA_Initstruct.NVIC_IRQChannelSubPriority=0;
+  NVIC_Init(&NVIC_W25Qxx_Write_DMA_Initstruct);
   
   W25Qxx_Read_BinSemaphore=xSemaphoreCreateBinary();
   W25Qxx_Read_MutexSemaphore=xSemaphoreCreateMutex();
+  
+  W25Qxx_Write_BinSemaphore=xSemaphoreCreateBinary();
+  if(W25Qxx_Write_BinSemaphore!=NULL)
+  {
+    xSemaphoreGive(W25Qxx_Write_BinSemaphore);
+  }
+  W25Qxx_Write_MutexSemaphore=xSemaphoreCreateMutex();
   
 }
 
@@ -407,14 +423,30 @@ void DMA2_Stream0_IRQHandler(void)
   if(DMA_GetITStatus(DMA2_Stream0,DMA_IT_TCIF0)==SET)
   {
      DMA_ClearITPendingBit(DMA2_Stream0,DMA_IT_TCIF0);
-     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-     xSemaphoreGiveFromISR(W25Qxx_Read_BinSemaphore, &xHigherPriorityTaskWoken);
-
-     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) 
+    {
+       BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+       xSemaphoreGiveFromISR(W25Qxx_Read_BinSemaphore, &xHigherPriorityTaskWoken);
+       portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    }
   }
 }
+void DMA2_Stream5_IRQHandler(void)
+{
+  if(DMA_GetITStatus(DMA2_Stream5,DMA_IT_TCIF5)==SET)
+  {
+     DMA_ClearITPendingBit(DMA2_Stream5,DMA_IT_TCIF5);
+     
+    if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) 
+    {
+     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+     xSemaphoreGiveFromISR(W25Qxx_Write_BinSemaphore, &xHigherPriorityTaskWoken);
+     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    }
 
-uint8_t W25Qxx_DMA_ReadData(uint32_t W25Qxx_Addr,uint32_t Target_addr,uint16_t byte_num)
+  }
+}
+uint8_t W25Qxx_DMA_ReadData(uint32_t W25Qxx_Addr,void* Target_addr,uint16_t byte_num)
 {   
     if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) 
     {
@@ -431,11 +463,13 @@ uint8_t W25Qxx_DMA_ReadData(uint32_t W25Qxx_Addr,uint32_t Target_addr,uint16_t b
        
        DMA_Cmd(DMA2_Stream5,DISABLE);
        while(DMA_GetCmdStatus(DMA2_Stream5) != DISABLE); // 确保 DMA 已停止
+       DMA2_Stream5->CR &= ~DMA_SxCR_MINC;
        DMA2_Stream5->NDTR=byte_num;
+       DMA2_Stream5->M0AR=(uint32_t)&w25q_dummy_byte;
 
        DMA_Cmd(DMA2_Stream0,DISABLE);
        while(DMA_GetCmdStatus(DMA2_Stream0) != DISABLE); // 确保 DMA 已停止
-       DMA2_Stream0->M0AR=Target_addr;
+       DMA2_Stream0->M0AR=(uint32_t)Target_addr;
        DMA2_Stream0->NDTR=byte_num;
        
        DMA_Cmd(DMA2_Stream0,ENABLE);
@@ -448,12 +482,15 @@ uint8_t W25Qxx_DMA_ReadData(uint32_t W25Qxx_Addr,uint32_t Target_addr,uint16_t b
           timeout--;
           if(timeout==0)
           {
+            while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_BSY) == SET);
             SPI_Stop();
             print("开机DMA读取超时, 地址: 0x%X\r\n", W25Qxx_Addr);
             return 0;
           }
         }
+        while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_BSY) == SET);
         SPI_Stop();
+        W25Qxx_WaitBusy();
         return 1;
     }
     else 
@@ -471,11 +508,13 @@ uint8_t W25Qxx_DMA_ReadData(uint32_t W25Qxx_Addr,uint32_t Target_addr,uint16_t b
          
          DMA_Cmd(DMA2_Stream5,DISABLE);
          while(DMA_GetCmdStatus(DMA2_Stream5) != DISABLE); // 确保 DMA 已停止
+         DMA2_Stream5->CR &= ~DMA_SxCR_MINC;
          DMA2_Stream5->NDTR=byte_num;
+         DMA2_Stream5->M0AR=(uint32_t)&w25q_dummy_byte;
 
          DMA_Cmd(DMA2_Stream0,DISABLE);
          while(DMA_GetCmdStatus(DMA2_Stream0) != DISABLE); // 确保 DMA 已停止
-         DMA2_Stream0->M0AR=Target_addr;
+         DMA2_Stream0->M0AR=(uint32_t)Target_addr;
          DMA2_Stream0->NDTR=byte_num;
          
          DMA_Cmd(DMA2_Stream0,ENABLE);
@@ -484,14 +523,18 @@ uint8_t W25Qxx_DMA_ReadData(uint32_t W25Qxx_Addr,uint32_t Target_addr,uint16_t b
         // 【系统运行阶段】：使用信号量，不占用 CPU
         if(xSemaphoreTake(W25Qxx_Read_BinSemaphore, pdMS_TO_TICKS(10000)) == pdTRUE) 
         {
+            while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_BSY) == SET);
             SPI_Stop(); 
             xSemaphoreGive(W25Qxx_Read_MutexSemaphore);
+            W25Qxx_WaitBusy();
             return 1; 
         }
         else
         {
+           while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_BSY) == SET);
            SPI_Stop();
            print("DMA异常/获取不到互斥信号量,索引表/点阵数据搬运错误\r\n");
+           W25Qxx_WaitBusy();
            xSemaphoreGive(W25Qxx_Read_MutexSemaphore);
            return 0;
         }
@@ -499,6 +542,46 @@ uint8_t W25Qxx_DMA_ReadData(uint32_t W25Qxx_Addr,uint32_t Target_addr,uint16_t b
       }
       else
         return 0; 
-    }
-       
+    }     
+}
+
+uint8_t W25Qxx_DMA_WriteData(uint32_t W25Qxx_Addr,void*data_buf,uint16_t byte_num)
+{
+   if(xSemaphoreTake(W25Qxx_Write_MutexSemaphore,pdMS_TO_TICKS(10000))==pdTRUE)
+   {
+      	W25Qxx_WriteEnable();						//写使能
+	
+        SPI_Start();								//SPI起始
+        SPI_SwapByte(W25Qxx_PAGE_PROGRAM);		//交换发送页编程的指令
+        SPI_SwapByte(W25Qxx_Addr >> 16);				//交换发送地址23~16位
+        SPI_SwapByte(W25Qxx_Addr >> 8);				//交换发送地址15~8位
+        SPI_SwapByte(W25Qxx_Addr);					//交换发送地址7~0位
+        
+         DMA_ClearFlag(DMA2_Stream5, DMA_FLAG_TCIF5); 
+         DMA_Cmd(DMA2_Stream5,DISABLE);
+         while(DMA_GetCmdStatus(DMA2_Stream5) != DISABLE); // 确保 DMA 已停止
+         DMA2_Stream5->M0AR=(uint32_t)data_buf;
+         DMA2_Stream5->CR |= DMA_SxCR_MINC;
+         DMA2_Stream5->NDTR=byte_num; 
+         DMA_Cmd(DMA2_Stream5,ENABLE);
+        if(xSemaphoreTake(W25Qxx_Write_BinSemaphore, pdMS_TO_TICKS(10000)) == pdTRUE) 
+        {
+            while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_BSY) == SET);
+            SPI_Stop();
+            W25Qxx_WaitBusy();    
+            xSemaphoreGive(W25Qxx_Write_MutexSemaphore);
+            return 1; 
+        } 
+        else
+        {
+           while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_BSY) == SET);
+           SPI_Stop();
+           W25Qxx_WaitBusy();
+           print("DMA异常/获取不到互斥信号量,写入数据出错\r\n");
+           xSemaphoreGive(W25Qxx_Write_MutexSemaphore);
+           return 0;
+        }
+   }
+    else
+    return 0;
 }

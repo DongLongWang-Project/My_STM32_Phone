@@ -81,9 +81,9 @@
             <nStopB2X>0</nStopB2X>
           </BeforeMake>
           <AfterMake>
-            <RunUserProg1>0</RunUserProg1>
+            <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name></UserProg1Name>
+            <UserProg1Name>F:\1_Keil\MDK\Core\ARM\ARMCC\bin\fromelf --bin -o "$L@L.bin" "#L"</UserProg1Name>
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Hardware;.\Library;.\Start;.\System;.\User;.\Hardware\LED;.\Hardware\USART;.\Hardware\W25QXX;.\System;.\Hardware\IWDG;.\Hardware\Bootloader</IncludePath>
+              <IncludePath>.\Hardware;.\Library;.\Start;.\System;.\User;.\Hardware\LED;.\Hardware\USART;.\Hardware\W25QXX;.\System;.\Hardware\IWDG;.\Hardware\Bootloader;.\Hardware\FLASH;.\Hardware\CRC;.\Hardware\TFTLCD</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -664,6 +664,26 @@
               <FileName>IWDG.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Hardware\IWDG\IWDG.c</FilePath>
+            </File>
+            <File>
+              <FileName>flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\FLASH\flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\CRC\crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\KEY\key.c</FilePath>
+            </File>
+            <File>
+              <FileName>TFTLCD.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\TFTLCD\TFTLCD.c</FilePath>
             </File>
           </Files>
         </Group>

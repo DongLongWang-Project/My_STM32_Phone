@@ -19,7 +19,9 @@ extern W25Qxx_ID W25Qxx;
 
 
 #define WIFI_SAVE_Addr                    0x00FFE000
-  
+#define Application_Addr_1        0x500000  
+#define Application_Addr_2        0x600000 
+#define FLASH_APP_Addr            0x08010000
 
 #define TOUCH_SAVE_VER_Addr               0x00FFF000
 #define TOUCH_SAVE_REV_VER_Addr       TOUCH_SAVE_VER_Addr+14
@@ -39,7 +41,7 @@ void W25Qxx_Write(uint32_t Address, uint32_t Data,uint8_t len);
 void W25Qxx_WriteBuffer(uint32_t addr,const uint8_t *buf, uint32_t len);    
 uint8_t W25Qxx_Write_Sector(uint32_t Sector, const uint8_t *DataArray, uint32_t Count) ;
 
-uint8_t W25Qxx_DMA_ReadData(uint32_t W25Qxx_Addr,uint32_t Target_addr,uint16_t byte_num);
+uint8_t W25Qxx_DMA_ReadData(uint32_t W25Qxx_Addr,void* Target_addr,uint16_t byte_num);
 #define W25Qxx_WRITE_ENABLE							0x06
 #define W25Qxx_WRITE_DISABLE						0x04
 #define W25Qxx_READ_STATUS_REGISTER_1				0x05

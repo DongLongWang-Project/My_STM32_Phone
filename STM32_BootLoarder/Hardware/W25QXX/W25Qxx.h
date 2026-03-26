@@ -3,6 +3,7 @@
 
 #include "stm32f4xx.h"
 #include "USART1.h"
+#include "flash.h"
 
 typedef struct
 {
@@ -31,6 +32,7 @@ extern W25Qxx_ID W25Qxx;
                  
 
 void W25Qxx_SPI_Init(void);
+void W25Qxx_Read_DMA_config(void);
 void W25Qxx_ReadID(W25Qxx_ID * ID);
 uint8_t W25Qxx_PageProgram(uint32_t Address, const uint8_t *DataArray, uint16_t Count)  ;
 uint8_t W25Qxx_SectorErase(uint32_t Address);
@@ -71,5 +73,6 @@ uint8_t W25Qxx_DMA_ReadData(uint32_t W25Qxx_Addr,uint32_t Target_addr,uint16_t b
 
 #define W25Qxx_DUMMY_BYTE							0xFF
 
-
+extern uint8_t read_ok_flag;
+void w25q_DMA_readdata(uint32_t read_address,uint8_t *DataArrays,uint16_t Count);
 #endif

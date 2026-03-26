@@ -277,8 +277,8 @@
               </OCR_RVCT3>
               <OCR_RVCT4>
                 <Type>1</Type>
-                <StartAddress>0x8010000</StartAddress>
-                <Size>0xf0000</Size>
+                <StartAddress>0x8000000</StartAddress>
+                <Size>0x100000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -341,7 +341,7 @@
               <MiscControls>--no-multibyte-chars</MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER,LV_LVGL_H_INCLUDE_SIMPLE,USE_USB_OTG_FS</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Library;.\Start;.\System;.\User;.\FreeRTOS\Library;.\FreeRTOS\portable\MemMang;.\FreeRTOS\portable\RVDS\ARM_CM4F;.\Hardware\LED;.\Hardware\SRAM;.\Hardware\TFTLCD;.\Hardware\USART;.\Hardware\W25QXX;.\Hardware\SD;.\FATFS;.\LVGL\porting;.\LVGL;.\LVGL\src;.\LVGL\src\hal;.\LVGL\demos\widgets\assets;.\LVGL\demos\widgets;.\LVGL\src\misc;.\LVGL\src\extra\libs\png;.\LVGL\src\extra\layouts;.\my_gui;.\MALLOC;.\Hardware\KEY;.\Hardware\DX_WF25;.\my_gui\app_file_sys;.\my_gui\app_net_ass;.\my_gui\app_setting;.\my_gui\app_clock;.\my_gui\app_weather;.\SD\font_w25q;.\SD\Font;.\USB\STM32_USB_OTG_Driver\src;.\USB\STM32_USB_OTG_Driver\inc;.\USB\USB_App;.\USB\STM32_USB_Device_Library\Class\msc\src;.\USB\STM32_USB_Device_Library\Core\src;.\USB\STM32_USB_Device_Library\Class\msc\inc;.\USB\STM32_USB_Device_Library\Core\inc;.\Hardware\OV2640;.\my_gui\app_video;.\Hardware\MAX98357;.\my_gui\app_music;.\Hardware\CRC</IncludePath>
+              <IncludePath>.\Library;.\Start;.\System;.\User;.\FreeRTOS\Library;.\FreeRTOS\portable\MemMang;.\FreeRTOS\portable\RVDS\ARM_CM4F;.\Hardware\LED;.\Hardware\SRAM;.\Hardware\TFTLCD;.\Hardware\USART;.\Hardware\W25QXX;.\Hardware\SD;.\FATFS;.\LVGL\porting;.\LVGL;.\LVGL\src;.\LVGL\src\hal;.\LVGL\demos\widgets\assets;.\LVGL\demos\widgets;.\LVGL\src\misc;.\LVGL\src\extra\libs\png;.\LVGL\src\extra\layouts;.\my_gui;.\MALLOC;.\Hardware\KEY;.\Hardware\DX_WF25;.\my_gui\app_file_sys;.\my_gui\app_net_ass;.\my_gui\app_setting;.\my_gui\app_clock;.\my_gui\app_weather;.\SD\font_w25q;.\SD\Font;.\USB\STM32_USB_OTG_Driver\src;.\USB\STM32_USB_OTG_Driver\inc;.\USB\USB_App;.\USB\STM32_USB_Device_Library\Class\msc\src;.\USB\STM32_USB_Device_Library\Core\src;.\USB\STM32_USB_Device_Library\Class\msc\inc;.\USB\STM32_USB_Device_Library\Core\inc;.\Hardware\OV2640;.\my_gui\app_video;.\Hardware\MAX98357;.\my_gui\app_music;.\Hardware\CRC;.\Hardware\FLASH</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1979,6 +1979,11 @@
               <FileName>crc.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Hardware\CRC\crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\FLASH\flash.c</FilePath>
             </File>
           </Files>
         </Group>

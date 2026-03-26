@@ -16,6 +16,7 @@
 
 W25Qxx_ID W25Qxx;
 const uint8_t w25q_dummy_byte=W25Qxx_DUMMY_BYTE;
+uint8_t read_ok_flag=0;
 
 /*
 	@函数	  : 设置spi的片选引脚cs
@@ -96,6 +97,7 @@ void W25Qxx_SPI_Init(void)
   SPI_Init(SPI1,&SPI_InitStructure);
   
   SPI_Cmd(SPI1,ENABLE);//使能SPI1
+  W25Qxx_Read_DMA_config();
   GPIO_SetBits(GPIOG,GPIO_Pin_7);//PG7输出1,防止NRF干扰SPI FLASH的通信 
 
   SPI_Set_CS(1);//拉高CS,空闲著状态
@@ -320,4 +322,104 @@ uint8_t W25Qxx_Write_Sector(uint32_t SectorNo, const uint8_t *DataArray, uint32_
         }
     }
     return 0;  // 成功
+}
+
+void W25Qxx_Read_DMA_config(void)
+{
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2,ENABLE);
+  
+  SPI_I2S_DMACmd(SPI1,SPI_I2S_DMAReq_Rx,ENABLE);
+  SPI_I2S_DMACmd(SPI1,SPI_I2S_DMAReq_Tx,ENABLE);  
+
+  
+  DMA_InitTypeDef W25Qxx_Send_DMA_Initstruct;
+  DMA_InitTypeDef W25Qxx_Read_DMA_Initstruct;
+  
+  W25Qxx_Send_DMA_Initstruct.DMA_Memory0BaseAddr=(uint32_t)&w25q_dummy_byte;
+  W25Qxx_Send_DMA_Initstruct.DMA_MemoryBurst=DMA_MemoryBurst_Single;
+  W25Qxx_Send_DMA_Initstruct.DMA_MemoryDataSize=DMA_MemoryDataSize_Byte;
+  W25Qxx_Send_DMA_Initstruct.DMA_MemoryInc=DMA_MemoryInc_Disable;
+  W25Qxx_Send_DMA_Initstruct.DMA_PeripheralBaseAddr=(uint32_t)&SPI1->DR;
+  W25Qxx_Send_DMA_Initstruct.DMA_PeripheralBurst=DMA_PeripheralBurst_Single;
+  W25Qxx_Send_DMA_Initstruct.DMA_PeripheralDataSize=DMA_PeripheralDataSize_Byte;
+  W25Qxx_Send_DMA_Initstruct.DMA_PeripheralInc=DMA_PeripheralInc_Disable;
+  
+  W25Qxx_Send_DMA_Initstruct.DMA_Mode=DMA_Mode_Normal;
+  W25Qxx_Send_DMA_Initstruct.DMA_Priority=DMA_Priority_High;
+
+  W25Qxx_Send_DMA_Initstruct.DMA_Channel=DMA_Channel_3;
+  W25Qxx_Send_DMA_Initstruct.DMA_DIR=DMA_DIR_MemoryToPeripheral;
+  W25Qxx_Send_DMA_Initstruct.DMA_BufferSize=0;
+   
+  W25Qxx_Send_DMA_Initstruct.DMA_FIFOMode=DMA_FIFOMode_Disable;
+  W25Qxx_Send_DMA_Initstruct.DMA_FIFOThreshold=DMA_FIFOThreshold_1QuarterFull;
+  
+   
+
+  W25Qxx_Read_DMA_Initstruct.DMA_Memory0BaseAddr=0;
+  W25Qxx_Read_DMA_Initstruct.DMA_MemoryBurst=DMA_MemoryBurst_Single;
+  W25Qxx_Read_DMA_Initstruct.DMA_MemoryDataSize=DMA_MemoryDataSize_Byte;
+  W25Qxx_Read_DMA_Initstruct.DMA_MemoryInc=DMA_MemoryInc_Enable;
+  W25Qxx_Read_DMA_Initstruct.DMA_PeripheralBaseAddr=(uint32_t)&SPI1->DR;
+  W25Qxx_Read_DMA_Initstruct.DMA_PeripheralBurst=DMA_PeripheralBurst_Single;
+  W25Qxx_Read_DMA_Initstruct.DMA_PeripheralDataSize=DMA_PeripheralDataSize_Byte;
+  W25Qxx_Read_DMA_Initstruct.DMA_PeripheralInc=DMA_PeripheralInc_Disable;
+  
+  W25Qxx_Read_DMA_Initstruct.DMA_Mode=DMA_Mode_Normal;
+  W25Qxx_Read_DMA_Initstruct.DMA_Priority=DMA_Priority_VeryHigh;
+
+  W25Qxx_Read_DMA_Initstruct.DMA_Channel=DMA_Channel_3;
+  W25Qxx_Read_DMA_Initstruct.DMA_DIR=DMA_DIR_PeripheralToMemory;
+  W25Qxx_Read_DMA_Initstruct.DMA_BufferSize=0;
+   
+  W25Qxx_Read_DMA_Initstruct.DMA_FIFOMode=DMA_FIFOMode_Disable;
+  W25Qxx_Read_DMA_Initstruct.DMA_FIFOThreshold=DMA_FIFOThreshold_1QuarterFull;
+  
+  DMA_Init(DMA2_Stream5,&W25Qxx_Send_DMA_Initstruct);
+  DMA_Init(DMA2_Stream0,&W25Qxx_Read_DMA_Initstruct);
+  
+  DMA_ITConfig(DMA2_Stream0,DMA_IT_TC,ENABLE); 
+  
+  NVIC_InitTypeDef NVIC_W25Qxx_Read_DMA_Initstruct;
+  NVIC_W25Qxx_Read_DMA_Initstruct.NVIC_IRQChannel=DMA2_Stream0_IRQn;
+  NVIC_W25Qxx_Read_DMA_Initstruct.NVIC_IRQChannelCmd=ENABLE;
+  NVIC_W25Qxx_Read_DMA_Initstruct.NVIC_IRQChannelPreemptionPriority=7;
+  NVIC_W25Qxx_Read_DMA_Initstruct.NVIC_IRQChannelSubPriority=0;
+  NVIC_Init(&NVIC_W25Qxx_Read_DMA_Initstruct);
+}
+
+void DMA2_Stream0_IRQHandler(void)
+{
+  if(DMA_GetITStatus(DMA2_Stream0,DMA_IT_TCIF0)==SET)
+  {
+     read_ok_flag=1;
+     printf("传输完毕\r\n");
+     DMA_ClearITPendingBit(DMA2_Stream0,DMA_IT_TCIF0);
+     SPI_Stop();								//SPI终止
+  }
+}
+
+void w25q_DMA_readdata(uint32_t read_address,uint8_t *DataArrays,uint16_t Count)
+{
+
+   SPI_Start();								//SPI起始
+   SPI_SwapByte(W25Qxx_READ_DATA);			//交换发送读取数据的指令
+   SPI_SwapByte(read_address >> 16);				//交换发送地址23~16位
+   SPI_SwapByte(read_address >> 8);				//交换发送地址15~8位
+   SPI_SwapByte(read_address);					//交换发送地址7~0位
+   
+   DMA_ClearFlag(DMA2_Stream0, DMA_FLAG_TCIF0);
+   DMA_ClearFlag(DMA2_Stream5, DMA_FLAG_TCIF5); 
+   
+   DMA_Cmd(DMA2_Stream5,DISABLE);
+   while(DMA_GetCmdStatus(DMA2_Stream5) != DISABLE); // 确保 DMA 已停止
+   DMA2_Stream5->NDTR=Count;
+
+   DMA_Cmd(DMA2_Stream0,DISABLE);
+   while(DMA_GetCmdStatus(DMA2_Stream0) != DISABLE); // 确保 DMA 已停止
+   DMA2_Stream0->M0AR=(uint32_t)DataArrays;
+   DMA2_Stream0->NDTR=Count;
+   
+   DMA_Cmd(DMA2_Stream0,ENABLE);
+   DMA_Cmd(DMA2_Stream5,ENABLE);  
 }
