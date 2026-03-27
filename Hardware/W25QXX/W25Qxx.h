@@ -18,18 +18,25 @@ extern W25Qxx_ID W25Qxx;
 #define W25Qxx_DID 0X4018
 
 
-#define WIFI_SAVE_Addr                    0x00FFE000
-#define Application_Addr_1        0x500000  
-#define Application_Addr_2        0x600000 
-#define FLASH_APP_Addr            0x08010000
+#define WIFI_SAVE_Addr            0x00FFE000 //WIIF信息保存地址 大小:4KB
+#define ALARM_CLOCK_SAVE_Addr    0x00FFD000  //闹铃信息保存地址 大小:4KB
+#define ALARM_SAVE_BLOT_SIZE     128  
+#define TOUCH_SAVE_VER_Addr      0x00FFF000//触摸坐标校准信息保存地址 大小:4KB
 
-#define TOUCH_SAVE_VER_Addr               0x00FFF000
+#define Application_Addr_1        0x500000  //APP_1的保存地址   大小:1MB
+#define Application_Addr_2        0x600000  //APP_2的保存地址   大小:1MB
+
+#define FONT_VERSION_ADDR_END  0x0031F163    //
+#define FONT_VERSION_ADDR_HEAD 0x00000000   //存放字库版本号地址  //0~5MB 计划给5MB给字库
+
+
+
+
 #define TOUCH_SAVE_REV_VER_Addr       TOUCH_SAVE_VER_Addr+14
 #define TOUCH_SAVE_HOR_Addr            TOUCH_SAVE_REV_VER_Addr+14
 #define TOUCH_SAVE_REV_HOR_Addr        TOUCH_SAVE_HOR_Addr+14
 
-#define ALARM_CLOCK_SAVE_Addr                    0x00FFD000
-#define ALARM_SAVE_BLOT_SIZE                     128                   
+                 
 
 void W25Qxx_SPI_Init(void);
 void W25Qxx_ReadID(W25Qxx_ID * ID);

@@ -105,9 +105,9 @@ void UsageFault_Handler(void)
   * @param  None
   * @retval None
   */
-void SVC_Handler(void)
-{
-}
+//void SVC_Handler(void)
+//{
+//}
 
 /**
   * @brief  This function handles Debug Monitor exception.
@@ -123,9 +123,9 @@ void DebugMon_Handler(void)
   * @param  None
   * @retval None
   */
-void PendSV_Handler(void)
-{
-}
+//void PendSV_Handler(void)
+//{
+//}
 
 /**
   * @brief  This function handles SysTick Handler.
@@ -156,5 +156,24 @@ void SysTick_Handler(void)
 /**
   * @}
   */ 
+void SDIO_IRQHandler(void)
+{
+  /* Process All SDIO Interrupt Sources */
+  SD_ProcessIRQSrc();
+//  printf("Src\r\n");
+}
 
+/**
 
+  * @brief  This function handles DMA2 Stream3 or DMA2 Stream6 global interrupts
+  * requests.
+  * @param  None
+  * @retval None
+    */
+void SD_SDIO_DMA_IRQHANDLER(void)
+{
+  /* Process DMA2 Stream3 or DMA2 Stream6 Interrupt Sources */
+  SD_ProcessDMAIRQ();
+//    printf("IRQ\r\n");
+
+}

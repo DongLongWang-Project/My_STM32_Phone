@@ -10,7 +10,7 @@
          4.触摸芯片驱动方式:硬件SPI
 ↑--------------------------------------------------------------------------------*/
 
-uint16_t Background=WHITE;
+uint16_t Background=BLACK;
 uint16_t LCD_Height=320;
 uint16_t LCD_Length=240;
 LCD_Direction Cur_scr_dir=Dir_Rev_Ver;

@@ -1,11 +1,18 @@
 #ifndef __DELAY_H
-#define __DELAY_H
-
+#define __DELAY_H 			   
 #include "stm32f4xx.h"
-#include "stdio.h"
-
-void Delay_us(uint32_t us);
-void Delay_ms(uint32_t ms);
-void Delay_s(uint32_t s);
+//////////////////////////////////////////////////////////////////////////////////  
+ 
+//使用SysTick的普通计数模式对延迟进行管理(支持ucosii)
+//包括delay_us,delay_ms
+//STM32F4工程-库函数版本
+//https://shop58085959.taobao.com		
+//********************************************************************************
+//修改说明
+//无
+////////////////////////////////////////////////////////////////////////////////// 	 
+void delay_init(u8 SYSCLK);
+void Delay_ms(u16 nms);
+void Delay_us(u32 nus);
 
 #endif

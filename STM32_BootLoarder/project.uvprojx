@@ -278,7 +278,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x10000</Size>
+                <Size>0x100000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -315,7 +315,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>1</Optim>
+            <Optim>2</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Hardware;.\Library;.\Start;.\System;.\User;.\Hardware\LED;.\Hardware\USART;.\Hardware\W25QXX;.\System;.\Hardware\IWDG;.\Hardware\Bootloader;.\Hardware\FLASH;.\Hardware\CRC;.\Hardware\TFTLCD</IncludePath>
+              <IncludePath>.\Hardware;.\Library;.\Start;.\System;.\User;.\Hardware\LED;.\Hardware\USART;.\Hardware\W25QXX;.\System;.\Hardware\IWDG;.\Hardware\Bootloader;.\Hardware\FLASH;.\Hardware\CRC;.\Hardware\TFTLCD;.\FATFS;.\Hardware\SD</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -676,14 +676,14 @@
               <FilePath>.\Hardware\CRC\crc.c</FilePath>
             </File>
             <File>
-              <FileName>key.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Hardware\KEY\key.c</FilePath>
-            </File>
-            <File>
               <FileName>TFTLCD.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Hardware\TFTLCD\TFTLCD.c</FilePath>
+            </File>
+            <File>
+              <FileName>SD.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\SD\SD.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -704,6 +704,36 @@
               <FileName>stm32f4xx_conf.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\User\stm32f4xx_conf.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FATFS</GroupName>
+          <Files>
+            <File>
+              <FileName>diskio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\FATFS\diskio.c</FilePath>
+            </File>
+            <File>
+              <FileName>fatfs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\FATFS\fatfs.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\FATFS\ff.c</FilePath>
+            </File>
+            <File>
+              <FileName>ffsystem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\FATFS\ffsystem.c</FilePath>
+            </File>
+            <File>
+              <FileName>ffunicode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\FATFS\ffunicode.c</FilePath>
             </File>
           </Files>
         </Group>

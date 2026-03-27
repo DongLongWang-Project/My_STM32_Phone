@@ -1,7 +1,8 @@
 #include "stdio.h"
 #include <stdint.h>
 //0x4C11DB7
-uint8_t buf[1024*1024];
+uint8_t buf[0x10000];
+uint8_t buf_total[1024*1024];
 typedef enum
 {
     update_none=0xFF,
@@ -15,30 +16,31 @@ typedef struct
     uint32_t file_size;
     char name[16];
     update_state_t update_state;
-    uint8_t reserved[256-32];   
+    uint8_t reserved[512-32];   
 }head_t;
 head_t head=
 {
-    .version=20260324,
-    .name="MyPhoneOS_v1.0",
+    .version=20260326,
+    .name="MyPhoneOS_v1.1",
     .update_state=update_none,
     .reserved="This is my Graduation Project Work",
 };
+    // uint8_t remainder = len % 4;
+    // if (remainder != 0) 
+    // {
+    //     uint8_t padding_count = 4 - remainder; // 需要补几个 0xFF (1, 2, 或 3)
+        
+    //     for (uint8_t i = 0; i < padding_count; i++) {
+    //         data[len + i] = 0xFF; // 在末尾填充 0xFF
+    //     }
+        
+    //     calc_len = len + padding_count; // 更新计算用的长度
+    //    }
 uint32_t Continue_CRC32(uint32_t last_crc, uint8_t* data, uint32_t len) {
     uint32_t crc = last_crc; // 接力上次的结果
     uint32_t calc_len = len;
-    uint8_t remainder = len % 4;
-    if (remainder != 0) 
-    {
 
-        uint8_t padding_count = 4 - remainder; // 需要补几个 0xFF (1, 2, 或 3)
-        
-        for (uint8_t i = 0; i < padding_count; i++) {
-            data[len + i] = 0xFF; // 在末尾填充 0xFF
-        }
-        
-        calc_len = len + padding_count; // 更新计算用的长度
-       }
+
        
     for (uint32_t i = 0; i < calc_len; i++) {
         crc ^= ((uint32_t)data[i] << 24);
@@ -64,25 +66,44 @@ int main(void)
         fseek(fp, 0, SEEK_END);      // 先移到末尾
         uint32_t len = ftell(fp);    // 获取末尾位置（即大小）
         fseek(fp, 0, SEEK_SET);      // ***必须移回开头***，否则读不到数据
+        uint32_t save_len=fread(buf_total, 1, len, fp);
+        fseek(fp, 0, SEEK_SET);
+        printf("save_len:%u\r\n",save_len);
+        uint32_t file_size = len;
+        uint32_t buf_size = sizeof(buf);
+        uint32_t offset = 0;
+        uint32_t remain = file_size;
+        uint32_t read_len;
+        uint32_t current_crc = 0XFFFFFFFF;
+        uint32_t num;
+
 
         // --- 修正 2: 读取数据 ---
         // 参数含义：读取到buf, 每个单元1字节, 总共读len个, 从fp读
-        size_t count = fread(buf, 1, len, fp); 
+        // size_t count = fread(buf, 1, len, fp); 
+    while (remain > 0)
+    {
+        // 计算本次读取长度：取 buf_size 和 剩余长度 的最小值
+        read_len = (remain > buf_size) ? buf_size : remain;
+        // 从 Flash 读取当前分块
+        size_t count=fread(buf, 1, read_len, fp);
+        printf("%02X %02X %02X %02X count:%d\r\n",buf[0],buf[1],buf[2],buf[3],count);
+        // --- 修正 3: CRC计算 ---
+        // 初始值给 0xFFFFFFFF
+        //  Continue_CRC32(0xFFFFFFFF, buf, 0XFFFF*3);
+        current_crc=Continue_CRC32(current_crc,buf,count);
 
-        if (count == len) {
-
-            // --- 修正 3: CRC计算 ---
-            // 初始值给 0xFFFFFFFF
-            head.CRC32 = Continue_CRC32(0xFFFFFFFF, buf, count);
-            head.file_size=count;
-            printf("文件长度: %u 字节\r\n", len);
-            printf("实际读取: %u 字节\r\n", (uint32_t)count);
-            // 打印 CRC 建议用十六进制 %08X，方便对比
-            printf("计算出的 CRC32: 0x%08X\r\n", head.CRC32);
-        }
-        else {
-            printf("读取数据不完整！\r\n");
-        }
+        printf("current_crc:0X%08X\r\n",current_crc);
+        // printf("文件长度: %u 字节\r\n", count); 
+        // printf("read_len:%u current_crc:0x%08X\r\n",read_len,current_crc); 
+        // 更新状态
+        offset += count;
+        remain -= count;
+        
+    }
+        head.CRC32=current_crc;
+        head.file_size=offset;
+        printf("计算出的 CRC32: 0x%08X\r\n", head.CRC32);
         fclose(fp);    
         fp_new=fopen("myPhone.bin","wb");
         if(fp_new!=NULL)
@@ -94,8 +115,8 @@ int main(void)
             {
                 printf("写入头部成功\r\n");
                 fseek(fp_new,0,SEEK_END);
-                uint32_t write_app_len=fwrite(buf,1,count,fp_new);
-                if(write_app_len==count)
+                uint32_t write_app_len=fwrite(buf_total,1,head.file_size,fp_new);
+                if(write_app_len==head.file_size)
                 {
                   printf("写入app数据成功\r\n");  
                 }

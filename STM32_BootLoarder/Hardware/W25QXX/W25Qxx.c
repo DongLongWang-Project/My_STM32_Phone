@@ -255,13 +255,13 @@ void W25Qxx_Write(uint32_t Address, uint32_t Data,uint8_t len)
 	@备注	  :最小擦除4kb(1个扇区)
 */
 
-uint8_t W25Qxx_SectorErase(uint32_t Address)
+uint8_t W25Qxx_SectorErase(uint32_t Address,uint8_t ERASE_SIZE)
 {
 
 	W25Qxx_WriteEnable();						//写使能
 	
 	SPI_Start();								//SPI起始
-	SPI_SwapByte(W25Qxx_SECTOR_ERASE_4KB);	//交换发送扇区擦除的指令
+	SPI_SwapByte(ERASE_SIZE);	//交换发送扇区擦除的指令
 	SPI_SwapByte(Address >> 16);				//交换发送地址23~16位
 	SPI_SwapByte(Address >> 8);				//交换发送地址15~8位
 	SPI_SwapByte(Address);					//交换发送地址7~0位
@@ -312,7 +312,7 @@ uint8_t W25Qxx_Write_Sector(uint32_t SectorNo, const uint8_t *DataArray, uint32_
 
     for (uint32_t sec = 0; sec < NumSector; sec++)
     {
-        W25Qxx_SectorErase(StartAddr + sec * 4096); //每次擦4KB=1扇区
+        W25Qxx_SectorErase(StartAddr + sec * 4096,W25Qxx_SECTOR_ERASE_4KB); //每次擦4KB=1扇区
 
         for (uint8_t page = 0; page < 16; page++) //每次写256个字节,要写16次
         {
@@ -335,6 +335,9 @@ void W25Qxx_Read_DMA_config(void)
   DMA_InitTypeDef W25Qxx_Send_DMA_Initstruct;
   DMA_InitTypeDef W25Qxx_Read_DMA_Initstruct;
   
+  DMA_StructInit(&W25Qxx_Send_DMA_Initstruct); // 必须先初始化默认值
+  DMA_StructInit(&W25Qxx_Read_DMA_Initstruct);
+
   W25Qxx_Send_DMA_Initstruct.DMA_Memory0BaseAddr=(uint32_t)&w25q_dummy_byte;
   W25Qxx_Send_DMA_Initstruct.DMA_MemoryBurst=DMA_MemoryBurst_Single;
   W25Qxx_Send_DMA_Initstruct.DMA_MemoryDataSize=DMA_MemoryDataSize_Byte;
@@ -378,48 +381,50 @@ void W25Qxx_Read_DMA_config(void)
   DMA_Init(DMA2_Stream5,&W25Qxx_Send_DMA_Initstruct);
   DMA_Init(DMA2_Stream0,&W25Qxx_Read_DMA_Initstruct);
   
-  DMA_ITConfig(DMA2_Stream0,DMA_IT_TC,ENABLE); 
-  
-  NVIC_InitTypeDef NVIC_W25Qxx_Read_DMA_Initstruct;
-  NVIC_W25Qxx_Read_DMA_Initstruct.NVIC_IRQChannel=DMA2_Stream0_IRQn;
-  NVIC_W25Qxx_Read_DMA_Initstruct.NVIC_IRQChannelCmd=ENABLE;
-  NVIC_W25Qxx_Read_DMA_Initstruct.NVIC_IRQChannelPreemptionPriority=7;
-  NVIC_W25Qxx_Read_DMA_Initstruct.NVIC_IRQChannelSubPriority=0;
-  NVIC_Init(&NVIC_W25Qxx_Read_DMA_Initstruct);
 }
 
-void DMA2_Stream0_IRQHandler(void)
+
+
+void w25q_DMA_readdata(uint32_t read_address, void* DataArrays, uint16_t Count)
 {
-  if(DMA_GetITStatus(DMA2_Stream0,DMA_IT_TCIF0)==SET)
-  {
-     read_ok_flag=1;
-     printf("传输完毕\r\n");
-     DMA_ClearITPendingBit(DMA2_Stream0,DMA_IT_TCIF0);
-     SPI_Stop();								//SPI终止
-  }
-}
+   SPI_Start();                             
+   SPI_SwapByte(W25Qxx_READ_DATA);          
+   SPI_SwapByte(read_address >> 16);        
+   SPI_SwapByte(read_address >> 8);         
+   SPI_SwapByte(read_address);              
 
-void w25q_DMA_readdata(uint32_t read_address,uint8_t *DataArrays,uint16_t Count)
-{
+   // 关键点 1: 清空 SPI 接收缓冲区中因发送地址而产生的垃圾数据
+   while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == SET) {
+       SPI_I2S_ReceiveData(SPI1);
+   }
 
-   SPI_Start();								//SPI起始
-   SPI_SwapByte(W25Qxx_READ_DATA);			//交换发送读取数据的指令
-   SPI_SwapByte(read_address >> 16);				//交换发送地址23~16位
-   SPI_SwapByte(read_address >> 8);				//交换发送地址15~8位
-   SPI_SwapByte(read_address);					//交换发送地址7~0位
-   
-   DMA_ClearFlag(DMA2_Stream0, DMA_FLAG_TCIF0);
-   DMA_ClearFlag(DMA2_Stream5, DMA_FLAG_TCIF5); 
-   
-   DMA_Cmd(DMA2_Stream5,DISABLE);
-   while(DMA_GetCmdStatus(DMA2_Stream5) != DISABLE); // 确保 DMA 已停止
-   DMA2_Stream5->NDTR=Count;
+   // 关键点 2: 确保 DMA 停止并清除标志位
+   DMA_Cmd(DMA2_Stream0, DISABLE);
+   DMA_Cmd(DMA2_Stream5, DISABLE);
+   while(DMA_GetCmdStatus(DMA2_Stream0) != DISABLE);
+   while(DMA_GetCmdStatus(DMA2_Stream5) != DISABLE);
 
-   DMA_Cmd(DMA2_Stream0,DISABLE);
-   while(DMA_GetCmdStatus(DMA2_Stream0) != DISABLE); // 确保 DMA 已停止
-   DMA2_Stream0->M0AR=(uint32_t)DataArrays;
-   DMA2_Stream0->NDTR=Count;
+   DMA_ClearFlag(DMA2_Stream0, DMA_FLAG_TCIF0 | DMA_FLAG_FEIF0 | DMA_FLAG_DMEIF0 | DMA_FLAG_TEIF0);
+   DMA_ClearFlag(DMA2_Stream5, DMA_FLAG_TCIF5 | DMA_FLAG_FEIF5 | DMA_FLAG_DMEIF5 | DMA_FLAG_TEIF5); 
+
+   // 关键点 3: 重新赋值地址和长度
+   DMA2_Stream0->M0AR = (uint32_t)DataArrays;
+   DMA2_Stream0->NDTR = Count;
+   DMA2_Stream5->NDTR = Count; // 发送 dummy 的地址已在 Init 中定为 &w25q_dummy_byte
+
+   // 关键点 4: 开启 DMA 请求
+   SPI_I2S_DMACmd(SPI1, SPI_I2S_DMAReq_Rx | SPI_I2S_DMAReq_Tx, ENABLE);
+
+   // 关键点 5: 先使能接收流，再使能发送流 (产生时钟)
+   DMA_Cmd(DMA2_Stream0, ENABLE);
+   DMA_Cmd(DMA2_Stream5, ENABLE); 
+
+   // 阻塞等待完成
+   while (DMA_GetFlagStatus(DMA2_Stream0, DMA_FLAG_TCIF0) == RESET);
+   while (DMA_GetFlagStatus(DMA2_Stream5, DMA_FLAG_TCIF5) == RESET);
+
+   // 关键点 6: 关闭 DMA 请求，防止干扰后续非 DMA 的 SPI 操作
+//   SPI_I2S_DMACmd(SPI1, SPI_I2S_DMAReq_Rx | SPI_I2S_DMAReq_Tx, DISABLE);
    
-   DMA_Cmd(DMA2_Stream0,ENABLE);
-   DMA_Cmd(DMA2_Stream5,ENABLE);  
+   SPI_Stop();                              
 }

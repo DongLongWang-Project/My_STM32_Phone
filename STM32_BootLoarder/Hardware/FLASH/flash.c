@@ -32,9 +32,24 @@ uint8_t MyFLASH_ReadByte(uint32_t Address)
 }
 
 
-uint8_t read_buf[Flash_buf_size];
-
-void  Bootloader_Copy_W25Q_To_Flash(uint32_t w25q_start_addr, uint32_t flash_start_addr, uint32_t total_len)
+void myFLASH_ReadData(uint32_t Address, void* buf, uint32_t len)
 {
+    // 1. 在内部定义一个字节指针，方便进行偏移计算
+    uint8_t* pDest = (uint8_t*)buf; 
     
+    uint32_t i = 0;
+    uint32_t word_limit = (len / 4) * 4;
+
+    // 2. 4 字节对齐读取
+    for (i = 0; i < word_limit; i += 4)
+    {
+        // 这里的转换逻辑：先取偏移后的地址，转为 uint32_t 指针，再解引用赋值
+        *(uint32_t*)(pDest + i) = MyFLASH_ReadWord(Address + i);
+    }
+
+    // 3. 剩余字节读取
+    for (; i < len; i++)
+    {
+        pDest[i] = MyFLASH_ReadByte(Address + i);
+    }
 }

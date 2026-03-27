@@ -23,7 +23,7 @@ typedef struct
     uint32_t file_size;
     char name[16];
     update_state_t update_state;  
-    uint8_t reserved[256-32];     
+    uint8_t reserved[512-32];     
 }head_t;
 
 

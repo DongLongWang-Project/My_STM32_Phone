@@ -30,8 +30,7 @@
 #else
 #define Font_path       "0:/GitHub_Code/My_STM32_Phone/SD/Font/Font.bin"
 #endif // keil
-#define FONT_VERSION_ADDR_HEAD 0x00000000
-#define FONT_VERSION_ADDR_END  0x0031F163
+
 
 #define Font_Version_Size   0x00000010
 #define Font_Index_Size     0x0004BFA8

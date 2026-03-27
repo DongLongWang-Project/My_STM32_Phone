@@ -4,25 +4,24 @@
 #include "w25Qxx.h"
 #include "TFTLCD.h"
 #include "Bootloarder.h"
+#include "SD.h"
+#include "Delay.h"
+#include "crc.h"
 
 int main(void)
 {
-  load_app(APP_Addr);
-//    Serial_Init();
-//    W25Qxx_SPI_Init();
-//    w25q_DMA_readdata(0x00000000,read_buf,100);
-//    LCD_Init(WHITE);
-//    TFTLCD_Printf(0,0,&Font_Size_6x8,RED,"1234");
-   
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+    delay_init(168);
+    Serial_Init();
+    crc_init();
+    W25Qxx_SPI_Init();
+    LCD_Init(BLACK);
+    printf("开始挂载sd\r\n");
+
+    get_update_file_head();
+//  load_app(APP_Addr);
 	while(1)
 	{
-//    if(read_ok_flag==1)
-//    {
-//      read_ok_flag=0;
-//    for(uint8_t i=0;i<100;i++)
-//    {
-//      printf("0X%02X ",read_buf[i]);
-//    }
-//    }
+
 	}
 }

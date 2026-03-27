@@ -83,7 +83,7 @@
           <AfterMake>
             <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name>F:\1_Keil\MDK\Core\ARM\ARMCC\bin\fromelf --bin -o "$L@L.bin" "#L"</UserProg1Name>
+            <UserProg1Name>F:\1_Keil\MDK\Core\ARM\ARMCC\bin\fromelf --bin -o "G:\GitHub_Code\My_STM32_Phone\SD\bin\project.bin" "G:\GitHub_Code\My_STM32_Phone\Objects\project.axf"</UserProg1Name>
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>

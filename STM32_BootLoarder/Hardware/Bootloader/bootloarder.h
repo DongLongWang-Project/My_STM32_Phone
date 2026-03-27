@@ -1,9 +1,42 @@
 #ifndef	__BOOTLOARDER_H
 #define	__BOOTLOARDER_H
 #include "stm32f4xx.h"
+#include "ff.h"
+#include "stdio.h"
+#include <stdint.h>
+#include "W25Qxx.h"
+#include "flash.h"
 
 #define APP_HEAD_Addr 0x08010000
 #define APP_Addr 0x08010200
 
+typedef void (*iapfun)(void);
+typedef enum
+{
+    update_none=0xFF,
+    update_is_running=0xFE,
+    update_is_ok=0xFC,
+}update_state_t;
+typedef struct 
+{
+    uint32_t version;
+    uint32_t CRC32;
+    uint32_t file_size;
+    char name[16];
+    update_state_t update_state; 
+    uint8_t reserved[512-32];     
+}head_t;
+typedef enum
+{  
+   HEAD_SD=0,
+   HEAD_FLASH,
+   HEAD_W25Q_Cur,
+   HEAD_W25Q_Pre,
+   HEAD_NUM
+}head_enum;
+
+
 void load_app(u32 appxaddr);
+void get_update_file_head(void);
+uint8_t update_is_valid(head_enum head_);
 #endif
