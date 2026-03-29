@@ -6,9 +6,13 @@
 #include "stdio.h"
 #include "ui_app_setting.h"
 #include "../ui_widgets.h"
+#include "flash.h"
+#include "W25Qxx.h"
+#include "crc.h"
 
 #define APP_HEAD_Addr 0x08010000
 #define APP_Addr 0x08010200
+#define UPDATE_FILE_PATH   "0:SD/bin/myPhone.bin"
 
 typedef enum
 {
@@ -25,8 +29,39 @@ typedef struct
     update_state_t update_state;  
     uint8_t reserved[512-32];     
 }head_t;
+typedef enum
+{  
+   HEAD_SD=0,
+   HEAD_FLASH,
+   HEAD_W25Q_Cur,
+   HEAD_W25Q_Pre,
+   HEAD_NUM
+}head_enum;
+typedef struct
+{
+  uint32_t update_flag;
+  uint32_t file_version;
+  uint32_t file_crc;
+  uint32_t file_size;
+}update_flag_info_t;
+typedef struct
+{
+    lv_obj_t*obj_update;
+    lv_obj_t*label_name;
+    lv_obj_t*progress_update_bar;
+    lv_obj_t*new_version_label;
+}update_obj_t;
 
+typedef struct
+{
+lv_fs_file_t  file_p;
+head_t head[HEAD_NUM];
+
+update_obj_t update_obj;
+}ui_setting_update_t;
+
+extern update_flag_info_t update_flag_info;
 
 void ui_app_setting_about(lv_obj_t*parent);
-
+uint8_t update_is_valid(head_enum head_);
 #endif

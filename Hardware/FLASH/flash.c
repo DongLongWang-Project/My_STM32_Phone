@@ -31,6 +31,7 @@ uint8_t MyFLASH_ReadByte(uint32_t Address)
 	return *((__IO uint8_t *)(Address));	//使用指针访问指定地址下的数据并返回
 }
 
+
 void myFLASH_ReadData(uint32_t Address, void* buf, uint32_t len)
 {
     // 1. 在内部定义一个字节指针，方便进行偏移计算
@@ -52,9 +53,35 @@ void myFLASH_ReadData(uint32_t Address, void* buf, uint32_t len)
         pDest[i] = MyFLASH_ReadByte(Address + i);
     }
 }
-uint8_t read_buf[Flash_buf_size];
 
-void  Bootloader_Copy_W25Q_To_Flash(uint32_t w25q_start_addr, uint32_t flash_start_addr, uint32_t total_len)
+void myFLASH_WriteData(uint32_t Flash_addr, uint8_t *data_buf, uint32_t len)
 {
-    
+    uint32_t word_len = len / 4;
+    uint32_t rem_len  = len % 4; // 剩余字节数
+    uint32_t addr = Flash_addr;
+
+    FLASH_Unlock();
+
+    // 1. 先写完整的 Word 部分
+    for (uint32_t i = 0; i < word_len; i++)
+    {
+        // 使用 memcpy 或特殊的对齐读取，防止指针不对齐导致的 Fault
+        uint32_t temp_data;
+        memcpy(&temp_data, &data_buf[i * 4], 4); 
+        
+        FLASH_ProgramWord(addr, temp_data);
+        addr += 4;
+    }
+
+    // 2. 处理末尾不齐的部分（Padding）
+    if (rem_len > 0)
+    {
+        uint32_t last_word = 0xFFFFFFFF; // 默认全是 1
+        // 只拷贝实际剩下的几个字节，其余位保持 0xFF
+        memcpy(&last_word, &data_buf[word_len * 4], rem_len);
+        
+        FLASH_ProgramWord(addr, last_word);
+    }
+
+    FLASH_Lock();
 }

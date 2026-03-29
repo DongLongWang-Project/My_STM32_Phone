@@ -28,110 +28,109 @@ LV_FONT_DECLARE( my_font_32);
 #define Update_bin_Path "0:/GitHub_Code/My_STM32_Phone/SD/bin/myPhone.bin"
 #endif
 
-
-
-
-typedef enum
-{
-   HEAD_SD=0,
-   HEAD_FLASH,
-   HEAD_W25Q_1,
-   HEAD_W25Q_2,
-   HEAD_NUM
-}head_enum;
-
-typedef struct
-{
-    lv_obj_t*obj_update;
-    lv_obj_t*label_name;
-    lv_obj_t*progress_update_bar;
-    lv_obj_t*new_version_label;
-}update_obj_t;
-
-typedef struct
-{
-lv_fs_file_t  file_p;
-head_t head[HEAD_NUM];
-
-update_obj_t update_obj;
-}ui_setting_update_t;
-
-
-
 ui_setting_update_t ui_setting_update;
+update_flag_info_t update_flag_info;
 
-
-void get_update_file_head(const char*path)
+void SD_get_update_file_head(const char*update_file_path)
 {
-    lv_fs_res_t res;
-    uint32_t num;
-    res=lv_fs_open(&ui_setting_update.file_p,path,LV_FS_MODE_RD);
-    if(res==LV_FS_RES_OK)
-    {
-         printf("读取文件\r\n");
-        res=lv_fs_read(&ui_setting_update.file_p,&ui_setting_update.head[HEAD_SD],sizeof(head_t),&num);
-        if(res==LV_FS_RES_OK)
-        {
-            printf("crc32:0x%08X\r\n",ui_setting_update.head[HEAD_SD].crc32);
-            printf("file_size:%d\r\n",ui_setting_update.head[HEAD_SD].file_size);
-            printf("name:%s\r\n",ui_setting_update.head[HEAD_SD].name);
-            printf("update_state:%d\r\n",ui_setting_update.head[HEAD_SD].update_state);
-            printf("version:%d\r\n",ui_setting_update.head[HEAD_SD].version);
-            lv_fs_close(&ui_setting_update.file_p);
-            ui_setting_update.file_p.drv=NULL;
-        }
-        else
-        {
-            printf("读取文件失败\r\n");
-        }
-    }
-    else
-    {
-        printf("打开文件失败\r\n");
-    }
-    
-#if keil
-
-  W25Qxx_DMA_ReadData(Application_Addr_1,&ui_setting_update.head[HEAD_W25Q_1],sizeof(head_t));
-  W25Qxx_DMA_ReadData(Application_Addr_2,&ui_setting_update.head[HEAD_W25Q_2],sizeof(head_t));
-      
-      if(ui_setting_update.head[HEAD_SD].version>ui_setting_update.head[HEAD_FLASH].version)
+   uint32_t num;
+   
+          lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,update_file_path,LV_FS_MODE_RD);
+      if(res!=LV_FS_RES_OK)
       {
-        //说明有新版本了
-        if(ui_setting_update.head[HEAD_W25Q_1].version==ui_setting_update.head[HEAD_SD].version)
-        {
-          //新版本已下载
-          lv_label_set_text(ui_setting_update.update_obj.new_version_label,"立即重启更新");
-        }
-        else
-        {
-          //未下载,提示可以下载新版本
-            lv_label_set_text(ui_setting_update.update_obj.new_version_label,"点击下载新版本");
-          
-        }
-      }
-      else if(ui_setting_update.head[HEAD_SD].version==ui_setting_update.head[HEAD_FLASH].version)
-      {
-        //版本一样
-         lv_label_set_text(ui_setting_update.update_obj.new_version_label,"当前已是最新版本");
+        printf("打开app文件失败\r\n");
       }
       else
-      {
-        //旧版本
-        lv_label_set_text(ui_setting_update.update_obj.new_version_label,"旧版本");
+      {        
+      res=lv_fs_read(&ui_setting_update.file_p,&ui_setting_update.head[HEAD_SD],sizeof(head_t),&num);
+         if(res==LV_FS_RES_OK && num==sizeof(head_t))
+         {
+           printf("读取app头部成功\r\n");
+//           printf("head[HEAD_SD].CRC32:0X%08X\r\n",head[HEAD_SD].CRC32);
+//           printf("head[HEAD_SD].version:%u\r\n",head[HEAD_SD].version);
+         }
+         else
+         {
+            printf("读取app头部失败\r\n");
+         }
+         
       }
-      
+//      f_unmount("0");
 
+
+}
+uint8_t get_update_file_head(head_enum head_)
+{
+
+        switch(head_)
+        {
+          case HEAD_SD:         SD_get_update_file_head(UPDATE_FILE_PATH);                                 break;
+          case HEAD_FLASH:      myFLASH_ReadData(APP_HEAD_Addr,&ui_setting_update.head[HEAD_FLASH],sizeof(head_t));         break;
+          case HEAD_W25Q_Cur:   W25Qxx_DMA_ReadData(Application_Addr_1,&ui_setting_update.head[HEAD_W25Q_Cur],sizeof(head_t)); break;
+          case HEAD_W25Q_Pre:   W25Qxx_DMA_ReadData(Application_Addr_2,&ui_setting_update.head[HEAD_W25Q_Pre],sizeof(head_t)); break;
+          default:break;
+        }
+       uint32_t buf_size = ui_setting_update.head[head_].file_size;
+       printf("version:%u\r\n",ui_setting_update.head[head_].version);
+       if (buf_size == 0 || buf_size == 0xFFFFFFFF) return 0; 
+       if(update_is_valid(head_)) return 1;
+       
+       return 0;   
+}
+
+uint8_t update_is_valid(head_enum head_)
+{
+    uint32_t buf_size = sizeof(crc_buf);
+    uint32_t offset = 0;
+    uint32_t remain = ui_setting_update.head[head_].file_size;
+    uint32_t read_len;
+    uint32_t current_crc = 0XFFFFFFFF;
+    uint32_t num;
+    // 基本合法性检查
+    if (remain == 0 || remain == 0xFFFFFFFF) return 0;
+    if(head_==HEAD_SD )  
+    lv_fs_seek(&ui_setting_update.file_p,512,LV_FS_SEEK_SET);
+    while (remain > 0)
+    {
+        // 计算本次读取长度：取 buf_size 和 剩余长度 的最小值
+        read_len = (remain > buf_size) ? buf_size : remain;
+
+        // 从 Flash 读取当前分块
+        switch(head_)
+        {
+          case HEAD_SD:       lv_fs_read(&ui_setting_update.file_p,crc_buf,read_len,&num);break;
+          case HEAD_FLASH:    myFLASH_ReadData(APP_Addr + offset, crc_buf, read_len);num=read_len;break;
+          case HEAD_W25Q_Cur: W25Qxx_DMA_ReadData(Application_Addr_1+ offset+sizeof(head_t),crc_buf,read_len);num=read_len;break;
+          case HEAD_W25Q_Pre: W25Qxx_DMA_ReadData(Application_Addr_1+ offset+sizeof(head_t),crc_buf,read_len);num=read_len;break;
+          default:break;
+        }
+        current_crc=Continue_CRC32(current_crc,crc_buf,num);
+        printf("%02X %02X %02X %02X num:%d current_crc:0X%08X\r\n",crc_buf[num-4],crc_buf[num-3],crc_buf[num-2],crc_buf[num-1],num,current_crc);
+ 
+        offset += num;
+        remain -= num;
+    }
+    // 最终校验
+    if (current_crc == ui_setting_update.head[head_].crc32)
+    {
+        printf("Flash CRC OK: 0x%08X\r\n", current_crc);
+        return 1;
+    }
     
-#endif
-    
+    printf("Flash CRC Error! Calc: 0x%08X, Target: 0x%08X\r\n", current_crc, ui_setting_update.head[head_].crc32);
+    return 0;
 }
 
 
 
 static void event_check_update_cb(lv_event_t*e)
 {
-        get_update_file_head(Update_bin_Path);
+        get_update_file_head(HEAD_SD);
+        if(ui_setting_update.head[HEAD_SD].version>ui_setting_update.head[HEAD_FLASH].version)
+        {
+          lv_label_set_text(ui_setting_update.update_obj.new_version_label,"发现新版本,点击更新");
+        }
+
 }
 
 void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
@@ -143,17 +142,19 @@ void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
     lv_obj_set_style_text_font(update_obj->label_name,&my_font_16,0);
     lv_label_set_text(update_obj->label_name,"MyPhoneOS V1.0");
     #if keil
-      myFLASH_ReadData(FLASH_APP_Addr,&ui_setting_update.head[HEAD_FLASH],sizeof(head_t));
+      get_update_file_head(HEAD_FLASH);
       lv_label_set_text(ui_setting_update.update_obj.label_name,ui_setting_update.head[HEAD_FLASH].name);
     #endif
     
-    lv_obj_add_event_cb(update_obj->obj_update,event_check_update_cb,LV_EVENT_CLICKED,NULL);  
+
     update_obj->progress_update_bar=lv_bar_create(update_obj->obj_update);
     lv_obj_set_size(update_obj->progress_update_bar,lv_pct(100),lv_pct(30));
     lv_obj_align(update_obj->progress_update_bar,LV_ALIGN_BOTTOM_MID,0,0);
     update_obj->new_version_label=lv_label_create(update_obj->progress_update_bar);
+    lv_obj_add_event_cb(update_obj->new_version_label,event_check_update_cb,LV_EVENT_CLICKED,NULL);  
+    lv_obj_add_flag(update_obj->new_version_label,LV_OBJ_FLAG_CLICKABLE);
     lv_obj_center(update_obj->new_version_label);
-    lv_label_set_text(update_obj->new_version_label,"点击下载新版本");
+    lv_label_set_text(update_obj->new_version_label,"点击检查新版本");
 //    lv_obj_add_flag(update_obj->progress_update_bar,LV_OBJ_FLAG_HIDDEN);
     
 }
@@ -181,7 +182,7 @@ void ui_app_setting_about(lv_obj_t*parent)
     
     
     setting_update_create(list_about,&ui_setting_update.update_obj);
-    get_update_file_head(Update_bin_Path);
+    
     for(uint8_t i=APP_SET_ABOUT_MCU;i<APP_SET_ABOUT_NUM;i++)/*循环添加对应的列表项*/
     {
        lv_list_add_btn (list_about,_GET_UI_ICON(APP_SET_ABOUT_LA_TABLE,i),_GET_UI_TEXT(APP_SET_ABOUT_LA_TABLE,i));
