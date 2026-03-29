@@ -9,7 +9,7 @@
 
 #define APP_HEAD_Addr 0x08010000
 #define APP_Addr 0x08010200
-
+#define UPDATE_FILE_PATH   "0:SD/bin/myPhone.bin"
 typedef void (*iapfun)(void);
 typedef enum
 {
@@ -37,6 +37,7 @@ typedef enum
 
 
 void load_app(u32 appxaddr);
-void get_update_file_head(void);
+uint8_t get_update_file_head(head_enum head_);
 uint8_t update_is_valid(head_enum head_);
+void update_my_phone(void);
 #endif

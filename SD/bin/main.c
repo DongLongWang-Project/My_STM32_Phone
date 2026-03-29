@@ -87,13 +87,13 @@ int main(void)
         read_len = (remain > buf_size) ? buf_size : remain;
         // 从 Flash 读取当前分块
         size_t count=fread(buf, 1, read_len, fp);
-        printf("%02X %02X %02X %02X count:%d\r\n",buf[0],buf[1],buf[2],buf[3],count);
         // --- 修正 3: CRC计算 ---
         // 初始值给 0xFFFFFFFF
         //  Continue_CRC32(0xFFFFFFFF, buf, 0XFFFF*3);
         current_crc=Continue_CRC32(current_crc,buf,count);
+        printf("%02X %02X %02X %02X count:%d current_crc:0X%08X\r\n",buf[count-4],buf[count-3],buf[count-2],buf[count-1],count,current_crc);
 
-        printf("current_crc:0X%08X\r\n",current_crc);
+     
         // printf("文件长度: %u 字节\r\n", count); 
         // printf("read_len:%u current_crc:0x%08X\r\n",read_len,current_crc); 
         // 更新状态

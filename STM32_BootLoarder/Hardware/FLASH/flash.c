@@ -53,3 +53,35 @@ void myFLASH_ReadData(uint32_t Address, void* buf, uint32_t len)
         pDest[i] = MyFLASH_ReadByte(Address + i);
     }
 }
+
+void myFLASH_WriteData(uint32_t Flash_addr, uint8_t *data_buf, uint32_t len)
+{
+    uint32_t word_len = len / 4;
+    uint32_t rem_len  = len % 4; // 剩余字节数
+    uint32_t addr = Flash_addr;
+
+    FLASH_Unlock();
+
+    // 1. 先写完整的 Word 部分
+    for (uint32_t i = 0; i < word_len; i++)
+    {
+        // 使用 memcpy 或特殊的对齐读取，防止指针不对齐导致的 Fault
+        uint32_t temp_data;
+        memcpy(&temp_data, &data_buf[i * 4], 4); 
+        
+        FLASH_ProgramWord(addr, temp_data);
+        addr += 4;
+    }
+
+    // 2. 处理末尾不齐的部分（Padding）
+    if (rem_len > 0)
+    {
+        uint32_t last_word = 0xFFFFFFFF; // 默认全是 1
+        // 只拷贝实际剩下的几个字节，其余位保持 0xFF
+        memcpy(&last_word, &data_buf[word_len * 4], rem_len);
+        
+        FLASH_ProgramWord(addr, last_word);
+    }
+
+    FLASH_Lock();
+}

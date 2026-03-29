@@ -17,7 +17,7 @@ extern W25Qxx_ID W25Qxx;
 #define W25Qxx_MID 0xEF
 #define W25Qxx_DID 0X4018
 
-
+#define UPDATE_INFO_Addr          0x00FFD000   //更新信息的保存地址 大小:4KB
 #define WIFI_SAVE_Addr            0x00FFE000 //WIIF信息保存地址 大小:4KB
 #define ALARM_CLOCK_SAVE_Addr    0x00FFD000  //闹铃信息保存地址 大小:4KB
 #define ALARM_SAVE_BLOT_SIZE     128  

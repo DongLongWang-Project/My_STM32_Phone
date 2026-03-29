@@ -15,11 +15,11 @@ int main(void)
     Serial_Init();
     crc_init();
     W25Qxx_SPI_Init();
-    LCD_Init(BLACK);
-    printf("开始挂载sd\r\n");
-
-    get_update_file_head();
-//  load_app(APP_Addr);
+//    get_update_file_head(HEAD_FLASH);
+////    LCD_Init(BLACK);
+////    RCC->AHB3ENR &= ~(0x01); // 禁用 FSMC 时钟
+    update_my_phone();
+//     load_app(APP_Addr);
 	while(1)
 	{
 
