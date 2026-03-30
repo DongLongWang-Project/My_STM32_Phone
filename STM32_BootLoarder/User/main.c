@@ -10,18 +10,27 @@
 
 int main(void)
 {
+
+//     load_app(APP_Addr);
+
+
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
     delay_init(168);
     Serial_Init();
-    crc_init();
     W25Qxx_SPI_Init();
-//    get_update_file_head(HEAD_FLASH);
-////    LCD_Init(BLACK);
-////    RCC->AHB3ENR &= ~(0x01); // 禁用 FSMC 时钟
+    LCD_Init(BLACK);
+
     update_my_phone();
-//     load_app(APP_Addr);
+
+
 	while(1)
 	{
 
 	}
 }
+//    if(W25Qxx_SectorErase(TOUCH_SAVE_VER_Addr,W25Qxx_SECTOR_ERASE_4KB)==0)
+//    {
+//      printf("擦除成功\r\n");
+//    }
+//    else
+//    printf("擦除失败\r\n");

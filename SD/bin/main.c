@@ -1,7 +1,7 @@
 #include "stdio.h"
 #include <stdint.h>
 //0x4C11DB7
-uint8_t buf[0x10000];
+uint8_t buf[0x1000];
 uint8_t buf_total[1024*1024];
 typedef enum
 {
@@ -12,7 +12,7 @@ typedef enum
 typedef struct 
 {
     uint32_t version;
-    uint32_t CRC32;
+    uint32_t crc32;
     uint32_t file_size;
     char name[16];
     update_state_t update_state;
@@ -20,7 +20,7 @@ typedef struct
 }head_t;
 head_t head=
 {
-    .version=20260326,
+    .version=20260330,
     .name="MyPhoneOS_v1.1",
     .update_state=update_none,
     .reserved="This is my Graduation Project Work",
@@ -101,9 +101,9 @@ int main(void)
         remain -= count;
         
     }
-        head.CRC32=current_crc;
+        head.crc32=current_crc;
         head.file_size=offset;
-        printf("计算出的 CRC32: 0x%08X\r\n", head.CRC32);
+        printf("计算出的 CRC32: 0x%08X\r\n", head.crc32);
         fclose(fp);    
         fp_new=fopen("myPhone.bin","wb");
         if(fp_new!=NULL)

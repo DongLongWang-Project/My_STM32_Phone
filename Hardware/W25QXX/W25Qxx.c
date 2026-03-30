@@ -259,13 +259,13 @@ void W25Qxx_Write(uint32_t Address, uint32_t Data,uint8_t len)
 	@备注	  :最小擦除4kb(1个扇区)
 */
 
-uint8_t W25Qxx_SectorErase(uint32_t Address)
+uint8_t W25Qxx_SectorErase(uint32_t Address,uint8_t ERASE_SIZE)
 {
 
 	W25Qxx_WriteEnable();						//写使能
 	
 	SPI_Start();								//SPI起始
-	SPI_SwapByte(W25Qxx_SECTOR_ERASE_4KB);	//交换发送扇区擦除的指令
+	SPI_SwapByte(ERASE_SIZE);	//交换发送扇区擦除的指令
 	SPI_SwapByte(Address >> 16);				//交换发送地址23~16位
 	SPI_SwapByte(Address >> 8);				//交换发送地址15~8位
 	SPI_SwapByte(Address);					//交换发送地址7~0位
@@ -316,7 +316,7 @@ uint8_t W25Qxx_Write_Sector(uint32_t SectorNo, const uint8_t *DataArray, uint32_
 
     for (uint32_t sec = 0; sec < NumSector; sec++)
     {
-        W25Qxx_SectorErase(StartAddr + sec * 4096); //每次擦4KB=1扇区
+        W25Qxx_SectorErase(StartAddr + sec * 4096,W25Qxx_SECTOR_ERASE_4KB); //每次擦4KB=1扇区
 
         for (uint8_t page = 0; page < 16; page++) //每次写256个字节,要写16次
         {

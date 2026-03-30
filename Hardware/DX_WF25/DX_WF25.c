@@ -646,7 +646,7 @@ void WIFI_SAVE(void)
       }
 
       taskENTER_CRITICAL();           /* 进入临界区 */
-      W25Qxx_SectorErase(WIFI_SAVE_Addr);       
+      W25Qxx_SectorErase(WIFI_SAVE_Addr,W25Qxx_SECTOR_ERASE_4KB);       
       W25Qxx_WriteBuffer(WIFI_SAVE_Addr,(uint8_t*)&wifi_save_list,sizeof(wifi_save_t));
       taskEXIT_CRITICAL();            /* 退出临界区 */
    } 

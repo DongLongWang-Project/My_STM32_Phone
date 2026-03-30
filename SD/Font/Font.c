@@ -267,7 +267,7 @@ static void Update_Font_to_W25Qxx(const char*file_path,uint32_t Font_addr)
   {
     fr=f_read(&f,sector_buf,4096,&br);
     print("读取数据:%d...\r\n",br);
-    W25Qxx_SectorErase(cur_addr);
+    W25Qxx_SectorErase(cur_addr,W25Qxx_SECTOR_ERASE_4KB);
 //    state=W25Qxx_SectorErase(cur_addr);
 //    if(state)
 //    {

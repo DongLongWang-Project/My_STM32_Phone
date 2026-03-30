@@ -4,7 +4,6 @@
 USB_OTG_CORE_HANDLE  USB_OTG_dev;
 int main(void)
 {  
-
     __enable_irq();
     NVIC_SetVectorTable(NVIC_VectTab_FLASH,APP_Addr);
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
@@ -25,7 +24,7 @@ int main(void)
     my_phone_config();
      
     MyPhone_stm32_task();
-//     read_music();
+
     while (1)
      {
 

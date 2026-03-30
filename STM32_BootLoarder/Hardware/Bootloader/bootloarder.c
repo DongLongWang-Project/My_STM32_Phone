@@ -264,6 +264,11 @@ uint8_t Read_Latest_update_info_(update_flag_info_t *update_flag_info)
     if (update_flag_info->update_flag == 0x5A5A1234 || 
         update_flag_info->update_flag == 0x00000000) 
     {
+        printf("file_crc:0X%08X\r\n",update_flag_info->file_crc);
+        printf("file_crc:%u    \r\n",update_flag_info->file_size);
+        printf("file_crc:%u    \r\n",update_flag_info->file_version);
+        printf("file_crc:0X%08X\r\n",update_flag_info->update_flag);
+     
         return 1; // 找到了明确的当前状态
     }
     
@@ -368,6 +373,8 @@ uint8_t Moveing_file_to_flash(head_enum head_)
 
     return 0; 
 }
+
+
 void update_my_phone(void)
 {
  
@@ -401,8 +408,15 @@ void update_my_phone(void)
           //准备搬运
           if(Moveing_file_to_flash(HEAD_SD))
           {
-            printf("搬运成功\r\n");
+            printf("搬运成功,将flash的数据搬运到w25q的1区\r\n");
+            update_flag_info.file_crc=head[HEAD_SD].CRC32;
+            update_flag_info.file_size=head[HEAD_SD].file_size;
+            update_flag_info.file_version=head[HEAD_SD].version;
+            update_flag_info.update_flag=0;
+            update_flag(&update_flag_info);
+            
             load_app(APP_Addr);
+            
           }
           else
           {

@@ -599,7 +599,7 @@ void save_alarm_data(void)
     else if(LastIndex==(4096/ALARM_SAVE_BLOT_SIZE)-1)
     {
       /*说明写满了,擦除扇区从头写*/
-      W25Qxx_SectorErase(ALARM_CLOCK_SAVE_Addr);
+      W25Qxx_SectorErase(ALARM_CLOCK_SAVE_Addr,W25Qxx_SECTOR_ERASE_4KB);
       Target_index=0;
       print("说明写满了,擦除扇区从头写\r\n");
     }

@@ -22,20 +22,113 @@ LV_FONT_DECLARE( my_font_32);
 #if keil
 #include "flash.h"
 #include "W25Qxx.h"
-#define Update_bin_Path  "0:/SD/bin/myPhone.bin"
+#define UPDATE_FILE_PATH  "0:/SD/bin/myPhone.bin"
 
 #else
-#define Update_bin_Path "0:/GitHub_Code/My_STM32_Phone/SD/bin/myPhone.bin"
+#define UPDATE_FILE_PATH "0:/GitHub_Code/My_STM32_Phone/SD/bin/myPhone.bin"
+uint8_t crc_buf[0x10000]__attribute__((section(".EXT_SRAM")));
+uint32_t Continue_CRC32(uint32_t last_crc, uint8_t* data, uint32_t len) {
+    uint32_t crc = last_crc; // 接力上次的结果
+    uint32_t calc_len = len;   
+    for (uint32_t i = 0; i < calc_len; i++) {
+        crc ^= ((uint32_t)data[i] << 24);
+        for (int j = 0; j < 8; j++) {
+            if (crc & 0x80000000) crc = (crc << 1) ^ 0x04C11DB7;
+            else crc = (crc << 1);
+        }
+    }
+    return crc;
+}
+
 #endif
 
 ui_setting_update_t ui_setting_update;
 update_flag_info_t update_flag_info;
 
+uint8_t Get_Latest_update_info_Index(uint32_t Address)
+{
+    uint32_t current_magic;
+    uint8_t info_size = sizeof(update_flag_info_t);
+    uint8_t max_slots = 4096 / info_size;
+
+    for(uint8_t i = 0; i < max_slots; i++)
+    {
+        // 建议读取 4 字节的 Magic 字段，而不是 1 字节
+        W25Qxx_ReadData(Address + (i * info_size), (uint8_t*)&current_magic, 4);
+        
+        // 如果是 0xFFFFFFFF，说明这格是彻底没写过的空位
+        if(current_magic == 0xFFFFFFFF) 
+        { 
+            if(i == 0) return 0xFF; // 第 0 个就是空的
+            return i - 1;           // 找到了空位，返回上一个有效的
+        }
+    }
+    // 如果循环走完都没发现 0xFF，说明 4KB 扇区全部写满了
+    return max_slots - 1;
+}
+uint8_t Read_Latest_update_info_(update_flag_info_t *update_flag_info)
+{
+    uint8_t info_size = sizeof(update_flag_info_t);
+    uint8_t LastIndex = Get_Latest_update_info_Index(UPDATE_INFO_Addr);
+    
+    if(LastIndex == 0xFF) return 0; // 彻底没记录
+
+    // 只读最新的一条
+    W25Qxx_ReadData(UPDATE_INFO_Addr + (LastIndex * info_size), (uint8_t*)update_flag_info, info_size);
+    
+    // 只有这两种情况是合法的
+    if (update_flag_info->update_flag == 0x5A5A1234 || 
+        update_flag_info->update_flag == 0x00000000) 
+    {
+        printf("file_crc:0X%08X\r\n",update_flag_info->file_crc);
+        printf("file_size:%u    \r\n",update_flag_info->file_size);
+        printf("file_version:%u \r\n",update_flag_info->file_version);
+        printf("update_flag:0X%08X\r\n",update_flag_info->update_flag);
+        return 1; // 找到了明确的当前状态
+    }
+    
+    // 如果最新的一条是乱码（掉电损坏），此时才考虑紧急往前翻一条“保命”
+    // 或者直接判定为无效，让系统报错，这比误更新要安全
+    printf("最新记录损坏，系统不确定是否需要更新\r\n");
+    return 0; 
+}
+void update_flag(update_flag_info_t *update_flag_info)
+{
+    uint8_t info_size=sizeof(update_flag_info_t);
+    uint8_t LastIndex=Get_Latest_update_info_Index(UPDATE_INFO_Addr);
+    uint8_t Target_index=0;
+    if(LastIndex==0XFF)
+    {
+      /*直接在第一个位置写就行*/
+      Target_index=0;
+      printf("直接在第一个位置写就行\r\n");
+    }
+    else if(LastIndex==(4096/info_size)-1)
+    {
+      /*说明写满了,擦除扇区从头写*/
+      W25Qxx_SectorErase(UPDATE_INFO_Addr,W25Qxx_SECTOR_ERASE_4KB);
+      Target_index=0;
+      printf("说明写满了,擦除扇区从头写\r\n");
+    }
+    else
+    {
+      Target_index=LastIndex+1;
+      printf("还有空间可以直接写\r\n");
+    }
+
+    W25Qxx_WriteBuffer(UPDATE_INFO_Addr+Target_index*info_size,(const uint8_t*)update_flag_info,info_size); 
+}
+
 void SD_get_update_file_head(const char*update_file_path)
 {
    uint32_t num;
    
-          lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,update_file_path,LV_FS_MODE_RD);
+    if(ui_setting_update.file_p.drv!=NULL)
+    {
+      lv_fs_close(&ui_setting_update.file_p);
+      ui_setting_update.file_p.drv=NULL;
+    }
+      lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,update_file_path,LV_FS_MODE_RD);
       if(res!=LV_FS_RES_OK)
       {
         printf("打开app文件失败\r\n");
@@ -61,13 +154,15 @@ void SD_get_update_file_head(const char*update_file_path)
 }
 uint8_t get_update_file_head(head_enum head_)
 {
-
+         uint16_t size= sizeof(head_t);
         switch(head_)
         {
           case HEAD_SD:         SD_get_update_file_head(UPDATE_FILE_PATH);                                 break;
-          case HEAD_FLASH:      myFLASH_ReadData(APP_HEAD_Addr,&ui_setting_update.head[HEAD_FLASH],sizeof(head_t));         break;
-          case HEAD_W25Q_Cur:   W25Qxx_DMA_ReadData(Application_Addr_1,&ui_setting_update.head[HEAD_W25Q_Cur],sizeof(head_t)); break;
-          case HEAD_W25Q_Pre:   W25Qxx_DMA_ReadData(Application_Addr_2,&ui_setting_update.head[HEAD_W25Q_Pre],sizeof(head_t)); break;
+          #if keil
+          case HEAD_FLASH:      myFLASH_ReadData(APP_HEAD_Addr,&ui_setting_update.head[HEAD_FLASH],size);         break;
+          case HEAD_W25Q_Cur:   W25Qxx_DMA_ReadData(Application_Addr_1,&ui_setting_update.head[HEAD_W25Q_Cur],size); break;
+          case HEAD_W25Q_Pre:   W25Qxx_DMA_ReadData(Application_Addr_2,&ui_setting_update.head[HEAD_W25Q_Pre],size); break;
+          #endif // keil
           default:break;
         }
        uint32_t buf_size = ui_setting_update.head[head_].file_size;
@@ -89,7 +184,7 @@ uint8_t update_is_valid(head_enum head_)
     // 基本合法性检查
     if (remain == 0 || remain == 0xFFFFFFFF) return 0;
     if(head_==HEAD_SD )  
-    lv_fs_seek(&ui_setting_update.file_p,512,LV_FS_SEEK_SET);
+    lv_fs_seek(&ui_setting_update.file_p,sizeof(head_t),LV_FS_SEEK_SET);
     while (remain > 0)
     {
         // 计算本次读取长度：取 buf_size 和 剩余长度 的最小值
@@ -99,14 +194,16 @@ uint8_t update_is_valid(head_enum head_)
         switch(head_)
         {
           case HEAD_SD:       lv_fs_read(&ui_setting_update.file_p,crc_buf,read_len,&num);break;
+           #if keil
           case HEAD_FLASH:    myFLASH_ReadData(APP_Addr + offset, crc_buf, read_len);num=read_len;break;
           case HEAD_W25Q_Cur: W25Qxx_DMA_ReadData(Application_Addr_1+ offset+sizeof(head_t),crc_buf,read_len);num=read_len;break;
           case HEAD_W25Q_Pre: W25Qxx_DMA_ReadData(Application_Addr_1+ offset+sizeof(head_t),crc_buf,read_len);num=read_len;break;
+          #endif // keil
+          
           default:break;
         }
         current_crc=Continue_CRC32(current_crc,crc_buf,num);
-        printf("%02X %02X %02X %02X num:%d current_crc:0X%08X\r\n",crc_buf[num-4],crc_buf[num-3],crc_buf[num-2],crc_buf[num-1],num,current_crc);
- 
+//        printf("%02X %02X %02X %02X num:%d current_crc:0X%08X\r\n",crc_buf[num-4],crc_buf[num-3],crc_buf[num-2],crc_buf[num-1],num,current_crc);
         offset += num;
         remain -= num;
     }
@@ -118,6 +215,7 @@ uint8_t update_is_valid(head_enum head_)
     }
     
     printf("Flash CRC Error! Calc: 0x%08X, Target: 0x%08X\r\n", current_crc, ui_setting_update.head[head_].crc32);
+    // 在 APP 校验失败时，执行这个：
     return 0;
 }
 
@@ -125,12 +223,35 @@ uint8_t update_is_valid(head_enum head_)
 
 static void event_check_update_cb(lv_event_t*e)
 {
-        get_update_file_head(HEAD_SD);
-        if(ui_setting_update.head[HEAD_SD].version>ui_setting_update.head[HEAD_FLASH].version)
+        static bool update_is_ready=false;
+        if(update_is_ready==false)
         {
-          lv_label_set_text(ui_setting_update.update_obj.new_version_label,"发现新版本,点击更新");
+            if(get_update_file_head(HEAD_SD))
+            {
+              if(ui_setting_update.head[HEAD_SD].version>ui_setting_update.head[HEAD_FLASH].version)
+              {
+                lv_label_set_text(ui_setting_update.update_obj.new_version_label,"发现新版本,点击更新");
+                update_is_ready=true;
+              }
+              else if(ui_setting_update.head[HEAD_SD].version==ui_setting_update.head[HEAD_FLASH].version )
+              {
+                lv_label_set_text(ui_setting_update.update_obj.new_version_label,"当前为最新版本");
+              }
+            }
         }
-
+        else
+        {
+            printf("设置更新信息,准备复位更新\r\n");
+            
+            update_flag_info.file_crc=ui_setting_update.head[HEAD_SD].crc32;
+            update_flag_info.file_size=ui_setting_update.head[HEAD_SD].file_size;
+            update_flag_info.file_version=ui_setting_update.head[HEAD_SD].version;
+            update_flag_info.update_flag=0x5A5A1234;
+            update_flag(&update_flag_info);
+            
+            lv_label_set_text(ui_setting_update.update_obj.new_version_label,"正在更新");
+            update_is_ready=false;
+        }
 }
 
 void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
@@ -140,9 +261,10 @@ void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
     update_obj->label_name=lv_label_create( update_obj->obj_update);
     lv_obj_align(update_obj->label_name,LV_ALIGN_CENTER,0,-10);
     lv_obj_set_style_text_font(update_obj->label_name,&my_font_16,0);
-    lv_label_set_text(update_obj->label_name,"MyPhoneOS V1.0");
+    lv_label_set_text(update_obj->label_name,"MyPhoneOS");
     #if keil
       get_update_file_head(HEAD_FLASH);
+      printf("name:%s\r\n",ui_setting_update.head[HEAD_FLASH].name);
       lv_label_set_text(ui_setting_update.update_obj.label_name,ui_setting_update.head[HEAD_FLASH].name);
     #endif
     

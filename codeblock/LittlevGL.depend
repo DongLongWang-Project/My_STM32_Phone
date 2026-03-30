@@ -11004,7 +11004,7 @@
 	"ui_main.h"
 	"ui_app_language.h"
 
-1774768724 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
+1774830354 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
 	"lvgl.h"
 	"../ui_main.h"
 	"../ui_app_language.h"
@@ -11024,11 +11024,14 @@
 	"../ui_app_language.h"
 	"../ui_widgets.h"
 
-1774503012 g:\github_code\my_stm32_phone\my_gui\app_setting\setting_about.h
+1774831690 g:\github_code\my_stm32_phone\my_gui\app_setting\setting_about.h
 	"../ui_app_language.h"
 	"stdio.h"
 	"ui_app_setting.h"
 	"../ui_widgets.h"
+	"flash.h"
+	"W25Qxx.h"
+	"crc.h"
 
 1773747521 g:\github_code\my_stm32_phone\my_gui\app_file_sys\ui_app_file.h
 	<lvgl.h>
@@ -11061,7 +11064,7 @@
 1770276796 source:g:\github_code\my_stm32_phone\my_gui\app_net_ass\ui_app_net.c
 	"ui_app_net.h"
 
-1774770167 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_about.c
+1774831171 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_about.c
 	"setting_about.h"
 	"flash.h"
 	"W25Qxx.h"

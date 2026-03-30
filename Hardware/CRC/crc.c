@@ -1,6 +1,6 @@
 #include "crc.h"
 
-uint8_t crc_buf[0x10000]__attribute__((section(".EXT_SRAM")));
+uint8_t crc_buf[crc_buf_size];
 uint32_t Software_Continue_CRC32(uint32_t last_crc, uint8_t* data, uint32_t len) {
     uint32_t crc = last_crc; // 接力上次的结果
     uint32_t calc_len = len;

@@ -41,7 +41,7 @@ extern W25Qxx_ID W25Qxx;
 void W25Qxx_SPI_Init(void);
 void W25Qxx_ReadID(W25Qxx_ID * ID);
 uint8_t W25Qxx_PageProgram(uint32_t Address, const uint8_t *DataArray, uint16_t Count)  ;
-uint8_t W25Qxx_SectorErase(uint32_t Address);
+uint8_t W25Qxx_SectorErase(uint32_t Address,uint8_t ERASE_SIZE);
 void W25Qxx_ReadData(uint32_t Address, uint8_t *DataArray, uint32_t Count);
 uint8_t W25Qxx_WaitBusy(void);
 void W25Qxx_Write(uint32_t Address, uint32_t Data,uint8_t len);
