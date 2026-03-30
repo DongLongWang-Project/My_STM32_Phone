@@ -20,8 +20,8 @@ typedef struct
 }head_t;
 head_t head=
 {
-    .version=20260330,
-    .name="MyPhoneOS_v1.1",
+    .version=20260335,
+    .name="MyPhoneOS_v1.3",
     .update_state=update_none,
     .reserved="This is my Graduation Project Work",
 };

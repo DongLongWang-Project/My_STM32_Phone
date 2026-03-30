@@ -45,59 +45,41 @@ uint32_t Continue_CRC32(uint32_t last_crc, uint8_t* data, uint32_t len) {
 ui_setting_update_t ui_setting_update;
 update_flag_info_t update_flag_info;
 
-uint8_t Get_Latest_update_info_Index(uint32_t Address)
+/**
+  * @brief  获取 W25Q 扇区内最后一条有效记录的索引
+  * @param  Address: 4KB 扇区的起始地址
+  * @retval 0~255: 有效索引; -1: 扇区为空; -2: 扇区异常
+  */
+int16_t Get_Latest_update_info_Index(uint32_t Address)
 {
     uint32_t current_magic;
     uint8_t info_size = sizeof(update_flag_info_t);
-    uint8_t max_slots = 4096 / info_size;
+    uint16_t max_slots = 4096 / info_size; // 16字节时为256
 
-    for(uint8_t i = 0; i < max_slots; i++)
+    for(int16_t i = 0; i < max_slots; i++)
     {
-        // 建议读取 4 字节的 Magic 字段，而不是 1 字节
         W25Qxx_ReadData(Address + (i * info_size), (uint8_t*)&current_magic, 4);
         
-        // 如果是 0xFFFFFFFF，说明这格是彻底没写过的空位
         if(current_magic == 0xFFFFFFFF) 
         { 
-            if(i == 0) return 0xFF; // 第 0 个就是空的
-            return i - 1;           // 找到了空位，返回上一个有效的
+            // 情况 A: 如果第一个位置就是空的，说明整个扇区没有记录
+            if(i == 0) return -1; 
+            
+            // 情况 B: 找到了第一个空位，返回前一个有效索引
+            return i - 1; 
         }
     }
-    // 如果循环走完都没发现 0xFF，说明 4KB 扇区全部写满了
-    return max_slots - 1;
-}
-uint8_t Read_Latest_update_info_(update_flag_info_t *update_flag_info)
-{
-    uint8_t info_size = sizeof(update_flag_info_t);
-    uint8_t LastIndex = Get_Latest_update_info_Index(UPDATE_INFO_Addr);
-    
-    if(LastIndex == 0xFF) return 0; // 彻底没记录
 
-    // 只读最新的一条
-    W25Qxx_ReadData(UPDATE_INFO_Addr + (LastIndex * info_size), (uint8_t*)update_flag_info, info_size);
-    
-    // 只有这两种情况是合法的
-    if (update_flag_info->update_flag == 0x5A5A1234 || 
-        update_flag_info->update_flag == 0x00000000) 
-    {
-        printf("file_crc:0X%08X\r\n",update_flag_info->file_crc);
-        printf("file_size:%u    \r\n",update_flag_info->file_size);
-        printf("file_version:%u \r\n",update_flag_info->file_version);
-        printf("update_flag:0X%08X\r\n",update_flag_info->update_flag);
-        return 1; // 找到了明确的当前状态
-    }
-    
-    // 如果最新的一条是乱码（掉电损坏），此时才考虑紧急往前翻一条“保命”
-    // 或者直接判定为无效，让系统报错，这比误更新要安全
-    printf("最新记录损坏，系统不确定是否需要更新\r\n");
-    return 0; 
+    // 情况 C: 循环跑完都没 0xFF，说明 256 个格子全写满了，返回 255
+    return (int16_t)(max_slots - 1); 
 }
-void update_flag(update_flag_info_t *update_flag_info)
+
+void update_flag_to_W25Qxx(update_flag_info_t *update_flag_info)
 {
     uint8_t info_size=sizeof(update_flag_info_t);
-    uint8_t LastIndex=Get_Latest_update_info_Index(UPDATE_INFO_Addr);
-    uint8_t Target_index=0;
-    if(LastIndex==0XFF)
+    int16_t LastIndex=Get_Latest_update_info_Index(UPDATE_INFO_Addr);
+    int16_t Target_index=0;
+    if(LastIndex==-1)
     {
       /*直接在第一个位置写就行*/
       Target_index=0;
@@ -119,6 +101,38 @@ void update_flag(update_flag_info_t *update_flag_info)
     W25Qxx_WriteBuffer(UPDATE_INFO_Addr+Target_index*info_size,(const uint8_t*)update_flag_info,info_size); 
 }
 
+uint8_t Read_Latest_update_info_(update_flag_info_t *update_flag_info)
+{
+    uint8_t info_size = sizeof(update_flag_info_t);
+    int16_t LastIndex = Get_Latest_update_info_Index(UPDATE_INFO_Addr);
+    
+    if(LastIndex == -1) return 0; // 整个扇区都是空的，无事可做
+
+    // 读取最新的一条记录
+    W25Qxx_ReadData(UPDATE_INFO_Addr + (LastIndex * info_size), (uint8_t*)update_flag_info, info_size);
+    
+    // --- 核心修正逻辑 ---
+    // 只有 0x5A5A1234 代表“APP 下令：我要更新，请 Bootloader 动手”
+    if (update_flag_info->update_flag == 0x5A5A1234) 
+    {
+        printf("检测到有效的更新请求！\r\n");
+        printf("版本:%u, 大小:%u, CRC:0x%08X\r\n", 
+                update_flag_info->file_version, 
+                update_flag_info->file_size, 
+                update_flag_info->file_crc);
+        return 1; // 返回 1，触发 Moveing_file_to_flash
+    }
+    
+    // 如果是 0x00000000，说明上次更新刚写完，或者是系统正常运行状态
+    if (update_flag_info->update_flag == 0x00000000)
+    {
+        printf("当前记录已处理完成 (Idle/Done)\r\n");
+        return 0; // 返回 0，Bootloader 不搬运，直接跳转 APP
+    }
+    
+    printf("未知状态或数据损坏 (Flag:0x%08X)\r\n", update_flag_info->update_flag);
+    return 0; 
+}
 void SD_get_update_file_head(const char*update_file_path)
 {
    uint32_t num;
@@ -247,10 +261,16 @@ static void event_check_update_cb(lv_event_t*e)
             update_flag_info.file_size=ui_setting_update.head[HEAD_SD].file_size;
             update_flag_info.file_version=ui_setting_update.head[HEAD_SD].version;
             update_flag_info.update_flag=0x5A5A1234;
-            update_flag(&update_flag_info);
+            update_flag_to_W25Qxx(&update_flag_info);
+            printf("file_crc:0X%08X\r\n",update_flag_info.file_crc);
+            printf("file_size:%u    \r\n",update_flag_info.file_size);
+            printf("file_version:%u    \r\n",update_flag_info.file_version);
+            printf("update_flag:0X%08X\r\n",update_flag_info.update_flag);
             
             lv_label_set_text(ui_setting_update.update_obj.new_version_label,"正在更新");
             update_is_ready=false;
+            
+            NVIC_SystemReset();
         }
 }
 

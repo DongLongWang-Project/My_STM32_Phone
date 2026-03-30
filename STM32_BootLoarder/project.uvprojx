@@ -338,7 +338,7 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls></MiscControls>
+              <MiscControls>--no-multibyte-chars</MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
               <IncludePath>.\Hardware;.\Library;.\Start;.\System;.\User;.\Hardware\LED;.\Hardware\USART;.\Hardware\W25QXX;.\System;.\Hardware\IWDG;.\Hardware\Bootloader;.\Hardware\FLASH;.\Hardware\CRC;.\Hardware\TFTLCD;.\FATFS;.\Hardware\SD</IncludePath>

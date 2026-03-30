@@ -34,10 +34,19 @@ typedef enum
    HEAD_W25Q_Pre,
    HEAD_NUM
 }head_enum;
+typedef struct
+{
+  uint32_t update_flag;
+  uint32_t file_version;
+  uint32_t file_crc;
+  uint32_t file_size;
+}update_flag_info_t;
 
 
 void load_app(u32 appxaddr);
 uint8_t get_update_file_head(head_enum head_);
 uint8_t update_is_valid(head_enum head_);
 void update_my_phone(void);
+uint8_t Read_Latest_update_info_(update_flag_info_t *update_flag_info);
+
 #endif

@@ -191,44 +191,45 @@ uint8_t update_is_valid(head_enum head_)
     return 0;
 }
 
-typedef struct
-{
-  uint32_t update_flag;
-  uint32_t file_version;
-  uint32_t file_crc;
-  uint32_t file_size;
-}update_flag_info_t;
+
 
 update_flag_info_t update_flag_info;
 
-uint8_t Get_Latest_update_info_Index(uint32_t Address)
+/**
+  * @brief  获取 W25Q 扇区内最后一条有效记录的索引
+  * @param  Address: 4KB 扇区的起始地址
+  * @retval 0~255: 有效索引; -1: 扇区为空; -2: 扇区异常
+  */
+int16_t Get_Latest_update_info_Index(uint32_t Address)
 {
     uint32_t current_magic;
     uint8_t info_size = sizeof(update_flag_info_t);
-    uint8_t max_slots = 4096 / info_size;
+    uint16_t max_slots = 4096 / info_size; // 16字节时为256
 
-    for(uint8_t i = 0; i < max_slots; i++)
+    for(int16_t i = 0; i < max_slots; i++)
     {
-        // 建议读取 4 字节的 Magic 字段，而不是 1 字节
         W25Qxx_ReadData(Address + (i * info_size), (uint8_t*)&current_magic, 4);
         
-        // 如果是 0xFFFFFFFF，说明这格是彻底没写过的空位
         if(current_magic == 0xFFFFFFFF) 
         { 
-            if(i == 0) return 0xFF; // 第 0 个就是空的
-            return i - 1;           // 找到了空位，返回上一个有效的
+            // 情况 A: 如果第一个位置就是空的，说明整个扇区没有记录
+            if(i == 0) return -1; 
+            
+            // 情况 B: 找到了第一个空位，返回前一个有效索引
+            return i - 1; 
         }
     }
-    // 如果循环走完都没发现 0xFF，说明 4KB 扇区全部写满了
-    return max_slots - 1;
+
+    // 情况 C: 循环跑完都没 0xFF，说明 256 个格子全写满了，返回 255
+    return (int16_t)(max_slots - 1); 
 }
 
 void update_flag(update_flag_info_t *update_flag_info)
 {
     uint8_t info_size=sizeof(update_flag_info_t);
-    uint8_t LastIndex=Get_Latest_update_info_Index(UPDATE_INFO_Addr);
-    uint8_t Target_index=0;
-    if(LastIndex==0XFF)
+    int16_t LastIndex=Get_Latest_update_info_Index(UPDATE_INFO_Addr);
+    int16_t Target_index=0;
+    if(LastIndex==-1)
     {
       /*直接在第一个位置写就行*/
       Target_index=0;
@@ -253,28 +254,33 @@ void update_flag(update_flag_info_t *update_flag_info)
 uint8_t Read_Latest_update_info_(update_flag_info_t *update_flag_info)
 {
     uint8_t info_size = sizeof(update_flag_info_t);
-    uint8_t LastIndex = Get_Latest_update_info_Index(UPDATE_INFO_Addr);
+    int16_t LastIndex = Get_Latest_update_info_Index(UPDATE_INFO_Addr);
     
-    if(LastIndex == 0xFF) return 0; // 彻底没记录
+    if(LastIndex == -1) return 0; // 整个扇区都是空的，无事可做
 
-    // 只读最新的一条
+    // 读取最新的一条记录
     W25Qxx_ReadData(UPDATE_INFO_Addr + (LastIndex * info_size), (uint8_t*)update_flag_info, info_size);
     
-    // 只有这两种情况是合法的
-    if (update_flag_info->update_flag == 0x5A5A1234 || 
-        update_flag_info->update_flag == 0x00000000) 
+    // --- 核心修正逻辑 ---
+    // 只有 0x5A5A1234 代表“APP 下令：我要更新，请 Bootloader 动手”
+    if (update_flag_info->update_flag == 0x5A5A1234) 
     {
-        printf("file_crc:0X%08X\r\n",update_flag_info->file_crc);
-        printf("file_crc:%u    \r\n",update_flag_info->file_size);
-        printf("file_crc:%u    \r\n",update_flag_info->file_version);
-        printf("file_crc:0X%08X\r\n",update_flag_info->update_flag);
-     
-        return 1; // 找到了明确的当前状态
+        printf("检测到有效的更新请求！\r\n");
+        printf("版本:%u, 大小:%u, CRC:0x%08X\r\n", 
+                update_flag_info->file_version, 
+                update_flag_info->file_size, 
+                update_flag_info->file_crc);
+        return 1; // 返回 1，触发 Moveing_file_to_flash
     }
     
-    // 如果最新的一条是乱码（掉电损坏），此时才考虑紧急往前翻一条“保命”
-    // 或者直接判定为无效，让系统报错，这比误更新要安全
-    printf("最新记录损坏，系统不确定是否需要更新\r\n");
+    // 如果是 0x00000000，说明上次更新刚写完，或者是系统正常运行状态
+    if (update_flag_info->update_flag == 0x00000000)
+    {
+        printf("当前记录已处理完成 (Idle/Done)\r\n");
+        return 0; // 返回 0，Bootloader 不搬运，直接跳转 APP
+    }
+    
+    printf("未知状态或数据损坏 (Flag:0x%08X)\r\n", update_flag_info->update_flag);
     return 0; 
 }
 typedef enum {
@@ -338,7 +344,6 @@ uint8_t Moveing_file_to_flash(head_enum head_)
     uint32_t offset = 0;
     uint32_t remain = head[head_].file_size+sizeof(head_t);
     uint32_t read_len;
-    uint32_t current_crc = 0XFFFFFFFF;
     uint32_t num;
     // 基本合法性检查
     if (remain == 0 || remain == 0xFFFFFFFF) return 0;
@@ -375,57 +380,135 @@ uint8_t Moveing_file_to_flash(head_enum head_)
 }
 
 
+//void update_my_phone(void)
+//{
+// 
+//      if(Read_Latest_update_info_(&update_flag_info))
+//      {
+//          printf("发现更新标志\r\n");
+//        if(get_update_file_head(HEAD_SD))
+//        {
+//          if(update_flag_info.file_version==head[HEAD_SD].version)
+//             {
+//                printf("更新信息版本号与sd的版本号一致,准备搬运\r\n");
+//              if(Moveing_file_to_flash(HEAD_SD))
+//              {
+//                printf("搬运成功,将flash的数据搬运到w25q的1区\r\n");
+//                update_flag_info.file_crc=head[HEAD_SD].CRC32;
+//                update_flag_info.file_size=head[HEAD_SD].file_size;
+//                update_flag_info.file_version=head[HEAD_SD].version;
+//                update_flag_info.update_flag=0;
+//                update_flag(&update_flag_info);
+//                
+//                load_app(APP_Addr);
+//                
+//              }
+//              else
+//              {
+//                printf("搬运失败\r\n");
+//              }
+//                
+//             }
+//             else
+//             {
+//               printf("更新信息版本号与sd的版本号不同,请将确认安装包数据正确,并存放在sd卡的相关目录\r\n"); 
+//               if( get_update_file_head(HEAD_FLASH))
+//               {
+//                load_app(APP_Addr);  
+//               }
+//               
+//             }
+//        }
+//      }
+//      else
+//      {
+//         printf("未发现更新标志\r\n");
+////          
+////         
+//        if(get_update_file_head(HEAD_SD))
+//        {
+//          //准备搬运
+//          if(Moveing_file_to_flash(HEAD_SD))
+//          {
+//            printf("搬运成功,将flash的数据搬运到w25q的1区\r\n");
+//            update_flag_info.file_crc=head[HEAD_SD].CRC32;
+//            update_flag_info.file_size=head[HEAD_SD].file_size;
+//            update_flag_info.file_version=head[HEAD_SD].version;
+//            update_flag_info.update_flag=0;
+//            update_flag(&update_flag_info);
+//            
+//            load_app(APP_Addr);
+//            
+//          }
+//          else
+//          {
+//            printf("搬运失败\r\n");
+//          }
+//        }
+//         
+//      }
+//}
+
 void update_my_phone(void)
 {
- 
-      if(Read_Latest_update_info_(&update_flag_info))
-      {
-          printf("发现更新标志\r\n");
+    // 1. 尝试读取 W25Q 中的最新更新指令
+    if(Read_Latest_update_info_(&update_flag_info))
+    {
+        printf("检测到主动更新请求\r\n");
         if(get_update_file_head(HEAD_SD))
         {
-          if(update_flag_info.file_version==head[HEAD_SD].version)
-             {
-                printf("更新信息版本号与sd的版本号一致,准备搬运\r\n");
-             }
-             else
-             {
-               printf("更新信息版本号与sd的版本号不同,请将确认安装包数据正确,并存放在sd卡的相关目录\r\n"); 
-               if( get_update_file_head(HEAD_FLASH))
-               {
-                load_app(APP_Addr);  
-               }
-               
-             }
+            if(update_flag_info.file_version == head[HEAD_SD].version)
+            {
+                printf("版本匹配，开始搬运...\r\n");
+                if(Moveing_file_to_flash(HEAD_SD))
+                {
+                    // 搬运成功，清除标志并跳转
+                    update_flag_info.update_flag = 0; 
+                    update_flag(&update_flag_info);
+                    load_app(APP_Addr);
+                }
+            }
+            else {
+                printf("错误：更新记录版本与 SD 卡文件不一致\r\n");
+            }
         }
-      }
-      else
-      {
-         printf("未发现更新标志\r\n");
-//          
-//         
-        if(get_update_file_head(HEAD_SD))
+    }
+    // 2. 无更新标志（正常启动流程）
+    else
+    {
+        printf("未发现更新标志，检查内部 Flash 数据...\r\n");
+        
+        // 核心改动：先检查 Flash 里的程序是否合法
+        if(get_update_file_head(HEAD_FLASH)) 
         {
-          //准备搬运
-          if(Moveing_file_to_flash(HEAD_SD))
-          {
-            printf("搬运成功,将flash的数据搬运到w25q的1区\r\n");
-            update_flag_info.file_crc=head[HEAD_SD].CRC32;
-            update_flag_info.file_size=head[HEAD_SD].file_size;
-            update_flag_info.file_version=head[HEAD_SD].version;
-            update_flag_info.update_flag=0;
-            update_flag(&update_flag_info);
-            
+            // 这里建议在 get_update_file_head 内部或者此处增加一个校验逻辑
+            // 比如计算 Flash 全量的 CRC，确保程序没被意外改动
+            printf("内部 Flash 程序校验通过，直接启动\r\n");
             load_app(APP_Addr);
-            
-          }
-          else
-          {
-            printf("搬运失败\r\n");
-          }
         }
-         
-      }
-      //查询w25q中的更新标志信息
-      //如果有信息
-      //查询sd的固件信息和w25的信息一致不,一致了就进行校验
+        else 
+        {
+            printf("警告：内部 Flash 数据异常或为空！尝试从 SD 卡恢复...\r\n");
+            
+            // Flash 没程序，只能强制从 SD 卡搬运
+            if(get_update_file_head(HEAD_SD))
+            {
+                if(Moveing_file_to_flash(HEAD_SD))
+                {
+                    printf("恢复成功！\r\n");
+                    // 恢复后记得也要写一个 flag=0 的记录，防止下次重复搬运
+                    update_flag_info.update_flag = 0;
+                    update_flag(&update_flag_info);
+                    load_app(APP_Addr);
+                }
+                else {
+                    printf("恢复失败：搬运过程出错\r\n");
+                }
+            }
+            else {
+                printf("致命错误：内部 Flash 无程序且 SD 卡无升级包，系统无法启动！\r\n");
+                // 此时可以停留在 Bootloader 界面，等待用户插卡
+            }
+        }
+    }
 }
