@@ -25,7 +25,7 @@ void set_global_font(const lv_font_t *font);/*全局字体*/
 static void display_brightness_creat(lv_obj_t*parent);/*创建亮度滑动条*/
 static void event_brightness_slider_cb(lv_event_t*e); /*滑动条回调函数*/
  
- 
+static void event_touch_check_cb(lv_event_t*e);
 /*--------------------------------------------------------------------------------↓
 	@函数	  : 创建显示设置
 	@参数	  : 父对象
@@ -48,7 +48,7 @@ void ui_app_setting_display(lv_obj_t *parent)
      display_brightness_creat(list_display);/*在列表里创建亮度设置滑动条*/
      
          lv_obj_t*droplist;/*下拉列表*/
-        for(uint8_t i=1;i<SETTING_DISPLAY_NUM-2;i+=2)
+        for(uint8_t i=1;i<SETTING_DISPLAY_NUM-4;i+=2)
         {
             lv_list_add_text (list_display, _GET_UI_TEXT(APP_SET_DISPLAY_LA_TABLE,i));/*在循环里面添加标题(语言,字体大小,屏幕方向)*/  
             droplist=lv_dropdown_create(list_display);/*在循环里面添加(语言,字体大小,屏幕方向)*/
@@ -61,8 +61,22 @@ void ui_app_setting_display(lv_obj_t *parent)
             lv_obj_add_event_cb(droplist,event_ui_app_setting_display_cb,LV_EVENT_VALUE_CHANGED,(void*)(i+1));/*添加事件*/
             display_config(droplist,i+1);/*通过配置来设置相应的下拉列表选项*/      
         }
+        lv_list_add_text(list_display,_GET_UI_TEXT(APP_SET_DISPLAY_LA_TABLE,DISPLAY_TOUCH_TITLE));
+        lv_obj_t*touch_check_btn=lv_list_add_btn(list_display,NULL,_GET_UI_TEXT(APP_SET_DISPLAY_LA_TABLE,DISPLAY_TOUCH_CHECK));
+        lv_obj_add_event_cb(touch_check_btn,event_touch_check_cb,LV_EVENT_CLICKED,NULL);
+        
 }
-
+static void event_touch_check_cb(lv_event_t*e)
+{
+    
+    if(W25Qxx_SectorErase(TOUCH_SAVE_VER_Addr,W25Qxx_SECTOR_ERASE_4KB)==0)
+    {
+     printf("擦除触摸校准记录,并重新进行校准!"); 
+     TP_Adjust();
+     ui_goto_page(PAGE_APP_DETAIL,APP_SETTING);
+    }
+   
+}
 /*--------------------------------------------------------------------------------↓
 	@函数	  :显示设置的下拉框选项设置
 	@参数	  :parent:父对象

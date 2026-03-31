@@ -22,7 +22,13 @@ int main(void)
 //    LCD_Init(BLACK);
 
     update_my_phone();
-
+    
+//    if(W25Qxx_SectorErase(ALARM_CLOCK_SAVE_Addr,W25Qxx_SECTOR_ERASE_4KB)==0)
+//    {
+//      printf("擦除成功\r\n");
+//    }
+//    else
+//    printf("擦除失败\r\n");
 
 //      uint8_t state=Read_Latest_update_info_(&update_flag_);
 //      printf("state:0x%08X\r\n",state);

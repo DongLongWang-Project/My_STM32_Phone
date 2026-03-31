@@ -33,17 +33,15 @@ int main(void)
 
 void my_phone_config(void)
 {
-//   my_mem_init(SRAMIN);
-         
+//   my_mem_init(SRAMIN);      
 //   W25Qxx_SectorErase(WIFI_SAVE_Addr);  
      W25Qxx_ReadData(WIFI_SAVE_Addr,(uint8_t*)&wifi_save_list,sizeof(wifi_save_t)); 
      if(wifi_save_list.save_count==255)
      {
       wifi_save_list.save_count=0;
      }
+     print("wifi_save_count:%d",wifi_save_list.save_count);
      #if keil
      Alarm_System_Init();
-     #endif
-     print("save_count:%d",wifi_save_list.save_count);
-     
+     #endif  
 }

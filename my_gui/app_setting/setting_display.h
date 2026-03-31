@@ -6,7 +6,10 @@
 #include "../../SD/Font/Font.h"
 
 #include "../ui_main.h"
-
+#if keil
+#include "XPT2046.h"
+#include "W25Qxx.h"
+#endif
 
 
 

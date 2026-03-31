@@ -45,6 +45,7 @@ uint32_t Continue_CRC32(uint32_t last_crc, uint8_t* data, uint32_t len) {
 ui_setting_update_t ui_setting_update;
 update_flag_info_t update_flag_info;
 
+#if keil
 /**
   * @brief  获取 W25Q 扇区内最后一条有效记录的索引
   * @param  Address: 4KB 扇区的起始地址
@@ -58,8 +59,9 @@ int16_t Get_Latest_update_info_Index(uint32_t Address)
 
     for(int16_t i = 0; i < max_slots; i++)
     {
+
         W25Qxx_ReadData(Address + (i * info_size), (uint8_t*)&current_magic, 4);
-        
+      
         if(current_magic == 0xFFFFFFFF) 
         { 
             // 情况 A: 如果第一个位置就是空的，说明整个扇区没有记录
@@ -133,6 +135,7 @@ uint8_t Read_Latest_update_info_(update_flag_info_t *update_flag_info)
     printf("未知状态或数据损坏 (Flag:0x%08X)\r\n", update_flag_info->update_flag);
     return 0; 
 }
+ #endif // keil
 void SD_get_update_file_head(const char*update_file_path)
 {
    uint32_t num;
@@ -166,6 +169,7 @@ void SD_get_update_file_head(const char*update_file_path)
 
 
 }
+
 uint8_t get_update_file_head(head_enum head_)
 {
          uint16_t size= sizeof(head_t);
@@ -256,7 +260,7 @@ static void event_check_update_cb(lv_event_t*e)
         else
         {
             printf("设置更新信息,准备复位更新\r\n");
-            
+            #if keil
             update_flag_info.file_crc=ui_setting_update.head[HEAD_SD].crc32;
             update_flag_info.file_size=ui_setting_update.head[HEAD_SD].file_size;
             update_flag_info.file_version=ui_setting_update.head[HEAD_SD].version;
@@ -266,11 +270,12 @@ static void event_check_update_cb(lv_event_t*e)
             printf("file_size:%u    \r\n",update_flag_info.file_size);
             printf("file_version:%u    \r\n",update_flag_info.file_version);
             printf("update_flag:0X%08X\r\n",update_flag_info.update_flag);
-            
+            #endif
             lv_label_set_text(ui_setting_update.update_obj.new_version_label,"正在更新");
             update_is_ready=false;
-            
+             #if keil
             NVIC_SystemReset();
+             #endif
         }
 }
 
@@ -278,9 +283,12 @@ void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
 {
     update_obj->obj_update=lv_obj_create(parent);
     lv_obj_set_size(update_obj->obj_update,lv_pct(100),lv_pct(40));
+    lv_obj_set_style_radius(update_obj->obj_update,0,0);
+    
     update_obj->label_name=lv_label_create( update_obj->obj_update);
     lv_obj_align(update_obj->label_name,LV_ALIGN_CENTER,0,-10);
     lv_obj_set_style_text_font(update_obj->label_name,&my_font_16,0);
+    
     lv_label_set_text(update_obj->label_name,"MyPhoneOS");
     #if keil
       get_update_file_head(HEAD_FLASH);

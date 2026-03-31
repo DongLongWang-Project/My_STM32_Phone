@@ -235,6 +235,24 @@ const ui_setting_language_t APP_SET_DISPLAY_LA_TABLE[SETTING_DISPLAY_NUM]=
                      [CHINESE]="30\n60\n90",
              },
    },
+   [DISPLAY_TOUCH_TITLE]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Control",
+                     [CHINESE]="控制",
+             },
+   },
+   [DISPLAY_TOUCH_CHECK]=
+   {
+             .icon=NULL,
+             .text=
+             {
+                     [ENGLISH]="Touch Check",
+                     [CHINESE]="触摸校准",
+             },
+   },
 };
 
 const ui_setting_language_t DISPLAY_SCR_MSG_LA_TABLE[MSG_NUM]=
