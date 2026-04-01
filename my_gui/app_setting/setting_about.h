@@ -34,7 +34,7 @@ typedef enum
 {  
    HEAD_SD=0,
    HEAD_FLASH,
-   HEAD_W25Q_Cur,
+   HEAD_GitHUB,
    HEAD_W25Q_Pre,
    HEAD_NUM
 }head_enum;
@@ -62,7 +62,7 @@ update_obj_t update_obj;
 }ui_setting_update_t;
 
 extern update_flag_info_t update_flag_info;
-
+extern ui_setting_update_t ui_setting_update;
 void ui_app_setting_about(lv_obj_t*parent);
 uint8_t update_is_valid(head_enum head_);
 #endif

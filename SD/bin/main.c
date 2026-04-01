@@ -20,7 +20,7 @@ typedef struct
 }head_t;
 head_t head=
 {
-    .version=20260337,
+    .version=20260341,
     .name="MyPhoneOS_v1.3",
     .update_state=update_none,
     .reserved="This is my Graduation Project Work",
@@ -69,6 +69,7 @@ int main(void)
         uint32_t save_len=fread(buf_total, 1, len, fp);
         fseek(fp, 0, SEEK_SET);
         printf("save_len:%u\r\n",save_len);
+        
         uint32_t file_size = len;
         uint32_t buf_size = sizeof(buf);
         uint32_t offset = 0;

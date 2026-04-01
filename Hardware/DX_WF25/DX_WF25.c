@@ -5,6 +5,7 @@
 ↑--------------------------------------------------------------------------------*/
 
 #include "DX_WF25.h"
+#include "setting_about.h"
 
 
 
@@ -23,6 +24,7 @@ char DEAL_BUF[DEAL_BUF_SIZE];/*总数据处理缓冲区*/
 wifi_context_t wifi_scan_list;/*扫描当前环境wifi的结构体*/
 wifi_connect_t connected_wifi;/*已连接wifi结构体*/
 wifi_save_t wifi_save_list;   /*已保存在w25q的wifi结构体*/
+
 
 Hotspot_data_t  hotspot_data=  /*热点的初始化配置*/
 {
@@ -56,6 +58,7 @@ static void Handle_AT_CMD_CWSAP(const char*buf);
 static void Handle_AT_CMD_CIPSEND(const char*buf);
 static void Handle_AT_GET_CLOCK_WEATHER(const char*buf);
 static void Handle_AT_GET_NTP_TIME(const char*buf);
+static void Handle_Get_GitHub_MyPhone_file_head(const char*buf);
 /* AT命令结构体配置 */
 const wifi_cmd_t wifi_cmd_table[AT_CMD_NUM] = 
 {
@@ -69,13 +72,13 @@ const wifi_cmd_t wifi_cmd_table[AT_CMD_NUM] =
     [AT_MODE_AP]    ={AT_MODE_AP,        "AT+CWMODE=2\r\n",          1000,     "\r\nOK"}, 
     [AT_MODE_STA_AP]={AT_MODE_STA_AP,    "AT+CWMODE=3\r\n",          1000,     "\r\nOK"},
     
-    [AT_CMD_CIPMUX_ONE]={AT_CMD_CIPMUX_ONE,  "AT+CIPMUX=0\r\n",         500,      "\r\nOK"},
-    [AT_CMD_CIPMUX_MANY]={AT_CMD_CIPMUX_MANY, "AT+CIPMUX=1\r\n",         500,      "\r\nOK"},
+    [AT_CMD_CIPMUX_ONE]={AT_CMD_CIPMUX_ONE,  "AT+CIPMUX=0\r\n",      500,      "\r\nOK"},
+    [AT_CMD_CIPMUX_MANY]={AT_CMD_CIPMUX_MANY, "AT+CIPMUX=1\r\n",     500,      "\r\nOK"},
     
-    [AT_CMD_CIPSERVERE]={AT_CMD_CIPSERVERE, "AT+CIPSERVER=1,8080\r\n",  1000,     "\r\nOK"},
+    [AT_CMD_CIPSERVERE]={AT_CMD_CIPSERVERE, "AT+CIPSERVER=1,8080\r\n",1000,     "\r\nOK"},
     
     [AT_CMD_CIFSR]={AT_CMD_CIFSR,      "AT+CIFSR\r\n",             1000,     "\r\nOK",Handle_AT_CMD_CIFSR},      /* 查询IP */
-    [AT_CMD_CIPAP]= {AT_CMD_CIPAP,      "",                         1000,     "\r\nOK"},      /* 查询AP IP */
+    [AT_CMD_CIPAP]= {AT_CMD_CIPAP,      "",                        1000,     "\r\nOK"},      /* 查询AP IP */
     [AT_CMD_CWSAP]={AT_CMD_CWSAP,      "",                         1000,     "\r\nOK",Handle_AT_CMD_CWSAP},      /* 查询热点配置 */
     
     [AT_CMD_CWLAP]={AT_CMD_CWLAP,      "AT+CWLAP\r\n",             8000,     "\r\nOK",Handle_AT_CMD_CWLAP},      /* 扫描热点极慢，给8秒 */
@@ -91,6 +94,9 @@ const wifi_cmd_t wifi_cmd_table[AT_CMD_NUM] =
     
     [AT_CMD_CIPSNTPCFG]={AT_CMD_CIPSNTPCFG,"AT+CIPSNTPCFG=1,8,\"ntp.aliyun.com\",\"cn.ntp.org.cn\"\r\n",2000,"OK\r\n+TIME_UPDATED"} ,
     [AT_GET_NTP_TIME]={AT_GET_NTP_TIME,"AT+CIPSNTPTIME?\r\n",2000,"OK\r\n",Handle_AT_GET_NTP_TIME},
+    
+    [Connect_GitHubUser]={Connect_GitHubUser,"AT+CIPSTART=\"SSL\",\"raw.githubusercontent.com\",443\r\n",2000,"CONNECT\r\n\r\nOK"}, 
+    [Get_GitHub_MyPhone_file_head]={Get_GitHub_MyPhone_file_head,  "", 5000,"CLOSED\r\n",Handle_Get_GitHub_MyPhone_file_head}
 };
 
 //const char*get_time_weather_str="GET /v3/weather/now.json?key=S_fPwMVZxdqUzfG_i&location=beijing&language=zh-Hans&unit=c HTTP/1.1\r\nHost: api.seniverse.com\r\nConnection: close\r\n\r\n";            
@@ -100,6 +106,7 @@ const char*weather_api_str="api.seniverse.com";
 //Host: api.seniverse.com
 //Connection: close
 
+const char*get_update_head_str="GET /DongLongWang-Project/My_STM32_Phone/main/SD/bin/myPhone.bin HTTP/1.1\r\nHost: raw.githubusercontent.com\r\nRange: bytes=0-511\r\nConnection: close\r\n\r\n";
 
 
 void DX_WF25_Init(void)
@@ -550,6 +557,14 @@ void Get_Weather_data(const char*api_str,const char*api_key_str,const char*place
     DX_WF25_Send_Dynamic(AT_CMD_CIPSEND,"AT+CIPSEND=%d\r\n",strlen(get_time_weather_str)); 
     DX_WF25_Send_Dynamic(AT_GET_CLOCK_WEATHER,"%s",get_time_weather_str); 
 }
+
+void Get_GitHub_MyPhone_Update_file(void)
+{
+    DX_WF25_Send_Static(AT_CMD_CIPMODE_0);
+    DX_WF25_Send_Static(Connect_GitHubUser);
+    DX_WF25_Send_Dynamic(AT_CMD_CIPSEND,"AT+CIPSEND=%d\r\n",strlen(get_update_head_str));
+    DX_WF25_Send_Dynamic(Get_GitHub_MyPhone_file_head,"%s",get_update_head_str);   
+}
 /*--------------------------------------------------------------------------------↓
 	@函数	  :wifi收发状态机
 	@参数	  : 无
@@ -836,6 +851,24 @@ if(p != NULL) {
     }
 }
 
+static void Handle_Get_GitHub_MyPhone_file_head(const char*buf){
+    // 1. 查找 +IPD,512:
+    char *p = strstr(buf, "+IPD,512:");
+    
+    if(p == NULL) return; // 找不到直接退出
 
+    // 2. 跳过头部，定位到真正的 BIN 数据开始
+    uint8_t *bin_start = (uint8_t*)p + strlen("+IPD,512:");
+
+    // 3. 复制 512 字节到你的结构体
+    memcpy(&ui_setting_update.head[HEAD_GitHUB], bin_start, sizeof(head_t));
+    
+    printf("0X%08X\r\n",ui_setting_update.head[HEAD_GitHUB].crc32);
+    printf("0X%s  \r\n",ui_setting_update.head[HEAD_GitHUB].name);
+    if(ui_setting_update.head[HEAD_GitHUB].version>ui_setting_update.head[HEAD_SD].version)
+    {
+      printf("GitHub有新版本\r\n");
+    }
+}
 /*--------------------------------------------------------------------------------*/
 
