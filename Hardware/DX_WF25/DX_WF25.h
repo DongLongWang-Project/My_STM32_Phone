@@ -12,8 +12,8 @@
 #include "ui_app_clock_config.h"
 #include "ui_app_weather.h"
 
-#define USART3_RX_BUF_SIZE 256       //串口的缓冲区大小
-#define DEAL_BUF_SIZE       2048
+#define USART3_RX_BUF_SIZE 512       //串口的缓冲区大小
+#define DEAL_BUF_SIZE       4096
 #define AT_CMD_MAX_LEN 256             //wifi的AT最长命令
 #define DX_WF25_Queue_MAX_LEN  8     //队列长度
 #define WIFI_SCAN_MAX_NUM       10   // 最多扫描到 10 个 wifi
@@ -78,40 +78,40 @@ typedef struct
 
 typedef enum
 {
-    AT_CMD_AT = 0,          // AT
-    AT_CMD_RST,             // AT+RST 
-    AT_CMD_ATE1,            //打开回显
+    AT_CMD_AT = 0,          // AT               //0
+    AT_CMD_RST,             // AT+RST           //1
+    AT_CMD_ATE1,            //打开回显          //2
     
-    AT_MODE_OFF,
-    AT_MODE_STA,
-    AT_MODE_AP,
-    AT_MODE_STA_AP,
+    AT_MODE_OFF,                                //3
+    AT_MODE_STA,                                //4
+    AT_MODE_AP,                                 //5
+    AT_MODE_STA_AP,                             //6
     
-    AT_CMD_CIPMUX_ONE,
-    AT_CMD_CIPMUX_MANY,
+    AT_CMD_CIPMUX_ONE,                          //7
+    AT_CMD_CIPMUX_MANY,                         //8
     
-    AT_CMD_CIPSERVERE,
+    AT_CMD_CIPSERVERE,                          //9
     
-    AT_CMD_CIFSR,
-    AT_CMD_CIPAP,
-    AT_CMD_CWSAP,
+    AT_CMD_CIFSR,                               //10
+    AT_CMD_CIPAP,                               //11
+    AT_CMD_CWSAP,                               //12
 
-    AT_CMD_CWLAP,           // AT+CWLAP
-    AT_CMD_CWJAP,           //连接wifi
-    AT_CMD_CWJAP_USER,
+    AT_CMD_CWLAP,           // AT+CWLAP         //13
+    AT_CMD_CWJAP,           //连接wifi          //14
+    AT_CMD_CWJAP_USER,                          //15
     
-    AT_CMD_CIPMODE_0, 
-    AT_CMD_CIPMODE_1,
-    AT_CMD_CIPSTART,
-    AT_CMD_CIPSEND,
+    AT_CMD_CIPMODE_0,                           //16
+    AT_CMD_CIPMODE_1,                           //17
+    AT_CMD_CIPSTART,                             //18
+    AT_CMD_CIPSEND,                              //19
     
     
-    AT_GET_CLOCK_WEATHER,
-    AT_CMD_CIPSNTPCFG,
-    AT_GET_NTP_TIME,
-    
-    Connect_GitHubUser,
-    Get_GitHub_MyPhone_file_head,
+    AT_GET_CLOCK_WEATHER,                       //20
+    AT_CMD_CIPSNTPCFG,                          //21
+    AT_GET_NTP_TIME,                            //22
+                                                  
+    Connect_GitHubUser,                         //23
+    Get_GitHub_MyPhone_file_head,              //24
     
     AT_CMD_NUM
 } AT_CMD_WIFI_ENUM;
@@ -140,7 +140,7 @@ typedef struct {
 extern  const wifi_cmd_t wifi_cmd_table[AT_CMD_NUM];
 extern const char*get_time_weather_str;
 
-extern QueueHandle_t DX_WF25_CMD_Queue;
+extern volatile QueueHandle_t DX_WF25_CMD_Queue;
 extern volatile SemaphoreHandle_t Timer_Send_AT_BinSemaphore;
 
 extern wifi_context_t wifi_scan_list;

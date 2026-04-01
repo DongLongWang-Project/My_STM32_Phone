@@ -8,7 +8,7 @@
 #include "setting_about.h"
 
 
-
+volatile QueueHandle_t DX_WF25_CMD_Queue; /*AT指令队列*/
 volatile SemaphoreHandle_t Timer_Send_AT_BinSemaphore;
 volatile SemaphoreHandle_t DX_WF25_Send_AT_BUSY_BinSemaphore;
 volatile SemaphoreHandle_t DX_WF25_Rev_AT_RESP_CountSemaphore; 
@@ -41,12 +41,10 @@ Hotspot_data_t  hotspot_data=  /*热点的初始化配置*/
 
 
 
-QueueHandle_t DX_WF25_CMD_Queue; /*AT指令队列*/
+
 
 
 AT_CMD_WIFI_ENUM cur_cmd=AT_CMD_NUM;/*当前正在处理的命令*/
-
-static void DMA_Receive_Data(uint16_t Cur_index);
 
 
 static void Handle_AT_CMD_CWLAP(const char*buf);
@@ -55,7 +53,6 @@ static void Handle_AT_CMD_CWJAP(const char*buf);
 static void Handle_AT_CMD_CWJAP_USER(const char*buf);
 static void Handle_AT_CMD_CIFSR(const char*buf);
 static void Handle_AT_CMD_CWSAP(const char*buf);
-static void Handle_AT_CMD_CIPSEND(const char*buf);
 static void Handle_AT_GET_CLOCK_WEATHER(const char*buf);
 static void Handle_AT_GET_NTP_TIME(const char*buf);
 static void Handle_Get_GitHub_MyPhone_file_head(const char*buf);
@@ -63,40 +60,40 @@ static void Handle_Get_GitHub_MyPhone_file_head(const char*buf);
 const wifi_cmd_t wifi_cmd_table[AT_CMD_NUM] = 
 {
                       /* 枚举索引           指令字符串                   超时(ms)   预期响应 */
-    [AT_CMD_AT]     ={AT_CMD_AT,         "AT\r\n",                   500,      "\r\nOK"},      /* 基础测试 */
-    [AT_CMD_RST]    ={AT_CMD_RST,        "AT+RST\r\n",               3000,     "ready"},       /* 复位需等待硬件就绪标志 */
+    [AT_CMD_AT]     ={AT_CMD_AT,         "AT\r\n",                   500,      "\r\nOK",NULL},      /* 基础测试 */
+    [AT_CMD_RST]    ={AT_CMD_RST,        "AT+RST\r\n",               8000,     "ready",NULL},       /* 复位需等待硬件就绪标志 */
     [AT_CMD_ATE1]   ={AT_CMD_ATE1,       "ATE1\r\n",                 500,      "\r\nOK",Handle_AT_CMD_ATE1},      /* 开启回显 */
     
-    [AT_MODE_OFF]   ={AT_MODE_OFF,       "AT+CWMODE=0\r\n",          1000,     "\r\nOK"}, 
-    [AT_MODE_STA]   ={AT_MODE_STA,       "AT+CWMODE=1\r\n",          1000,     "\r\nOK"}, 
-    [AT_MODE_AP]    ={AT_MODE_AP,        "AT+CWMODE=2\r\n",          1000,     "\r\nOK"}, 
-    [AT_MODE_STA_AP]={AT_MODE_STA_AP,    "AT+CWMODE=3\r\n",          1000,     "\r\nOK"},
+    [AT_MODE_OFF]   ={AT_MODE_OFF,       "AT+CWMODE=0\r\n",          1000,     "\r\nOK",NULL}, 
+    [AT_MODE_STA]   ={AT_MODE_STA,       "AT+CWMODE=1\r\n",          1000,     "\r\nOK",NULL}, 
+    [AT_MODE_AP]    ={AT_MODE_AP,        "AT+CWMODE=2\r\n",          1000,     "\r\nOK",NULL}, 
+    [AT_MODE_STA_AP]={AT_MODE_STA_AP,    "AT+CWMODE=3\r\n",          1000,     "\r\nOK",NULL},
     
-    [AT_CMD_CIPMUX_ONE]={AT_CMD_CIPMUX_ONE,  "AT+CIPMUX=0\r\n",      500,      "\r\nOK"},
-    [AT_CMD_CIPMUX_MANY]={AT_CMD_CIPMUX_MANY, "AT+CIPMUX=1\r\n",     500,      "\r\nOK"},
+    [AT_CMD_CIPMUX_ONE]={AT_CMD_CIPMUX_ONE,  "AT+CIPMUX=0\r\n",      500,      "\r\nOK",NULL},
+    [AT_CMD_CIPMUX_MANY]={AT_CMD_CIPMUX_MANY, "AT+CIPMUX=1\r\n",     500,      "\r\nOK",NULL},
     
-    [AT_CMD_CIPSERVERE]={AT_CMD_CIPSERVERE, "AT+CIPSERVER=1,8080\r\n",1000,     "\r\nOK"},
+    [AT_CMD_CIPSERVERE]={AT_CMD_CIPSERVERE, "AT+CIPSERVER=1,8080\r\n",1000,     "\r\nOK",NULL},
     
     [AT_CMD_CIFSR]={AT_CMD_CIFSR,      "AT+CIFSR\r\n",             1000,     "\r\nOK",Handle_AT_CMD_CIFSR},      /* 查询IP */
-    [AT_CMD_CIPAP]= {AT_CMD_CIPAP,      "",                        1000,     "\r\nOK"},      /* 查询AP IP */
+    [AT_CMD_CIPAP]= {AT_CMD_CIPAP,      "",                        1000,     "\r\nOK",NULL},      /* 查询AP IP */
     [AT_CMD_CWSAP]={AT_CMD_CWSAP,      "",                         1000,     "\r\nOK",Handle_AT_CMD_CWSAP},      /* 查询热点配置 */
     
     [AT_CMD_CWLAP]={AT_CMD_CWLAP,      "AT+CWLAP\r\n",             8000,     "\r\nOK",Handle_AT_CMD_CWLAP},      /* 扫描热点极慢，给8秒 */
     [AT_CMD_CWJAP]={AT_CMD_CWJAP,      "",                         15000,    "WIFI GOT IP",Handle_AT_CMD_CWJAP},    /* 连路由最慢，给15秒 */
     [AT_CMD_CWJAP_USER]={AT_CMD_CWJAP_USER,     "AT+CWJAP?\r\n",            1000,     "\r\nOK",Handle_AT_CMD_CWJAP_USER},
     
-    [AT_CMD_CIPMODE_0]={AT_CMD_CIPMODE_0,    "AT+CIPMODE=0\r\n",        500,        "\r\nOK" },    /*普通模式*/
-    [AT_CMD_CIPMODE_1]={AT_CMD_CIPMODE_1,    "AT+CIPMODE=1\r\n",        500,        "\r\nOK" },    /*普通模式*/
+    [AT_CMD_CIPMODE_0]={AT_CMD_CIPMODE_0,    "AT+CIPMODE=0\r\n",        500,        "\r\nOK" ,NULL},    /*普通模式*/
+    [AT_CMD_CIPMODE_1]={AT_CMD_CIPMODE_1,    "AT+CIPMODE=1\r\n",        500,        "\r\nOK" ,NULL},    /*普通模式*/
     
-    [AT_CMD_CIPSTART]={AT_CMD_CIPSTART,   "AT+CIPSTART=\"TCP\",\"api.seniverse.com\",80\r\n",500, "CONNECT\r\n\r\nOK"},
-    [AT_CMD_CIPSEND]={AT_CMD_CIPSEND,         "",           500,        ">",Handle_AT_CMD_CIPSEND},
-    [AT_GET_CLOCK_WEATHER]={AT_GET_CLOCK_WEATHER,  "",           5000,       "CLOSED\r\n",Handle_AT_GET_CLOCK_WEATHER},
+    [AT_CMD_CIPSTART]={AT_CMD_CIPSTART,   "AT+CIPSTART=\"TCP\",\"api.seniverse.com\",80\r\n",500, "CONNECT\r\n\r\nOK",NULL},
+    [AT_CMD_CIPSEND]={AT_CMD_CIPSEND,         "",           2000,        ">",NULL},
+    [AT_GET_CLOCK_WEATHER]={AT_GET_CLOCK_WEATHER,  "",           5000,       "CLOSED",Handle_AT_GET_CLOCK_WEATHER},
     
-    [AT_CMD_CIPSNTPCFG]={AT_CMD_CIPSNTPCFG,"AT+CIPSNTPCFG=1,8,\"ntp.aliyun.com\",\"cn.ntp.org.cn\"\r\n",2000,"OK\r\n+TIME_UPDATED"} ,
+    [AT_CMD_CIPSNTPCFG]={AT_CMD_CIPSNTPCFG,"AT+CIPSNTPCFG=1,8,\"ntp.aliyun.com\",\"cn.ntp.org.cn\"\r\n",5000,"OK\r\n+TIME_UPDATED",NULL} ,
     [AT_GET_NTP_TIME]={AT_GET_NTP_TIME,"AT+CIPSNTPTIME?\r\n",2000,"OK\r\n",Handle_AT_GET_NTP_TIME},
     
-    [Connect_GitHubUser]={Connect_GitHubUser,"AT+CIPSTART=\"SSL\",\"raw.githubusercontent.com\",443\r\n",2000,"CONNECT\r\n\r\nOK"}, 
-    [Get_GitHub_MyPhone_file_head]={Get_GitHub_MyPhone_file_head,  "", 5000,"CLOSED\r\n",Handle_Get_GitHub_MyPhone_file_head}
+    [Connect_GitHubUser]={Connect_GitHubUser,"AT+CIPSTART=\"SSL\",\"raw.githubusercontent.com\",443\r\n",2000,"CONNECT\r\n\r\nOK",NULL}, 
+    [Get_GitHub_MyPhone_file_head]={Get_GitHub_MyPhone_file_head,  "", 8000,"CLOSED",Handle_Get_GitHub_MyPhone_file_head}
 };
 
 //const char*get_time_weather_str="GET /v3/weather/now.json?key=S_fPwMVZxdqUzfG_i&location=beijing&language=zh-Hans&unit=c HTTP/1.1\r\nHost: api.seniverse.com\r\nConnection: close\r\n\r\n";            
@@ -236,9 +233,8 @@ void DX_WF25_Init(void)
       xSemaphoreGive(DX_WF25_Send_AT_BUSY_BinSemaphore);
     } 
     
-    DX_WF25_Rev_AT_RESP_CountSemaphore=xSemaphoreCreateCounting(5,0);
-    
-    
+    DX_WF25_Rev_AT_RESP_CountSemaphore=xSemaphoreCreateCounting(10,5);
+
      DX_WF25_Send_Static(AT_CMD_ATE1);
      DX_WF25_Send_Static(AT_CMD_CIPMUX_ONE); 
      DX_WF25_Send_Static(AT_CMD_RST);
@@ -275,7 +271,6 @@ void DMA1_Stream3_IRQHandler(void)
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     xSemaphoreGiveFromISR(DX_WF25_Send_AT_BUSY_BinSemaphore, &xHigherPriorityTaskWoken);
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-    
   }
 }
 
@@ -304,58 +299,57 @@ void TIM2_IRQHandler(void)
     }
 }
 
-static void DMA_Receive_Data(uint16_t Cur_index)
+/**
+ * @brief  同步 DMA 硬件缓冲区数据到软件处理区
+ * @note   由状态机任务定时或被中断唤醒后调用
+ */
+static void Poll_DMA_Receive(void)
 {
+    // 1. 获取当前硬件写入位置 (CNDTR 递减，计算出正向偏移)
+    uint16_t Cur_index = USART3_RX_BUF_SIZE - DMA_GetCurrDataCounter(DMA1_Stream1);
     uint16_t start = Pre_deal_index;
-    uint16_t len = 0;
+    
+    if (Cur_index == start) return; // 无新数据
 
-    if (Cur_index == start) return;
+    // 2. 计算本次收到的总长度（考虑循环缓冲区回绕）
+    uint16_t len = (Cur_index > start) ? (Cur_index - start) : (USART3_RX_BUF_SIZE - start + Cur_index);
 
-    // 情况1：没有回绕 (正常顺序)
-    if (Cur_index > start) 
+    // 3. 边界保护：确保不溢出 DEAL_BUF，并留 1 字节给 '\0'
+    if (Total_Len + len < DEAL_BUF_SIZE - 1) 
     {
-        len = Cur_index - start;
-        if (Total_Len + len < DEAL_BUF_SIZE) 
-        {
+        if (Cur_index > start) {
+            // 情况 A: 数据连续
             memcpy(&DEAL_BUF[Total_Len], &WIFI_DMA_REV_BUF[start], len);
-            Total_Len += len;
+        } else {
+            // 情况 B: 数据跨越了硬件缓冲区末尾，分两段拷贝
+            uint16_t len_to_end = USART3_RX_BUF_SIZE - start;
+            memcpy(&DEAL_BUF[Total_Len], &WIFI_DMA_REV_BUF[start], len_to_end);
+            memcpy(&DEAL_BUF[Total_Len + len_to_end], &WIFI_DMA_REV_BUF[0], Cur_index);
         }
-    }
-    // 情况2：发生了回绕 (新指针跳回了头部)
+        Total_Len += len;
+        DEAL_BUF[Total_Len] = '\0'; // 暂时的字符串结束符，供 strstr 使用
+    } 
     else 
     {
-        // 第一段：拷贝 [旧指针 -> 缓冲区物理末尾]
-        uint16_t len_to_end = USART3_RX_BUF_SIZE - start;
-        // 第二段：拷贝 [缓冲区物理开头 -> 新指针]
-        uint16_t len_from_start = Cur_index;
-
-        if (Total_Len + len_to_end + len_from_start < DEAL_BUF_SIZE) 
-        {
-            // 必须分两步拷贝，找回丢失的“末尾字节”
-            memcpy(&DEAL_BUF[Total_Len], &WIFI_DMA_REV_BUF[start], len_to_end);
-            memcpy(&DEAL_BUF[Total_Len + len_to_end], &WIFI_DMA_REV_BUF[0], len_from_start);
-            
-            Total_Len += (len_to_end + len_from_start);
-        }
+        // 异常处理：DEAL_BUF 溢出（通常是因为没搜到关键字且数据太长）
+        Total_Len = 0; 
+        memset(DEAL_BUF, 0, DEAL_BUF_SIZE);
+        printf("Warn: DEAL_BUF Overflow, Resetting...\r\n");
     }
 
-    // 更新索引
-    Pre_deal_index = Cur_index;
+    // 4. 更新同步指针，始终追随硬件步伐
+    Pre_deal_index = Cur_index; 
 }
 void DMA1_Stream1_IRQHandler(void)
 {
-    if(DMA_GetITStatus(DMA1_Stream1, DMA_IT_HTIF1) == SET)
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    uint32_t status = DMA_GetITStatus(DMA1_Stream1, DMA_IT_HTIF1 | DMA_IT_TCIF1);
+
+    if(status != RESET) 
     {
-        DMA_Receive_Data(USART3_RX_BUF_SIZE / 2);
-        DMA_ClearITPendingBit(DMA1_Stream1, DMA_IT_HTIF1);
-    }
-    else if(DMA_GetITStatus(DMA1_Stream1, DMA_IT_TCIF1) == SET)
-    {
-        // 关键点：TC触发时，DMA写指针实际上已经回到了起始位置
-        // 但我们要强制处理到末尾，然后再将 Pre_deal_index 归零
-        DMA_Receive_Data(USART3_RX_BUF_SIZE);
-        Pre_deal_index = 0; 
-        DMA_ClearITPendingBit(DMA1_Stream1, DMA_IT_TCIF1);
+        DMA_ClearITPendingBit(DMA1_Stream1, DMA_IT_HTIF1 | DMA_IT_TCIF1);
+        xSemaphoreGiveFromISR(DX_WF25_Rev_AT_RESP_CountSemaphore, &xHigherPriorityTaskWoken);
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
     }
 }
 void USART3_IRQHandler(void)
@@ -365,16 +359,9 @@ void USART3_IRQHandler(void)
         // 清除标志
         USART3->SR;
         USART3->DR;
-
-        uint16_t current_pos = USART3_RX_BUF_SIZE - DMA_GetCurrDataCounter(DMA1_Stream1);
-
-        DMA_Receive_Data(current_pos);
-
-
-            BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-            xSemaphoreGiveFromISR(DX_WF25_Rev_AT_RESP_CountSemaphore, &xHigherPriorityTaskWoken);
-            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-                 
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        xSemaphoreGiveFromISR(DX_WF25_Rev_AT_RESP_CountSemaphore, &xHigherPriorityTaskWoken);
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);        
     }
 }
 
@@ -426,8 +413,7 @@ void deal_wifi_hotspot_ip_data(const char *resp)
 {
    const char *p = strstr(resp, "STAIP,");
     if (p == NULL) {
-          print("No STAIP found\n");
-          
+            print("No STAIP found\n");
           }
     else
     {
@@ -490,8 +476,8 @@ void DX_WF25_Send_Dynamic(AT_CMD_WIFI_ENUM cmd_id, const char* format, ...)
         .cmd_str = target_ptr, // 传的是这块“砖”的固定地址
     };
     
-    print("拼装后:%s\r\n",target_ptr);
-    print("长度:%d\r\n",strlen(target_ptr));
+//    print("拼装后:%s\r\n",target_ptr);
+//    print("长度:%d\r\n",strlen(target_ptr));
     xQueueSend(DX_WF25_CMD_Queue, &msg, 0);
 
     // 4. 环形移动指针：0 -> 1 -> 2 -> 3 -> 0
@@ -523,8 +509,6 @@ static uint8_t DX_WF25_Rev_queue(void)
 ↑--------------------------------------------------------------------------------*/
 void wifi_ide_deal(void)
 {
-    if(xSemaphoreTake(DX_WF25_Rev_AT_RESP_CountSemaphore, 0) == pdTRUE)
-    {
         if(strstr(DEAL_BUF, "WIFI GOT IP") != NULL)
         {
             if(display_cfg.wifi_switch_state == false) 
@@ -543,7 +527,7 @@ void wifi_ide_deal(void)
         {
             display_cfg.wifi_switch_state = false;
         }
-    }
+    
 }
 
 void Get_Weather_data(const char*api_str,const char*api_key_str,const char*place_str)
@@ -573,66 +557,72 @@ void Get_GitHub_MyPhone_Update_file(void)
 ↑--------------------------------------------------------------------------------*/
 void wifi_cmd_stateMACHINE(void)
 {
-  static uint8_t S;
-  static TickType_t at_start_tick;
-  
-  if(S==0)
-  {
-      wifi_ide_deal();
-    if(DX_WF25_Rev_queue())
-    {
-      S=1;
-    }
-  }
-  else if(S==1)
-  {
-      if(xSemaphoreTake(DX_WF25_Send_AT_BUSY_BinSemaphore,pdMS_TO_TICKS(500))==pdTRUE)
-      {
-        S=2;
-        at_start_tick=xTaskGetTickCount();
-      }
-      else
-      {
-        S=0;
-        print("CRITICAL: DMA TX Timeout! Force Resetting Semaphore...\r\n");
-        xSemaphoreGive(DX_WF25_Send_AT_BUSY_BinSemaphore);
-      }
-  }
-  else if(S==2)
-  {
-      if((xTaskGetTickCount() - at_start_tick) >= pdMS_TO_TICKS(wifi_cmd_table[cur_cmd].Delay_Tick))
-        {
-            S = 0; 
-            Total_Len = 0;
-//            memset(DEAL_BUF, 0, sizeof(DEAL_BUF));
-        }
-     else if(xSemaphoreTake(DX_WF25_Rev_AT_RESP_CountSemaphore,pdMS_TO_TICKS(100))==pdTRUE)
-      {
-          if(strstr(DEAL_BUF, wifi_cmd_table[cur_cmd].cmd_resp) != NULL)
-            {
-                S = 3; 
-                DEAL_BUF[Total_Len]='\0';
-            }
-      }
-  }
-  else if(S==3)
-  {
-  if(wifi_cmd_table[cur_cmd].handler!=NULL)
-  {
-//     printf("%s",DEAL_BUF);
-     wifi_cmd_table[cur_cmd].handler(DEAL_BUF); 
-  }
-  else
-  {
-    printf("没来得及\r\n");
-  }
-     
-      S=0;
-      Total_Len = 0;
-      memset(DEAL_BUF,0,sizeof(DEAL_BUF));
-  }
-}
+    static uint8_t S = 0;
+    static TickType_t at_start_tick;
+    static uint16_t search_offset = 0; // 记录本轮搜索的起点
 
+    // --- 1. 全局同步：只要有货就搬运 ---
+    // 采用极短的 1ms 等待，既不卡主循环，又能响应中断
+    if(xSemaphoreTake(DX_WF25_Rev_AT_RESP_CountSemaphore, pdMS_TO_TICKS(1)) == pdTRUE)
+    {
+        Poll_DMA_Receive();  
+    }
+
+    switch (S) 
+    {
+        case 0: // 【空闲/检测态】
+            if (DX_WF25_Rev_queue()) { 
+                wifi_ide_deal(); 
+                S = 1; 
+            }
+            break;
+
+        case 1: // 【硬件同步态】
+            if (xSemaphoreTake(DX_WF25_Send_AT_BUSY_BinSemaphore, pdMS_TO_TICKS(500)) == pdTRUE) {
+                S = 2;
+                at_start_tick = xTaskGetTickCount();
+                // 【核心优化】记录当前长度，不破坏缓冲区，确保下一秒进来的数据能被搜到
+                search_offset = Total_Len; 
+            } else {
+                // DMA 错误重置逻辑...
+                S = 0; 
+            }
+            break;
+
+        case 2: // 【关键字搜索态】
+            // 只要 Total_Len 变大了，说明有新数据进来
+            if (Total_Len > search_offset) 
+            {
+                // A. 只从偏移量处开始搜索，保护前面的历史数据
+                if (strstr(&DEAL_BUF[search_offset], wifi_cmd_table[cur_cmd].cmd_resp) != NULL) {
+                    S = 3;
+                }
+                // B. 大数据包特殊判断
+                else if ((cur_cmd == Get_GitHub_MyPhone_file_head || cur_cmd == AT_GET_CLOCK_WEATHER) 
+                         && strstr(&DEAL_BUF[search_offset], "+IPD") != NULL) {
+                    S = 3; 
+                }
+            }
+
+            // C. 超时判定
+            if (S != 3 && (xTaskGetTickCount() - at_start_tick) >= pdMS_TO_TICKS(wifi_cmd_table[cur_cmd].Delay_Tick)) {
+                print("AT Timeout: ID %d, Raw: %s\r\n", cur_cmd, &DEAL_BUF[search_offset]);
+                S = 0; 
+                Total_Len = 0; // 只有彻底失败才清空
+            }
+            break;
+
+        case 3: // 【回调执行态】
+            if (wifi_cmd_table[cur_cmd].handler != NULL) {
+                // 传给 handler 的是包含本次回复的数据指针
+                wifi_cmd_table[cur_cmd].handler(&DEAL_BUF[search_offset]);
+            }
+            S = 0;
+            // 处理完后，如果缓冲区堆积太长再清空，或者只在发下一条指令前逻辑归位
+            if (Total_Len > DEAL_BUF_SIZE/2) Total_Len = 0; 
+            break;
+    }
+}
 void WIFI_SAVE(void)
 {
     uint8_t found = 0;  // 0 = 未找到，1 = 已找到
@@ -711,14 +701,6 @@ static void Handle_AT_CMD_CIFSR(const char*buf)
 static void Handle_AT_CMD_CWSAP(const char*buf)
 {
   DX_WF25_Send_Static(AT_CMD_CIFSR);
-}
-
-static void Handle_AT_CMD_CIPSEND(const char*buf)
-{
-// DX_WF25_Send_Dynamic(AT_GET_CLOCK_WEATHER,"%s",get_time_weather_str); 
-//   USART3_DMA_SendData(get_time_weather_str);
-//   USART3_DMA_SendData(get_time_weather_str);
-//     SendString(get_time_weather_str);
 }
 //static void Handle_AT_GET_CLOCK_WEATHER(const char* buf)
 //{
@@ -851,10 +833,12 @@ if(p != NULL) {
     }
 }
 
-static void Handle_Get_GitHub_MyPhone_file_head(const char*buf){
+static void Handle_Get_GitHub_MyPhone_file_head(const char*buf)
+{
     // 1. 查找 +IPD,512:
+    print("检查GitHub新版本\r\n");
     char *p = strstr(buf, "+IPD,512:");
-    
+
     if(p == NULL) return; // 找不到直接退出
 
     // 2. 跳过头部，定位到真正的 BIN 数据开始
@@ -863,11 +847,11 @@ static void Handle_Get_GitHub_MyPhone_file_head(const char*buf){
     // 3. 复制 512 字节到你的结构体
     memcpy(&ui_setting_update.head[HEAD_GitHUB], bin_start, sizeof(head_t));
     
-    printf("0X%08X\r\n",ui_setting_update.head[HEAD_GitHUB].crc32);
-    printf("0X%s  \r\n",ui_setting_update.head[HEAD_GitHUB].name);
+    print("0X%08X\r\n",ui_setting_update.head[HEAD_GitHUB].crc32);
+    print("0X%s  \r\n",ui_setting_update.head[HEAD_GitHUB].name);
     if(ui_setting_update.head[HEAD_GitHUB].version>ui_setting_update.head[HEAD_SD].version)
     {
-      printf("GitHub有新版本\r\n");
+      print("GitHub有新版本\r\n");
     }
 }
 /*--------------------------------------------------------------------------------*/
