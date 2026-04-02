@@ -243,19 +243,19 @@ static void event_check_update_cb(lv_event_t*e)
         static bool update_is_ready=false;
         if(update_is_ready==false)
         {
-//            if(get_update_file_head(HEAD_SD) && update_is_valid(HEAD_SD))
-//            {
-//              if(ui_setting_update.head[HEAD_SD].version>ui_setting_update.head[HEAD_FLASH].version)
-//              {
-//                lv_label_set_text(ui_setting_update.update_obj.new_version_label,"发现新版本,点击更新");
-//                update_is_ready=true;
-//              }
-//              else if(ui_setting_update.head[HEAD_SD].version==ui_setting_update.head[HEAD_FLASH].version )
-//              {
+            if(get_update_file_head(HEAD_SD) && update_is_valid(HEAD_SD))
+            {
+              if(ui_setting_update.head[HEAD_SD].version>ui_setting_update.head[HEAD_FLASH].version)
+              {
+                lv_label_set_text(ui_setting_update.update_obj.new_version_label,"发现新版本,点击更新");
+                update_is_ready=true;
+              }
+              else if(ui_setting_update.head[HEAD_SD].version==ui_setting_update.head[HEAD_FLASH].version )
+              {
                 Get_GitHub_MyPhone_Update_file();
-//                lv_label_set_text(ui_setting_update.update_obj.new_version_label,"当前为最新版本");
-//              }
-//            }
+                lv_label_set_text(ui_setting_update.update_obj.new_version_label,"当前为最新版本");
+              }
+            }
         }
         else
         {

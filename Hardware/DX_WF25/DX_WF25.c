@@ -494,35 +494,36 @@ static uint8_t DX_WF25_Rev_queue(void)
 	@返回值 :  无
 	@备注	  :  上电自动连接到wifi的处理
 ↑--------------------------------------------------------------------------------*/
-//void wifi_ide_deal(void)
-//{
-//    if(xSemaphoreTake(DX_WF25_Rev_AT_RESP_CountSemaphore, 10) == pdTRUE)
-//    {
-//        Total_Len=fifo_get_occupy_size(&WF25_Rev_fifo);
-//      if(Total_Len)
-//      {
-//         DEAL_BUF[Total_Len]='\0'; 
-//        if(strstr(DEAL_BUF, "WIFI GOT IP") != NULL)
-//        {
-//            if(display_cfg.wifi_switch_state == false) 
-//            {
-//                DX_WF25_Send_Static(AT_CMD_CWJAP_USER); 
-//                display_cfg.wifi_switch_state = true;
-//                DX_WF25_Send_Static(AT_CMD_CIFSR);
-//                print("WiFi Event: IP Obtained, auto-updating info...\r\n");
-//            }
-//            DX_WF25_Send_Static(AT_CMD_CIPSNTPCFG);
-//            DX_WF25_Send_Static(AT_GET_NTP_TIME); 
-//          Get_Weather_data(weather_api_str,weather_api_key_str,"ip");
-//        }
-//        else if(strstr(DEAL_BUF, "WIFI DISCONNECT") != NULL)
-//        {
-//            display_cfg.wifi_switch_state = false;
-//        }
-//        
-//      }
-//    }
-//}
+void wifi_ide_deal(void)
+{
+    if(xSemaphoreTake(DX_WF25_Rev_AT_RESP_CountSemaphore, 10) == pdTRUE)
+    {
+        uint16_t Total_Len=fifo_get_occupy_size(&WF25_Rev_fifo);
+      if(Total_Len)
+      {
+         fifo_read(&WF25_Rev_fifo,(uint8_t *)(DEAL_BUF+Total_Len_resp),Total_Len);
+         DEAL_BUF[Total_Len+Total_Len_resp]='\0'; 
+        if(strstr(DEAL_BUF+Total_Len_resp, "WIFI GOT IP") != NULL)
+        {
+            if(display_cfg.wifi_switch_state == false) 
+            {
+                DX_WF25_Send_Static(AT_CMD_CWJAP_USER); 
+                display_cfg.wifi_switch_state = true;
+                DX_WF25_Send_Static(AT_CMD_CIFSR);
+                print("WiFi Event: IP Obtained, auto-updating info...\r\n");
+            }
+            DX_WF25_Send_Static(AT_CMD_CIPSNTPCFG);
+            DX_WF25_Send_Static(AT_GET_NTP_TIME); 
+          Get_Weather_data(weather_api_str,weather_api_key_str,"ip");
+        }
+        if(strstr(DEAL_BUF+Total_Len_resp, "WIFI DISCONNECT") != NULL)
+        {
+            display_cfg.wifi_switch_state = false;
+        }
+        
+      }
+    }
+}
 
 void Get_Weather_data(const char*api_str,const char*api_key_str,const char*place_str)
 {
@@ -556,7 +557,7 @@ void wifi_cmd_stateMACHINE(void)
 
   if(S==0)
   {
-//      wifi_ide_deal();
+      wifi_ide_deal();
     if(DX_WF25_Rev_queue())
     {
       S=1;
@@ -855,7 +856,8 @@ static void Handle_Get_GitHub_MyPhone_file_head(const char*buf){
     
     printf("\r\ncrc32:0X%08X",ui_setting_update.head[HEAD_GitHUB].crc32);
     printf("\r\nname:%s",ui_setting_update.head[HEAD_GitHUB].name);
-    printf("\r\nreserved:%s\r\n",ui_setting_update.head[HEAD_GitHUB].reserved);  
+    printf("\r\nreserved:%s",ui_setting_update.head[HEAD_GitHUB].reserved);
+    printf("\r\nversion:%u\r\n",ui_setting_update.head[HEAD_GitHUB].version); 
   if(ui_setting_update.head[HEAD_GitHUB].version>ui_setting_update.head[HEAD_SD].version)
   {
     printf("GitHub有新版本\r\n");
