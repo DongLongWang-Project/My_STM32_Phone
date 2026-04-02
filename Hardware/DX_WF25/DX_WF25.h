@@ -106,6 +106,7 @@ typedef enum
     AT_CMD_CIPSEND,                              //19
     
     
+<<<<<<< HEAD
     AT_GET_CLOCK_WEATHER,                       //20
     AT_CMD_CIPSNTPCFG,                          //21
     AT_GET_NTP_TIME,                            //22
@@ -113,6 +114,11 @@ typedef enum
     Connect_GitHubUser,                         //23
     Get_GitHub_MyPhone_file_head,              //24
     
+=======
+    AT_GET_CLOCK_WEATHER,
+    AT_CMD_CIPSNTPCFG,
+    AT_GET_NTP_TIME,
+>>>>>>> parent of 8460656 (ota)
     AT_CMD_NUM
 } AT_CMD_WIFI_ENUM;
 
@@ -160,7 +166,7 @@ void WIFI_SAVE(void);
 void DX_WF25_CMD_EVENT(AT_CMD_WIFI_ENUM CMD_AT);
 void Get_Weather_data(const char*api_str,const char*api_key_str,const char*place_str);
 bool check_ip_conflict(const char *sta_ip,const char *ap_ip);
-void Get_GitHub_MyPhone_Update_file(void);
+
 extern const char*weather_api_key_str;
 extern const char*weather_api_str;
 #endif

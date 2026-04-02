@@ -5,7 +5,6 @@ LV_FONT_DECLARE( my_font_16);
 LV_FONT_DECLARE( my_font_24);
 LV_FONT_DECLARE( my_font_32);
 
-extern void ui_goto_page(UI_APP_PAGE_ENUM Page,UI_APP_ENUM APP);
 lv_obj_t* ui_widgets_btn_create(lv_obj_t*parent,const char*btn_text,lv_color_t btn_label_color);
 
 static void event_btn_add_clock_cb(lv_event_t*e);
@@ -389,7 +388,7 @@ void clock_time_create(lv_obj_t*parent,ALARM_MODE_ENUM alarm_mode)
 }
 static void event_add_alarm_cb(lv_event_t*e)
 {
-     lv_obj_t*target=lv_event_get_target(e);
+       lv_obj_t*target=lv_event_get_target(e);
      lv_obj_t*roller_obj= lv_obj_get_parent(target);
      lv_obj_t*clock_set_list= lv_obj_get_parent(roller_obj); 
      lv_obj_t*obj= lv_obj_get_parent(clock_set_list); 
@@ -406,24 +405,18 @@ static void event_add_alarm_cb(lv_event_t*e)
         alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num].hour=lv_roller_get_selected(hour_roller);  
         alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num].min=lv_roller_get_selected(minute_roller); 
         alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num].repeat=(REPEAT_ENUM)lv_dropdown_get_selected(Ringtone_drop);
-        alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num].Ringtone=(RINGTONE_ENUM)lv_dropdown_get_selected(Repeat_drop); 
+        alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num].Ringtone=(RINGTONE_ENUM)lv_dropdown_get_selected(Repeat_drop);  
+        lv_obj_del_async(obj); 
         
-
-//        lv_obj_del_async(obj); 
-//        
-//        tab_clock_creat(clock_list,&alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num],(void*)alarm_clock.save_alarm_num); 
+        tab_clock_creat(clock_list,&alarm_clock.save_alarm_clock_table[alarm_clock.save_alarm_num],(void*)alarm_clock.save_alarm_num); 
         alarm_clock.save_alarm_num++;
-
         #if keil
         save_alarm_data();
         #endif // keil
-        
-        ui_goto_page(PAGE_APP_LIST,APP_CLOCK); 
       }
       else
       {
-//        lv_obj_del_async(obj);
-            ui_goto_page(PAGE_APP_LIST,APP_CLOCK); 
+        lv_obj_del_async(obj);
       }
 }
 

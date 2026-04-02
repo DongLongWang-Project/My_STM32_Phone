@@ -175,10 +175,10 @@ uint8_t get_update_file_head(head_enum head_)
          uint16_t size= sizeof(head_t);
         switch(head_)
         {
-          case HEAD_SD:         SD_get_update_file_head(UPDATE_FILE_PATH); break;
+          case HEAD_SD:         SD_get_update_file_head(UPDATE_FILE_PATH);                                 break;
           #if keil
-          case HEAD_FLASH:      myFLASH_ReadData(APP_HEAD_Addr,&ui_setting_update.head[HEAD_FLASH],size);  break;
-          case HEAD_GitHUB:     Get_GitHub_MyPhone_Update_file();break;
+          case HEAD_FLASH:      myFLASH_ReadData(APP_HEAD_Addr,&ui_setting_update.head[HEAD_FLASH],size);         break;
+          case HEAD_W25Q_Cur:   W25Qxx_DMA_ReadData(Application_Addr_1,&ui_setting_update.head[HEAD_W25Q_Cur],size); break;
           case HEAD_W25Q_Pre:   W25Qxx_DMA_ReadData(Application_Addr_2,&ui_setting_update.head[HEAD_W25Q_Pre],size); break;
           #endif // keil
           default:break;
@@ -186,10 +186,9 @@ uint8_t get_update_file_head(head_enum head_)
        uint32_t buf_size = ui_setting_update.head[head_].file_size;
        printf("version:%u\r\n",ui_setting_update.head[head_].version);
        if (buf_size == 0 || buf_size == 0xFFFFFFFF) return 0; 
-       else return 1;
-//       if(update_is_valid(head_)) return 1;
+       if(update_is_valid(head_)) return 1;
        
-//       return 0;   
+       return 0;   
 }
 
 uint8_t update_is_valid(head_enum head_)
@@ -215,8 +214,8 @@ uint8_t update_is_valid(head_enum head_)
           case HEAD_SD:       lv_fs_read(&ui_setting_update.file_p,crc_buf,read_len,&num);break;
            #if keil
           case HEAD_FLASH:    myFLASH_ReadData(APP_Addr + offset, crc_buf, read_len);num=read_len;break;
-//          case HEAD_W25Q_Cur: W25Qxx_DMA_ReadData(Application_Addr_1+ offset+sizeof(head_t),crc_buf,read_len);num=read_len;break;
-          case HEAD_W25Q_Pre: W25Qxx_DMA_ReadData(Application_Addr_2+ offset+sizeof(head_t),crc_buf,read_len);num=read_len;break;
+          case HEAD_W25Q_Cur: W25Qxx_DMA_ReadData(Application_Addr_1+ offset+sizeof(head_t),crc_buf,read_len);num=read_len;break;
+          case HEAD_W25Q_Pre: W25Qxx_DMA_ReadData(Application_Addr_1+ offset+sizeof(head_t),crc_buf,read_len);num=read_len;break;
           #endif // keil
           
           default:break;
@@ -245,7 +244,7 @@ static void event_check_update_cb(lv_event_t*e)
         static bool update_is_ready=false;
         if(update_is_ready==false)
         {
-            if(get_update_file_head(HEAD_SD) && update_is_valid(HEAD_SD))
+            if(get_update_file_head(HEAD_SD))
             {
               if(ui_setting_update.head[HEAD_SD].version>ui_setting_update.head[HEAD_FLASH].version)
               {
@@ -254,7 +253,6 @@ static void event_check_update_cb(lv_event_t*e)
               }
               else if(ui_setting_update.head[HEAD_SD].version==ui_setting_update.head[HEAD_FLASH].version )
               {
-                Get_GitHub_MyPhone_Update_file();
                 lv_label_set_text(ui_setting_update.update_obj.new_version_label,"当前为最新版本");
               }
             }
