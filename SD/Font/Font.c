@@ -400,7 +400,7 @@ uint8_t Font_index_to_SDRAM(uint32_t Font_Index_Addr,uint32_t SDRAM_Addr)
       {
             total_size-=cur_size;
             total_num+=cur_size;
-            print("当前搬运进度:%d\r\n",(uint32_t)total_num);
+//            print("当前搬运进度:%d\r\n",(uint32_t)total_num);
       }
       else
       {

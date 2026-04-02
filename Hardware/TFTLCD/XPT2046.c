@@ -394,7 +394,7 @@ uint8_t TP_Get_Adjdata(uint32_t Address)
 //    print("3 %d\r\n",tp_dev.xoff);
 //    print("4 %d\r\n",tp_dev.yoff);
 //    print("5 %d\r\n",tp_dev.touchtype);
-    print("获取%x\r\n",Cur_scr_dir);
+//    print("获取%x\r\n",Cur_scr_dir);
 
     return 1; // 校准数据有效
 }

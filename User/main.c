@@ -4,14 +4,14 @@
 USB_OTG_CORE_HANDLE  USB_OTG_dev;
 int main(void)
 {  
-    __enable_irq();
-    NVIC_SetVectorTable(NVIC_VectTab_FLASH,APP_Addr);
+//    __enable_irq();
+//    NVIC_SetVectorTable(NVIC_VectTab_FLASH,APP_Addr);
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
     Delay_init(168);
    
     Serial_Init();
 
-    TIM2_Int_Init(10000-1,8400-1);
+//    TIM2_Int_Init(10000-1,8400-1);
     Key_Init();
     W25Qxx_SPI_Init();
     FSMC_SRAM_Init();

@@ -105,10 +105,8 @@ int fputc(int ch, FILE *f)
 	return ch;
 }
 
-volatile uint8_t busy=0;
 void USART_DMA_SendString(char *String)
 {
-//  busy=1;
   DMA_Cmd(DMA2_Stream7,DISABLE);
   DMA2_Stream7->M0AR=(uint32_t)String;
   DMA2_Stream7->NDTR=strlen(String);
@@ -159,7 +157,7 @@ void DMA2_Stream7_IRQHandler(void)
           }
           else
           {
-            Serial_SendString("DMA send is error\r\n now use normal usart send\r\n");
+            Serial_SendString("DMA send is error now use normal usart send\r\n");
             Serial_SendString(String);
           }
           xSemaphoreGive(USART_DMA_Printf_MutexSemaphore); 

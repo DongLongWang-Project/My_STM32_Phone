@@ -20,11 +20,7 @@ typedef struct
 }head_t;
 head_t head=
 {
-<<<<<<< HEAD
-    .version=20260356 ,
-=======
-    .version=20260337,
->>>>>>> parent of 8460656 (ota)
+    .version=20260377,
     .name="MyPhoneOS_v1.3",
     .update_state=update_none,
     .reserved="This is my Graduation Project Work",
