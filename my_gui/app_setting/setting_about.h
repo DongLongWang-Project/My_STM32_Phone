@@ -6,14 +6,20 @@
 #include "stdio.h"
 #include "ui_app_setting.h"
 #include "../ui_widgets.h"
+
+
+#define APP_HEAD_Addr 0x08010000
+#define APP_Addr 0x08010200
+
 #if keil
 #include "flash.h"
 #include "W25Qxx.h"
 #include "crc.h"
-#endif // keil
+#define UPDATE_FILE_PATH  "0:/SD/bin/myPhone.bin"
 
-#define APP_HEAD_Addr 0x08010000
-#define APP_Addr 0x08010200
+#else
+#define UPDATE_FILE_PATH "0:/GitHub_Code/My_STM32_Phone/SD/bin/myPhone.bin"
+#endif
 
 typedef enum
 {

@@ -19,12 +19,12 @@ volatile uint16_t Pre_deal_index,Total_Len_resp;/*上一次复制数据的位置
 
 char WIFI_DMA_REV_BUF[USART3_RX_BUF_SIZE];/*接收缓冲区*/
 char DEAL_BUF[DEAL_BUF_SIZE];/*总数据处理缓冲区*/
-uint8_t WF25_Rev_BUF[FIFO_BUF_SIZE];
+uint8_t WF25_Rev_BUF[FIFO_BUF_SIZE]__attribute__((section(".CCMRAM")));
 wifi_context_t wifi_scan_list;/*扫描当前环境wifi的结构体*/
 wifi_connect_t connected_wifi;/*已连接wifi结构体*/
 wifi_save_t wifi_save_list;   /*已保存在w25q的wifi结构体*/
 _fifo_t WF25_Rev_fifo;
-
+github_rev_file_t github_rev_file;
 Hotspot_data_t  hotspot_data=  /*热点的初始化配置*/
 {
     .hotspot_name="donglongwang", /*热点名称*/
@@ -53,6 +53,7 @@ static void Handle_AT_CMD_CIPSEND(const char*buf);
 static void Handle_AT_GET_CLOCK_WEATHER(const char*buf);
 static void Handle_AT_GET_NTP_TIME(const char*buf);
 static void Handle_Get_GitHub_MyPhone_file_head(const char*buf);
+static void Handle_Get_GitHub_MyPhone_file(const char*buf);
 /* AT命令结构体配置 */
 const wifi_cmd_t wifi_cmd_table[AT_CMD_NUM] = 
 {
@@ -90,7 +91,8 @@ const wifi_cmd_t wifi_cmd_table[AT_CMD_NUM] =
     [AT_GET_NTP_TIME]={AT_GET_NTP_TIME,"AT+CIPSNTPTIME?\r\n",2000,"OK\r\n",Handle_AT_GET_NTP_TIME},
     
     [Connect_GitHubUser]={Connect_GitHubUser,"AT+CIPSTART=\"SSL\",\"raw.githubusercontent.com\",443\r\n",2000,"CONNECT\r\n\r\nOK"}, 
-    [Get_GitHub_MyPhone_file_head]={Get_GitHub_MyPhone_file_head,  "", 8000,"CLOSED",Handle_Get_GitHub_MyPhone_file_head}
+    [Get_GitHub_MyPhone_file_head]={Get_GitHub_MyPhone_file_head,  "", 8000,"CLOSED",Handle_Get_GitHub_MyPhone_file_head},
+    [Get_GitHub_MyPhone_file]={Get_GitHub_MyPhone_file,"",8000,"CLOSE",Handle_Get_GitHub_MyPhone_file},
 };
 
 //const char*get_time_weather_str="GET /v3/weather/now.json?key=S_fPwMVZxdqUzfG_i&location=beijing&language=zh-Hans&unit=c HTTP/1.1\r\nHost: api.seniverse.com\r\nConnection: close\r\n\r\n";            
@@ -101,7 +103,7 @@ const char*weather_api_str="api.seniverse.com";
 //Connection: close
 
 const char*get_update_head_str="GET /DongLongWang-Project/My_STM32_Phone/main/SD/bin/myPhone.bin HTTP/1.1\r\nHost: raw.githubusercontent.com\r\nRange: bytes=0-511\r\nConnection: close\r\n\r\n";
-
+const char*get_update_file_str="GET /DongLongWang-Project/My_STM32_Phone/main/SD/bin/myPhone.bin HTTP/1.1\r\nHost: raw.githubusercontent.com\r\nConnection: close\r\n\r\n";
 
 void DX_WF25_Init(void)
 {
@@ -602,12 +604,26 @@ void wifi_cmd_stateMACHINE(void)
                   S = 3; 
                 print("命令:%d通道1进入处理阶段\r\n",cur_cmd);
               }
-             if(strstr(DEAL_BUF+Total_Len_resp, "+IPD,512:") != NULL)
+              if(cur_cmd==Get_GitHub_MyPhone_file_head)
               {
-                  S = 3;
-                  print("命令:%d通道2进入处理阶段\r\n",cur_cmd);  
+               if(strstr(DEAL_BUF+Total_Len_resp, "+IPD,512:") != NULL)
+                {
+                    S = 3;
+                    print("命令:%d通道2进入处理阶段\r\n",cur_cmd);  
+                }
               }
+              if(cur_cmd==Get_GitHub_MyPhone_file)
+              {
+                 if( strstr(DEAL_BUF+Total_Len_resp, "+IPD,")!= NULL)
+                  {
+                    S = 3;
+                    print("命令:%d通道3进入处理阶段\r\n",cur_cmd);                        
+                  }  
+                
+              }
+
               Total_Len_resp+= Total_Len; 
+              Total_Len_resp%=DEAL_BUF_SIZE;
           }
       }
   }
@@ -862,6 +878,77 @@ static void Handle_Get_GitHub_MyPhone_file_head(const char*buf){
   {
     printf("GitHub有新版本\r\n");
   }
+}
+// 输入参数：p_buf 是你 DEAL_BUF 的地址
+// 输出参数：save_len 用来存解析出的 1371
+// 返回值：指向冒号后面第一个字节的指针（即真数据的开头）
+uint8_t* parse_ipd_info(const char *p_buf, uint32_t *save_len) 
+{
+    char *p_start = NULL;
+    char *p_end = NULL;
+
+    // 1. 寻找核心标志
+    p_start = strstr(p_buf, "+IPD,");
+    if (p_start == NULL) return NULL;
+
+    // 2. 跳过 "+IPD," 这 5 个字符，指向数字开头
+    p_start += 5; 
+
+    // 3. 寻找数字结束的冒号 ":"
+    p_end = strchr(p_start, ':');
+    if (p_end == NULL) return NULL; // 没找到冒号说明数据还没收齐
+
+    // 4. 将字符串转为数字 (atoi 会在遇到 ':' 时自动停止)
+    *save_len = (uint32_t)atoi(p_start);
+
+    // 5. 返回冒号后面的地址（数据的真正起点）
+    return (uint8_t*)(p_end + 1);
+}
+
+static void Handle_Get_GitHub_MyPhone_file(const char*buf)
+{
+  uint32_t ipd_rem_len;
+  uint8_t* data_ptr;
+  uint32_t cur_buf_data_len;
+  lv_fs_res_t res;
+  uint32_t write_len;
+  uint16_t miss_len;
+  uint16_t more_len;
+  uint16_t read_len;
+  res=lv_fs_open(&github_rev_file.fp,UPDATE_FILE_PATH,LV_FS_MODE_WR);
+  if(res!=LV_FS_RES_OK)
+  {
+    printf("清空文件失败\r\n");
+    return ;
+  }
+   data_ptr=parse_ipd_info(DEAL_BUF,&ipd_rem_len);
+   cur_buf_data_len=strlen((char*)data_ptr);
+   if(cur_buf_data_len>=ipd_rem_len)
+   {
+     lv_fs_write(&github_rev_file.fp,data_ptr,ipd_rem_len,&write_len);
+     more_len=cur_buf_data_len-ipd_rem_len;
+   }
+   else
+   {
+    lv_fs_write(&github_rev_file.fp,data_ptr,cur_buf_data_len,&write_len);
+    miss_len=ipd_rem_len-cur_buf_data_len;
+   }
+  if(xSemaphoreTake(DX_WF25_Rev_AT_RESP_CountSemaphore,pdMS_TO_TICKS(50))==pdTRUE)
+      {
+      
+          uint16_t Total_Len=fifo_get_occupy_size(&WF25_Rev_fifo);  
+          if(Total_Len)
+          {
+//            printf("fifo存的长度:%d\r\n",Total_Len);
+            read_len= Total_Len>2048 ?  2048 : Total_Len;
+            fifo_read(&WF25_Rev_fifo,(uint8_t *)(DEAL_BUF+Total_Len_resp),read_len);
+            
+            DEAL_BUF[Total_Len_resp+read_len]='\0';
+            
+           }
+              Total_Len_resp+= read_len; 
+              Total_Len_resp%=DEAL_BUF_SIZE;
+      }
 }
 /*--------------------------------------------------------------------------------*/
 

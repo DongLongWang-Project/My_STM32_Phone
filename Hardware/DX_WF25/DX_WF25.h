@@ -11,10 +11,12 @@
 #include "ui_app_setting.h"
 #include "ui_app_clock_config.h"
 #include "ui_app_weather.h"
+#include "lvgl.h"
+
 
 #define USART3_RX_BUF_SIZE 256       //串口的缓冲区大小
 #define DEAL_BUF_SIZE       4096
-#define FIFO_BUF_SIZE       4096
+#define FIFO_BUF_SIZE       8192
 #define AT_CMD_MAX_LEN 256             //wifi的AT最长命令
 #define DX_WF25_Queue_MAX_LEN  8     //队列长度
 #define WIFI_SCAN_MAX_NUM       10   // 最多扫描到 10 个 wifi
@@ -114,6 +116,7 @@ typedef enum
     Connect_GitHubUser,                         //23
     Get_GitHub_MyPhone_file_head,              //24
     
+    Get_GitHub_MyPhone_file,                    //25  
     AT_CMD_NUM
 } AT_CMD_WIFI_ENUM;
 
@@ -138,6 +141,11 @@ typedef struct {
   char         hotspot_ip[WIFI_IP_MAX_LEN]; 
 }Hotspot_data_t;
 
+typedef struct
+{
+  lv_fs_file_t fp;
+
+}github_rev_file_t;
 extern  const wifi_cmd_t wifi_cmd_table[AT_CMD_NUM];
 extern const char*get_time_weather_str;
 
@@ -164,4 +172,6 @@ bool check_ip_conflict(const char *sta_ip,const char *ap_ip);
 void Get_GitHub_MyPhone_Update_file(void);
 extern const char*weather_api_key_str;
 extern const char*weather_api_str;
+
+uint8_t* parse_ipd_info(const char *p_buf, uint32_t *save_len);
 #endif

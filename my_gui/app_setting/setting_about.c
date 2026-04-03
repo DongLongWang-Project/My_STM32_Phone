@@ -18,15 +18,11 @@ LV_FONT_DECLARE( my_font_12);
 LV_FONT_DECLARE( my_font_16);
 LV_FONT_DECLARE( my_font_24);
 LV_FONT_DECLARE( my_font_32);
-
 #if keil
-#include "flash.h"
-#include "W25Qxx.h"
-#define UPDATE_FILE_PATH  "0:/SD/bin/myPhone.bin"
+extern char DEAL_BUF[DEAL_BUF_SIZE];/*总数据处理缓冲区*/
 
 #else
-#define UPDATE_FILE_PATH "0:/GitHub_Code/My_STM32_Phone/SD/bin/myPhone.bin"
-uint8_t crc_buf[0x10000]__attribute__((section(".EXT_SRAM")));
+uint8_t DEAL_BUF[0x10000]__attribute__((section(".EXT_SRAM")));
 uint32_t Continue_CRC32(uint32_t last_crc, uint8_t* data, uint32_t len) {
     uint32_t crc = last_crc; // 接力上次的结果
     uint32_t calc_len = len;   
@@ -182,7 +178,7 @@ uint8_t get_update_file_head(head_enum head_)
           default:break;
         }
        uint32_t buf_size = ui_setting_update.head[head_].file_size;
-       printf("version:%u\r\n",ui_setting_update.head[head_].version);
+       printf("%d:version:%u\r\n",head_,ui_setting_update.head[head_].version);
        if (buf_size == 0 || buf_size == 0xFFFFFFFF) return 0; 
        else return 1;
 //       if(update_is_valid(head_)) return 1;
@@ -192,7 +188,7 @@ uint8_t get_update_file_head(head_enum head_)
 
 uint8_t update_is_valid(head_enum head_)
 {
-    uint32_t buf_size = sizeof(crc_buf);
+    uint32_t buf_size = sizeof(DEAL_BUF);
     uint32_t offset = 0;
     uint32_t remain = ui_setting_update.head[head_].file_size;
     uint32_t read_len;
@@ -210,17 +206,17 @@ uint8_t update_is_valid(head_enum head_)
         // 从 Flash 读取当前分块
         switch(head_)
         {
-          case HEAD_SD:       lv_fs_read(&ui_setting_update.file_p,crc_buf,read_len,&num);break;
+          case HEAD_SD:       lv_fs_read(&ui_setting_update.file_p,DEAL_BUF,read_len,&num);break;
            #if keil
-          case HEAD_FLASH:    myFLASH_ReadData(APP_Addr + offset, crc_buf, read_len);num=read_len;break;
-//          case HEAD_W25Q_Cur: W25Qxx_DMA_ReadData(Application_Addr_1+ offset+sizeof(head_t),crc_buf,read_len);num=read_len;break;
-          case HEAD_W25Q_Pre: W25Qxx_DMA_ReadData(Application_Addr_2+ offset+sizeof(head_t),crc_buf,read_len);num=read_len;break;
+          case HEAD_FLASH:    myFLASH_ReadData(APP_Addr + offset, DEAL_BUF, read_len);num=read_len;break;
+//          case HEAD_W25Q_Cur: W25Qxx_DMA_ReadData(Application_Addr_1+ offset+sizeof(head_t),DEAL_BUF,read_len);num=read_len;break;
+          case HEAD_W25Q_Pre: W25Qxx_DMA_ReadData(Application_Addr_2+ offset+sizeof(head_t),DEAL_BUF,read_len);num=read_len;break;
           #endif // keil
           
           default:break;
         }
-        current_crc=Continue_CRC32(current_crc,crc_buf,num);
-//        printf("%02X %02X %02X %02X num:%d current_crc:0X%08X\r\n",crc_buf[num-4],crc_buf[num-3],crc_buf[num-2],crc_buf[num-1],num,current_crc);
+        current_crc=Continue_CRC32(current_crc,(uint8_t *)DEAL_BUF,num);
+//        printf("%02X %02X %02X %02X num:%d current_crc:0X%08X\r\n",DEAL_BUF[num-4],DEAL_BUF[num-3],DEAL_BUF[num-2],DEAL_BUF[num-1],num,current_crc);
         offset += num;
         remain -= num;
     }
