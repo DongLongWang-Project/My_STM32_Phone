@@ -939,30 +939,20 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
 {
 //  char*start=strstr(DEAL_BUF,"+IPD");
 //  char*p=start+20;
-  char*p=DEAL_BUF;
+  const char*p=buf;
   uint8_t* data_ptr;
   uint32_t ipd_data_len;
   uint16_t len;
-//  lv_fs_res_t res;
   uint32_t write_len=0;
   uint32_t remain;
   static uint32_t total_received_file_size = 0;
   create_update_file(&update_file);
-//  res=lv_fs_open(&ui_setting_update.file_p,UPDATE_FILE_PATH,LV_FS_MODE_WR);
-//  if(res!=LV_FS_RES_OK)
-//  {
-//    printf("清空文件失败res:%d\r\n",res);
-//    
-//    return ;
-//  }
-    // ... 前置 open 逻辑 ...
-    uint32_t current_pkg_rem = 0; // 记录当前包还没写完的剩余长度
-//   lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,UPDATE_FILE_PATH,LV_FS_MODE_RD|LV_FS_MODE_WR);
+  uint32_t current_pkg_rem = 0; // 记录当前包还没写完的剩余长度
 
     while(1) {
         // --- 1. 先消化存量 ---
         if (current_pkg_rem > 0) {
-            // 还在还上一包的“债”
+            
             uint32_t can_write = (Total_Len_resp > current_pkg_rem) ? current_pkg_rem : Total_Len_resp;
 //            lv_fs_write(&ui_setting_update.file_p, DEAL_BUF, can_write, &write_len);
             f_write(&update_file.f, DEAL_BUF, can_write, &write_len);

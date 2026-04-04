@@ -220,17 +220,17 @@ uint8_t update_is_valid(head_enum head_)
         offset += num;
         remain -= num;
     }
+    
+    if(head_==HEAD_SD)
+    {
+      lv_fs_close(&ui_setting_update.file_p);
+    }
     // 最终校验
     if (current_crc == ui_setting_update.head[head_].crc32)
     {
         printf("Flash CRC OK: 0x%08X\r\n", current_crc);
         return 1;
     }
-  if(ui_setting_update.file_p.drv!=NULL)
-  {
-    lv_fs_close(&ui_setting_update.file_p);
-    ui_setting_update.file_p.drv=NULL;
-  }
     printf("Flash CRC Error! Calc: 0x%08X, Target: 0x%08X\r\n", current_crc, ui_setting_update.head[head_].crc32);
     // 在 APP 校验失败时，执行这个：
     return 0;
