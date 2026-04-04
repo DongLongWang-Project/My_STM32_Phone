@@ -12,6 +12,7 @@
 #include "ui_app_clock_config.h"
 #include "ui_app_weather.h"
 #include "lvgl.h"
+#include "ff.h"
 
 
 #define USART3_RX_BUF_SIZE 2048       //串口的缓冲区大小

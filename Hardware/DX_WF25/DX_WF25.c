@@ -916,10 +916,29 @@ uint8_t* parse_ipd_info(const char *p_buf, uint32_t *save_len)
 }
 
 /*--------------------------------------------------------------------------------*/
+typedef struct
+{
+  FIL f  ;
+  
+}update_file_t;
+update_file_t update_file;
 
+void create_update_file(update_file_t *update_file)
+{
+  FRESULT res;
+  res=f_open(&update_file->f,UPDATE_FILE_PATH,FA_CREATE_ALWAYS|FA_WRITE|FA_READ);
+  if(res!=FR_OK)
+  {
+    printf("创建新更新文件失败\r\n");
+    return;
+  }
+  
+  
+}
 static void Handle_Get_GitHub_MyPhone_file(const char*buf)
 {
-  char*p=DEAL_BUF;
+  char*start=strstr(DEAL_BUF,"+IPD");
+  char*p=start+20;
   uint8_t* data_ptr;
   uint32_t ipd_data_len;
   uint16_t len;
@@ -927,7 +946,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
   uint32_t write_len=0;
   uint32_t remain;
   static uint32_t total_received_file_size = 0;
-
+  create_update_file(&update_file);
 //  res=lv_fs_open(&ui_setting_update.file_p,UPDATE_FILE_PATH,LV_FS_MODE_WR);
 //  if(res!=LV_FS_RES_OK)
 //  {
@@ -938,14 +957,14 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
     // ... 前置 open 逻辑 ...
     uint32_t current_pkg_rem = 0; // 记录当前包还没写完的剩余长度
 //   lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,UPDATE_FILE_PATH,LV_FS_MODE_RD|LV_FS_MODE_WR);
-lv_fs_seek(&ui_setting_update.file_p,0,LV_FS_SEEK_SET);
+
     while(1) {
         // --- 1. 先消化存量 ---
         if (current_pkg_rem > 0) {
             // 还在还上一包的“债”
             uint32_t can_write = (Total_Len_resp > current_pkg_rem) ? current_pkg_rem : Total_Len_resp;
-            lv_fs_write(&ui_setting_update.file_p, DEAL_BUF, can_write, &write_len);
-            
+//            lv_fs_write(&ui_setting_update.file_p, DEAL_BUF, can_write, &write_len);
+            f_write(&update_file.f, DEAL_BUF, can_write, &write_len);
             uint32_t extra = Total_Len_resp - can_write;
             if(extra > 0) memmove(DEAL_BUF, DEAL_BUF + can_write, extra);
             Total_Len_resp = extra;
@@ -960,13 +979,15 @@ lv_fs_seek(&ui_setting_update.file_p,0,LV_FS_SEEK_SET);
                 
                 if(remain >= ipd_data_len) {
                     // 整包都在，写完平移
-                    lv_fs_write(&ui_setting_update.file_p, data_ptr, ipd_data_len, &write_len);
+//                    lv_fs_write(&ui_setting_update.file_p, data_ptr, ipd_data_len, &write_len);
+                    f_write(&update_file.f, data_ptr, ipd_data_len, &write_len);
                     remain -= ipd_data_len;
                     memmove(DEAL_BUF, data_ptr + ipd_data_len, remain);
                     Total_Len_resp = remain;
                 } else {
                     // 货不够，写掉现有的，记住还差多少
-                    lv_fs_write(&ui_setting_update.file_p, data_ptr, remain, &write_len);
+//                    lv_fs_write(&ui_setting_update.file_p, data_ptr, remain, &write_len);
+                    f_write(&update_file.f, data_ptr, remain, &write_len);
                     current_pkg_rem = ipd_data_len - remain;
                     Total_Len_resp = 0;
                 }
@@ -992,14 +1013,15 @@ lv_fs_seek(&ui_setting_update.file_p,0,LV_FS_SEEK_SET);
         if (total_received_file_size >= ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t)) 
         {
 //        if (total_received_file_size >= 595368) {
-            lv_fs_close(&ui_setting_update.file_p);
+//            lv_fs_close(&ui_setting_update.file_p);
+            f_close(&update_file.f);
             update_is_ready=has_sd_new;
             printf("下载完毕\r\n");
             return; // 下载完成
         }
         
         // 关键：必须给系统喘息机会，否则进度条不跑，看门狗会叫
-        vTaskDelay(1); 
+        vTaskDelay(2); 
         
         // 此处应添加一个退出 while(1) 的条件，比如文件总大小下完了
     }
