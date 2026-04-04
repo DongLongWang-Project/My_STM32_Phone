@@ -22,7 +22,8 @@
  
 #include <stdbool.h>
 #include <stdint.h>
- 
+#include "stm32f4xx.h"
+
 typedef void (*lock_fun)(void);
  
 typedef struct
@@ -45,5 +46,6 @@ extern uint32_t fifo_read(_fifo_t *pfifo, uint8_t *pbuf, uint32_t size);
 extern uint32_t fifo_get_total_size(_fifo_t *pfifo);
 extern uint32_t fifo_get_free_size(_fifo_t *pfifo);
 extern uint32_t fifo_get_occupy_size(_fifo_t *pfifo);
- 
+void My_FIFO_Lock(void) ;
+void My_FIFO_Unlock(void); 
 #endif

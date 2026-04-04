@@ -38,7 +38,7 @@ Hotspot_data_t  hotspot_data=  /*热点的初始化配置*/
     .hotspot_ip_allow=true,      /*默认热点分配ip可用*/
 };
 
-AT_CMD_WIFI_ENUM cur_cmd=AT_CMD_NUM;/*当前正在处理的命令*/
+AT_CMD_WIFI_ENUM cur_cmd=AT_CMD_NONE;/*当前正在处理的命令*/
 
 static void DMA_Receive_Data(uint16_t Cur_index);
 
@@ -55,7 +55,7 @@ static void Handle_AT_GET_NTP_TIME(const char*buf);
 static void Handle_Get_GitHub_MyPhone_file_head(const char*buf);
 static void Handle_Get_GitHub_MyPhone_file(const char*buf);
 /* AT命令结构体配置 */
-const wifi_cmd_t wifi_cmd_table[AT_CMD_NUM] = 
+const wifi_cmd_t wifi_cmd_table[AT_CMD_NONE] = 
 {
                       /* 枚举索引           指令字符串                   超时(ms)   预期响应 */
     [AT_CMD_AT]     ={AT_CMD_AT,         "AT\r\n",                   500,      "\r\nOK"},      /* 基础测试 */
@@ -234,7 +234,7 @@ void DX_WF25_Init(void)
     
     DX_WF25_Rev_AT_RESP_CountSemaphore=xSemaphoreCreateCounting(15,0);
     
-    fifo_register(&WF25_Rev_fifo,WF25_Rev_BUF,sizeof(WF25_Rev_BUF),NULL,NULL);
+    fifo_register(&WF25_Rev_fifo,WF25_Rev_BUF,sizeof(WF25_Rev_BUF),My_FIFO_Lock,My_FIFO_Unlock);
     
     
      DX_WF25_Send_Static(AT_CMD_ATE1);
@@ -613,7 +613,7 @@ void wifi_cmd_stateMACHINE(void)
               }
               if(cur_cmd==Get_GitHub_MyPhone_file)
               {
-                 if(strstr(DEAL_BUF+Total_Len_resp, "+IPD")!= NULL)
+                 if(strstr(DEAL_BUF+Total_Len_resp, "Recv")!= NULL)
                   {
                     S = 3;
                     print("命令:%d通道3进入处理阶段\r\n",cur_cmd);                        
@@ -634,6 +634,7 @@ void wifi_cmd_stateMACHINE(void)
      wifi_cmd_table[cur_cmd].handler(DEAL_BUF); 
   }
       S=0;
+      cur_cmd=AT_CMD_NONE;
   }
 }
 
@@ -923,7 +924,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
   uint32_t ipd_data_len;
   uint16_t len;
 //  lv_fs_res_t res;
-  uint32_t write_len;
+  uint32_t write_len=0;
   uint32_t remain;
   static uint32_t total_received_file_size = 0;
 
@@ -936,7 +937,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
 //  }
     // ... 前置 open 逻辑 ...
     uint32_t current_pkg_rem = 0; // 记录当前包还没写完的剩余长度
-
+//   lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,UPDATE_FILE_PATH,LV_FS_MODE_RD|LV_FS_MODE_WR);
     while(1) {
         // --- 1. 先消化存量 ---
         if (current_pkg_rem > 0) {
@@ -970,17 +971,18 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
                 }
             }
         }
-        print("下载长度:%u\r\n",total_received_file_size);
+        print("%u\r\n",total_received_file_size);
         total_received_file_size += write_len;
        
         if (total_received_file_size >= ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t)) {
+//        if (total_received_file_size >= 595368) {
             lv_fs_close(&ui_setting_update.file_p);
             update_is_ready=has_sd_new;
             printf("下载完毕\r\n");
             return; // 下载完成
         }
         // --- 2. 后补充增量 ---
-        if(xSemaphoreTake(DX_WF25_Rev_AT_RESP_CountSemaphore, pdMS_TO_TICKS(1)) == pdTRUE) {      
+//        if(xSemaphoreTake(DX_WF25_Rev_AT_RESP_CountSemaphore, pdMS_TO_TICKS(1)) == pdTRUE) {      
             uint16_t save_len = fifo_get_occupy_size(&WF25_Rev_fifo); 
             if(save_len > 0) {
                 // 计算缓冲区还能装多少，防止爆掉
@@ -992,7 +994,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
                 Total_Len_resp += read_len;
                 DEAL_BUF[Total_Len_resp] = '\0';
             }
-        }
+//        }
         
         // 关键：必须给系统喘息机会，否则进度条不跑，看门狗会叫
         vTaskDelay(1); 

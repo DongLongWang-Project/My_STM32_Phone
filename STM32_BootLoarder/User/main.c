@@ -22,8 +22,9 @@ int main(void)
 //    LCD_Init(BLACK);
 
     update_my_phone();
-    
-//    if(W25Qxx_SectorErase(ALARM_CLOCK_SAVE_Addr,W25Qxx_SECTOR_ERASE_4KB)==0)
+//     Calculate_Sectors_From_KB(1024*100);
+
+//    if(W25Qxx_SectorErase(UPDATE_INFO_Addr,W25Qxx_SECTOR_ERASE_4KB)==0)
 //    {
 //      printf("擦除成功\r\n");
 //    }

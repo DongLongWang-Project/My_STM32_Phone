@@ -126,7 +126,7 @@ uint8_t get_update_file_head(head_enum head_)
         }
        uint32_t buf_size = head[head_].file_size;
        printf("size:%u CRC32:0X%08X\r\n",buf_size,head[head_].CRC32);
-       if (buf_size == 0 || buf_size == 0xFFFFFFFF || buf_size >=0x00EFF000) return 0; 
+       if (buf_size == 0 || buf_size == 0xFFFFFFFF || buf_size >=0x00EFF00) return 0; 
        if(update_is_valid(head_)) return 1;
        
        return 0;   

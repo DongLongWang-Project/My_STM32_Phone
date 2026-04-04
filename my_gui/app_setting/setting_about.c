@@ -248,7 +248,7 @@ static void event_check_update_cb(lv_event_t*e)
               if(ui_setting_update.head[HEAD_SD].version>ui_setting_update.head[HEAD_FLASH].version)
               {
                 lv_label_set_text(ui_setting_update.update_obj.new_version_label,"本地发现新版本,点击更新");
-                update_is_ready=has_sd_new;
+                 update_is_ready=has_sd_new;
               }
               else if(ui_setting_update.head[HEAD_SD].version==ui_setting_update.head[HEAD_FLASH].version )
               {

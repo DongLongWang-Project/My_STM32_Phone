@@ -48,5 +48,5 @@ uint8_t get_update_file_head(head_enum head_);
 uint8_t update_is_valid(head_enum head_);
 void update_my_phone(void);
 uint8_t Read_Latest_update_info_(update_flag_info_t *update_flag_info);
-
+uint32_t Calculate_Sectors_From_KB(uint32_t file_size_kb);
 #endif

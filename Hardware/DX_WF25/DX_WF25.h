@@ -117,7 +117,7 @@ typedef enum
     Get_GitHub_MyPhone_file_head,              //24
     
     Get_GitHub_MyPhone_file,                    //25  
-    AT_CMD_NUM
+    AT_CMD_NONE
 } AT_CMD_WIFI_ENUM;
 
 typedef void (*cmd_handler_t)(const char* rx_buf);
@@ -142,7 +142,7 @@ typedef struct {
 }Hotspot_data_t;
 
 
-extern  const wifi_cmd_t wifi_cmd_table[AT_CMD_NUM];
+extern  const wifi_cmd_t wifi_cmd_table[AT_CMD_NONE];
 extern const char*get_time_weather_str;
 
 extern volatile QueueHandle_t DX_WF25_CMD_Queue;

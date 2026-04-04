@@ -165,3 +165,14 @@ uint32_t fifo_get_occupy_size(_fifo_t *pfifo)
     
     return  pfifo->occupy_size;
 }
+
+// 在你的 lock 接口对接：
+void My_FIFO_Lock(void) 
+{
+    __disable_irq(); // 关全局中断
+}
+
+void My_FIFO_Unlock(void) 
+{
+    __enable_irq();  // 开全局中断
+}
