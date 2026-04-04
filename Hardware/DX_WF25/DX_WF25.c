@@ -937,8 +937,9 @@ void create_update_file(update_file_t *update_file)
 }
 static void Handle_Get_GitHub_MyPhone_file(const char*buf)
 {
-  char*start=strstr(DEAL_BUF,"+IPD");
-  char*p=start+20;
+//  char*start=strstr(DEAL_BUF,"+IPD");
+//  char*p=start+20;
+  char*p=DEAL_BUF;
   uint8_t* data_ptr;
   uint32_t ipd_data_len;
   uint16_t len;
@@ -1021,7 +1022,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
         }
         
         // 关键：必须给系统喘息机会，否则进度条不跑，看门狗会叫
-        vTaskDelay(2); 
+        vTaskDelay(1); 
         
         // 此处应添加一个退出 while(1) 的条件，比如文件总大小下完了
     }
