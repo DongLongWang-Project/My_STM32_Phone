@@ -16,7 +16,7 @@
 
 #define USART3_RX_BUF_SIZE 2048       //串口的缓冲区大小
 #define DEAL_BUF_SIZE       4096
-#define FIFO_BUF_SIZE       8192
+#define FIFO_BUF_SIZE       8192*4
 #define AT_CMD_MAX_LEN 256             //wifi的AT最长命令
 #define DX_WF25_Queue_MAX_LEN  8     //队列长度
 #define WIFI_SCAN_MAX_NUM       10   // 最多扫描到 10 个 wifi

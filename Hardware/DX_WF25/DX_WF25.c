@@ -934,7 +934,11 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
   uint32_t write_len;
   uint32_t remain;
   static uint32_t total_received_file_size = 0;
-
+  if(github_rev_file.fp.drv!=NULL)
+  {
+    lv_fs_close(&github_rev_file.fp);
+    github_rev_file.fp.drv=NULL;
+  }
   res=lv_fs_open(&github_rev_file.fp,UPDATE_FILE_PATH,LV_FS_MODE_WR);
   if(res!=LV_FS_RES_OK)
   {
