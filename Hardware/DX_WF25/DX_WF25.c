@@ -24,7 +24,7 @@ wifi_context_t wifi_scan_list;/*扫描当前环境wifi的结构体*/
 wifi_connect_t connected_wifi;/*已连接wifi结构体*/
 wifi_save_t wifi_save_list;   /*已保存在w25q的wifi结构体*/
 _fifo_t WF25_Rev_fifo;
-github_rev_file_t github_rev_file;
+
 Hotspot_data_t  hotspot_data=  /*热点的初始化配置*/
 {
     .hotspot_name="donglongwang", /*热点名称*/
@@ -539,12 +539,12 @@ void Get_Weather_data(const char*api_str,const char*api_key_str,const char*place
     DX_WF25_Send_Dynamic(AT_GET_CLOCK_WEATHER,"%s",get_time_weather_str); 
 }
 
-void Get_GitHub_MyPhone_Update_file(void)
+void Get_GitHub_MyPhone_Update_file(const char*str)
 {
     DX_WF25_Send_Static(AT_CMD_CIPMODE_0);
     DX_WF25_Send_Static(Connect_GitHubUser);
-    DX_WF25_Send_Dynamic(AT_CMD_CIPSEND,"AT+CIPSEND=%d\r\n",strlen(get_update_head_str));
-    DX_WF25_Send_Dynamic(Get_GitHub_MyPhone_file_head,"%s",get_update_head_str);   
+    DX_WF25_Send_Dynamic(AT_CMD_CIPSEND,"AT+CIPSEND=%d\r\n",strlen(str));
+    DX_WF25_Send_Dynamic(Get_GitHub_MyPhone_file_head,"%s",str);   
 }
 /*--------------------------------------------------------------------------------↓
 	@函数	  :wifi收发状态机
@@ -877,6 +877,7 @@ static void Handle_Get_GitHub_MyPhone_file_head(const char*buf){
   if(ui_setting_update.head[HEAD_GitHUB].version>ui_setting_update.head[HEAD_SD].version)
   {
     printf("GitHub有新版本\r\n");
+    Get_GitHub_MyPhone_Update_file(get_update_file_str);
   }
 }
 // 输入参数：p_buf 是你 DEAL_BUF 的地址
@@ -905,50 +906,95 @@ uint8_t* parse_ipd_info(const char *p_buf, uint32_t *save_len)
     return (uint8_t*)(p_end + 1);
 }
 
+/*--------------------------------------------------------------------------------*/
+
+typedef struct
+{
+  lv_fs_file_t fp;
+
+}github_rev_file_t;
+
+github_rev_file_t github_rev_file;
+
 static void Handle_Get_GitHub_MyPhone_file(const char*buf)
 {
-  uint32_t ipd_rem_len;
+  char*p=DEAL_BUF;
   uint8_t* data_ptr;
-  uint32_t cur_buf_data_len;
+  uint32_t ipd_data_len;
+  uint16_t len;
   lv_fs_res_t res;
   uint32_t write_len;
-  uint16_t miss_len;
-  uint16_t more_len;
-  uint16_t read_len;
+  uint32_t remain;
+  static uint32_t total_received_file_size = 0;
+
   res=lv_fs_open(&github_rev_file.fp,UPDATE_FILE_PATH,LV_FS_MODE_WR);
   if(res!=LV_FS_RES_OK)
   {
     printf("清空文件失败\r\n");
     return ;
   }
-   data_ptr=parse_ipd_info(DEAL_BUF,&ipd_rem_len);
-   cur_buf_data_len=strlen((char*)data_ptr);
-   if(cur_buf_data_len>=ipd_rem_len)
-   {
-     lv_fs_write(&github_rev_file.fp,data_ptr,ipd_rem_len,&write_len);
-     more_len=cur_buf_data_len-ipd_rem_len;
-   }
-   else
-   {
-    lv_fs_write(&github_rev_file.fp,data_ptr,cur_buf_data_len,&write_len);
-    miss_len=ipd_rem_len-cur_buf_data_len;
-   }
-  if(xSemaphoreTake(DX_WF25_Rev_AT_RESP_CountSemaphore,pdMS_TO_TICKS(50))==pdTRUE)
-      {
-      
-          uint16_t Total_Len=fifo_get_occupy_size(&WF25_Rev_fifo);  
-          if(Total_Len)
-          {
-//            printf("fifo存的长度:%d\r\n",Total_Len);
-            read_len= Total_Len>2048 ?  2048 : Total_Len;
-            fifo_read(&WF25_Rev_fifo,(uint8_t *)(DEAL_BUF+Total_Len_resp),read_len);
-            
-            DEAL_BUF[Total_Len_resp+read_len]='\0';
-            
-           }
-              Total_Len_resp+= read_len; 
-              Total_Len_resp%=DEAL_BUF_SIZE;
-      }
-}
-/*--------------------------------------------------------------------------------*/
+    // ... 前置 open 逻辑 ...
+    uint32_t current_pkg_rem = 0; // 记录当前包还没写完的剩余长度
 
+    while(1) {
+        // --- 1. 先消化存量 ---
+        if (current_pkg_rem > 0) {
+            // 还在还上一包的“债”
+            uint32_t can_write = (Total_Len_resp > current_pkg_rem) ? current_pkg_rem : Total_Len_resp;
+            lv_fs_write(&github_rev_file.fp, DEAL_BUF, can_write, &write_len);
+            
+            uint32_t extra = Total_Len_resp - can_write;
+            if(extra > 0) memmove(DEAL_BUF, DEAL_BUF + can_write, extra);
+            Total_Len_resp = extra;
+            current_pkg_rem -= can_write;
+        } 
+        else {
+            // 尝试解析新包头
+            data_ptr = parse_ipd_info(p, &ipd_data_len);
+            if(data_ptr != NULL) {
+                len = data_ptr - (uint8_t*)p;
+                remain = Total_Len_resp - len;
+                
+                if(remain >= ipd_data_len) {
+                    // 整包都在，写完平移
+                    lv_fs_write(&github_rev_file.fp, data_ptr, ipd_data_len, &write_len);
+                    remain -= ipd_data_len;
+                    memmove(DEAL_BUF, data_ptr + ipd_data_len, remain);
+                    Total_Len_resp = remain;
+                } else {
+                    // 货不够，写掉现有的，记住还差多少
+                    lv_fs_write(&github_rev_file.fp, data_ptr, remain, &write_len);
+                    current_pkg_rem = ipd_data_len - remain;
+                    Total_Len_resp = 0;
+                }
+            }
+        }
+        print("下载长度:%u\r\n",total_received_file_size);
+        total_received_file_size += write_len;
+       
+        if (total_received_file_size >= ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t)) {
+            lv_fs_close(&github_rev_file.fp);
+            printf("下载完毕\r\n");
+            return; // 下载完成
+        }
+        // --- 2. 后补充增量 ---
+        if(xSemaphoreTake(DX_WF25_Rev_AT_RESP_CountSemaphore, pdMS_TO_TICKS(10)) == pdTRUE) {      
+            uint16_t save_len = fifo_get_occupy_size(&WF25_Rev_fifo); 
+            if(save_len > 0) {
+                // 计算缓冲区还能装多少，防止爆掉
+                uint16_t space = DEAL_BUF_SIZE - Total_Len_resp - 1;
+                uint16_t read_len = (save_len > space) ? space : save_len;
+                if(read_len > 2048) read_len = 2048;
+
+                fifo_read(&WF25_Rev_fifo, (uint8_t *)(DEAL_BUF + Total_Len_resp), read_len);
+                Total_Len_resp += read_len;
+                DEAL_BUF[Total_Len_resp] = '\0';
+            }
+        }
+        
+        // 关键：必须给系统喘息机会，否则进度条不跑，看门狗会叫
+        vTaskDelay(1); 
+        
+        // 此处应添加一个退出 while(1) 的条件，比如文件总大小下完了
+    }
+}

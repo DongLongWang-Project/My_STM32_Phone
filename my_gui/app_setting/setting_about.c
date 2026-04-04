@@ -172,7 +172,7 @@ uint8_t get_update_file_head(head_enum head_)
           case HEAD_SD:         SD_get_update_file_head(UPDATE_FILE_PATH); break;
           #if keil
           case HEAD_FLASH:      myFLASH_ReadData(APP_HEAD_Addr,&ui_setting_update.head[HEAD_FLASH],size);  break;
-          case HEAD_GitHUB:     Get_GitHub_MyPhone_Update_file();break;
+          case HEAD_GitHUB:     Get_GitHub_MyPhone_Update_file(get_update_head_str);break;
           case HEAD_W25Q_Pre:   W25Qxx_DMA_ReadData(Application_Addr_2,&ui_setting_update.head[HEAD_W25Q_Pre],size); break;
           #endif // keil
           default:break;
@@ -248,7 +248,9 @@ static void event_check_update_cb(lv_event_t*e)
               }
               else if(ui_setting_update.head[HEAD_SD].version==ui_setting_update.head[HEAD_FLASH].version )
               {
-                Get_GitHub_MyPhone_Update_file();
+              
+                  Get_GitHub_MyPhone_Update_file(get_update_head_str);
+                  
                 lv_label_set_text(ui_setting_update.update_obj.new_version_label,"当前为最新版本");
               }
             }

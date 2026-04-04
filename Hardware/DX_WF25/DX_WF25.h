@@ -141,11 +141,7 @@ typedef struct {
   char         hotspot_ip[WIFI_IP_MAX_LEN]; 
 }Hotspot_data_t;
 
-typedef struct
-{
-  lv_fs_file_t fp;
 
-}github_rev_file_t;
 extern  const wifi_cmd_t wifi_cmd_table[AT_CMD_NUM];
 extern const char*get_time_weather_str;
 
@@ -169,9 +165,11 @@ void WIFI_SAVE(void);
 void DX_WF25_CMD_EVENT(AT_CMD_WIFI_ENUM CMD_AT);
 void Get_Weather_data(const char*api_str,const char*api_key_str,const char*place_str);
 bool check_ip_conflict(const char *sta_ip,const char *ap_ip);
-void Get_GitHub_MyPhone_Update_file(void);
+void Get_GitHub_MyPhone_Update_file(const char*str);
 extern const char*weather_api_key_str;
 extern const char*weather_api_str;
+extern const char*get_update_head_str;
+extern const char*get_update_file_str;
 
 uint8_t* parse_ipd_info(const char *p_buf, uint32_t *save_len);
 #endif
