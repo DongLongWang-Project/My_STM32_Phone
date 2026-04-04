@@ -541,7 +541,6 @@ void Get_Weather_data(const char*api_str,const char*api_key_str,const char*place
 
 void Get_GitHub_MyPhone_Update_file(AT_CMD_WIFI_ENUM Github_cmd,const char*str)
 {
-    DX_WF25_Send_Static(AT_CMD_CIPMODE_0);
     DX_WF25_Send_Static(Connect_GitHubUser);
     DX_WF25_Send_Dynamic(AT_CMD_CIPSEND,"AT+CIPSEND=%d\r\n",strlen(str));
     DX_WF25_Send_Dynamic(Github_cmd,"%s",str);   
@@ -860,7 +859,7 @@ void new_version_cb(void *user_data)
 {
   if(lv_obj_is_valid(ui_setting_update.update_obj.new_version_label))
   {
-     lv_label_set_text(ui_setting_update.update_obj.new_version_label,"发现新版本,点击下载");
+     lv_label_set_text(ui_setting_update.update_obj.new_version_label,"发现新版本,点击下载"); 
   }
 }
 
@@ -885,6 +884,7 @@ static void Handle_Get_GitHub_MyPhone_file_head(const char*buf){
   if(ui_setting_update.head[HEAD_GitHUB].version>ui_setting_update.head[HEAD_SD].version)
   {
     printf("GitHub有新版本\r\n");
+    update_is_ready=has_git_new;
     lv_async_call(new_version_cb,NULL);
   }
 }
