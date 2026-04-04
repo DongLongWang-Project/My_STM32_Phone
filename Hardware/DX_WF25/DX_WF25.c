@@ -930,7 +930,8 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
   res=lv_fs_open(&github_rev_file.fp,UPDATE_FILE_PATH,LV_FS_MODE_WR);
   if(res!=LV_FS_RES_OK)
   {
-    printf("清空文件失败\r\n");
+    printf("清空文件失败res:%d\r\n",res);
+    
     return ;
   }
     // ... 前置 open 逻辑 ...
