@@ -980,7 +980,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
             return; // 下载完成
         }
         // --- 2. 后补充增量 ---
-        if(xSemaphoreTake(DX_WF25_Rev_AT_RESP_CountSemaphore, pdMS_TO_TICKS(10)) == pdTRUE) {      
+        if(xSemaphoreTake(DX_WF25_Rev_AT_RESP_CountSemaphore, pdMS_TO_TICKS(1)) == pdTRUE) {      
             uint16_t save_len = fifo_get_occupy_size(&WF25_Rev_fifo); 
             if(save_len > 0) {
                 // 计算缓冲区还能装多少，防止爆掉
