@@ -220,10 +220,10 @@ uint8_t update_is_valid(head_enum head_)
         remain -= num;
     }
     
-//    if(head_==HEAD_SD)
-//    {
-//      lv_fs_close(&ui_setting_update.file_p);
-//    }
+    if(head_==HEAD_SD)
+    {
+      lv_fs_close(&ui_setting_update.file_p);
+    }
     // 最终校验
     if (current_crc == ui_setting_update.head[head_].crc32)
     {
