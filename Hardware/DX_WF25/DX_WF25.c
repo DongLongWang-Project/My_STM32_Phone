@@ -938,6 +938,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
     // ... 前置 open 逻辑 ...
     uint32_t current_pkg_rem = 0; // 记录当前包还没写完的剩余长度
 //   lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,UPDATE_FILE_PATH,LV_FS_MODE_RD|LV_FS_MODE_WR);
+lv_fs_seek(&ui_setting_update.file_p,0,LV_FS_SEEK_SET);
     while(1) {
         // --- 1. 先消化存量 ---
         if (current_pkg_rem > 0) {
@@ -971,16 +972,6 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
                 }
             }
         }
-        print("%u\r\n",total_received_file_size);
-        total_received_file_size += write_len;
-       
-        if (total_received_file_size >= ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t)) {
-//        if (total_received_file_size >= 595368) {
-            lv_fs_close(&ui_setting_update.file_p);
-            update_is_ready=has_sd_new;
-            printf("下载完毕\r\n");
-            return; // 下载完成
-        }
         // --- 2. 后补充增量 ---
 //        if(xSemaphoreTake(DX_WF25_Rev_AT_RESP_CountSemaphore, pdMS_TO_TICKS(1)) == pdTRUE) {      
             uint16_t save_len = fifo_get_occupy_size(&WF25_Rev_fifo); 
@@ -995,6 +986,17 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
                 DEAL_BUF[Total_Len_resp] = '\0';
             }
 //        }
+        print("%u\r\n",total_received_file_size);
+        total_received_file_size += write_len;
+        write_len=0;
+        if (total_received_file_size >= ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t)) 
+        {
+//        if (total_received_file_size >= 595368) {
+            lv_fs_close(&ui_setting_update.file_p);
+            update_is_ready=has_sd_new;
+            printf("下载完毕\r\n");
+            return; // 下载完成
+        }
         
         // 关键：必须给系统喘息机会，否则进度条不跑，看门狗会叫
         vTaskDelay(1); 
