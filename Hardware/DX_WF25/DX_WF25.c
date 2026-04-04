@@ -83,16 +83,16 @@ const wifi_cmd_t wifi_cmd_table[AT_CMD_NUM] =
     [AT_CMD_CIPMODE_0]={AT_CMD_CIPMODE_0,    "AT+CIPMODE=0\r\n",        500,        "\r\nOK" },    /*普通模式*/
     [AT_CMD_CIPMODE_1]={AT_CMD_CIPMODE_1,    "AT+CIPMODE=1\r\n",        500,        "\r\nOK" },    /*普通模式*/
     
-    [AT_CMD_CIPSTART]={AT_CMD_CIPSTART,   "AT+CIPSTART=\"TCP\",\"api.seniverse.com\",80\r\n",500, "CONNECT\r\n\r\nOK"},
+    [AT_CMD_CIPSTART]={AT_CMD_CIPSTART,   "AT+CIPSTART=\"TCP\",\"api.seniverse.com\",80\r\n",500, "CONNECT"},
     [AT_CMD_CIPSEND]={AT_CMD_CIPSEND,         "",           2000,        ">",Handle_AT_CMD_CIPSEND},
     [AT_GET_CLOCK_WEATHER]={AT_GET_CLOCK_WEATHER,  "",           5000,       "CLOSED\r\n",Handle_AT_GET_CLOCK_WEATHER},
     
     [AT_CMD_CIPSNTPCFG]={AT_CMD_CIPSNTPCFG,"AT+CIPSNTPCFG=1,8,\"ntp.aliyun.com\",\"cn.ntp.org.cn\"\r\n",2000,"OK\r\n"} ,
     [AT_GET_NTP_TIME]={AT_GET_NTP_TIME,"AT+CIPSNTPTIME?\r\n",2000,"OK\r\n",Handle_AT_GET_NTP_TIME},
     
-    [Connect_GitHubUser]={Connect_GitHubUser,"AT+CIPSTART=\"SSL\",\"raw.githubusercontent.com\",443\r\n",2000,"CONNECT\r\n\r\nOK"}, 
+    [Connect_GitHubUser]={Connect_GitHubUser,"AT+CIPSTART=\"SSL\",\"raw.githubusercontent.com\",443\r\n",4000,"CONNECT"}, 
     [Get_GitHub_MyPhone_file_head]={Get_GitHub_MyPhone_file_head,  "", 8000,"CLOSED",Handle_Get_GitHub_MyPhone_file_head},
-    [Get_GitHub_MyPhone_file]={Get_GitHub_MyPhone_file,"",8000,"CLOSE",Handle_Get_GitHub_MyPhone_file},
+    [Get_GitHub_MyPhone_file]={Get_GitHub_MyPhone_file,"",8000,"CLOSED",Handle_Get_GitHub_MyPhone_file},
 };
 
 //const char*get_time_weather_str="GET /v3/weather/now.json?key=S_fPwMVZxdqUzfG_i&location=beijing&language=zh-Hans&unit=c HTTP/1.1\r\nHost: api.seniverse.com\r\nConnection: close\r\n\r\n";            
@@ -539,12 +539,12 @@ void Get_Weather_data(const char*api_str,const char*api_key_str,const char*place
     DX_WF25_Send_Dynamic(AT_GET_CLOCK_WEATHER,"%s",get_time_weather_str); 
 }
 
-void Get_GitHub_MyPhone_Update_file(const char*str)
+void Get_GitHub_MyPhone_Update_file(AT_CMD_WIFI_ENUM Github_cmd,const char*str)
 {
     DX_WF25_Send_Static(AT_CMD_CIPMODE_0);
     DX_WF25_Send_Static(Connect_GitHubUser);
     DX_WF25_Send_Dynamic(AT_CMD_CIPSEND,"AT+CIPSEND=%d\r\n",strlen(str));
-    DX_WF25_Send_Dynamic(Get_GitHub_MyPhone_file_head,"%s",str);   
+    DX_WF25_Send_Dynamic(Github_cmd,"%s",str);   
 }
 /*--------------------------------------------------------------------------------↓
 	@函数	  :wifi收发状态机
@@ -614,7 +614,7 @@ void wifi_cmd_stateMACHINE(void)
               }
               if(cur_cmd==Get_GitHub_MyPhone_file)
               {
-                 if( strstr(DEAL_BUF+Total_Len_resp, "+IPD,")!= NULL)
+                 if( strstr(DEAL_BUF+Total_Len_resp, "+IPD")!= NULL)
                   {
                     S = 3;
                     print("命令:%d通道3进入处理阶段\r\n",cur_cmd);                        
@@ -877,7 +877,7 @@ static void Handle_Get_GitHub_MyPhone_file_head(const char*buf){
   if(ui_setting_update.head[HEAD_GitHUB].version>ui_setting_update.head[HEAD_SD].version)
   {
     printf("GitHub有新版本\r\n");
-    Get_GitHub_MyPhone_Update_file(get_update_file_str);
+    Get_GitHub_MyPhone_Update_file(Get_GitHub_MyPhone_file,get_update_file_str);
   }
 }
 // 输入参数：p_buf 是你 DEAL_BUF 的地址
