@@ -916,36 +916,24 @@ uint8_t* parse_ipd_info(const char *p_buf, uint32_t *save_len)
 
 /*--------------------------------------------------------------------------------*/
 
-typedef struct
-{
-  lv_fs_file_t fp;
-
-}github_rev_file_t;
-
-github_rev_file_t github_rev_file;
-
 static void Handle_Get_GitHub_MyPhone_file(const char*buf)
 {
   char*p=DEAL_BUF;
   uint8_t* data_ptr;
   uint32_t ipd_data_len;
   uint16_t len;
-  lv_fs_res_t res;
+//  lv_fs_res_t res;
   uint32_t write_len;
   uint32_t remain;
   static uint32_t total_received_file_size = 0;
-  if(github_rev_file.fp.drv!=NULL)
-  {
-    lv_fs_close(&github_rev_file.fp);
-    github_rev_file.fp.drv=NULL;
-  }
-  res=lv_fs_open(&github_rev_file.fp,UPDATE_FILE_PATH,LV_FS_MODE_WR);
-  if(res!=LV_FS_RES_OK)
-  {
-    printf("清空文件失败res:%d\r\n",res);
-    
-    return ;
-  }
+
+//  res=lv_fs_open(&ui_setting_update.file_p,UPDATE_FILE_PATH,LV_FS_MODE_WR);
+//  if(res!=LV_FS_RES_OK)
+//  {
+//    printf("清空文件失败res:%d\r\n",res);
+//    
+//    return ;
+//  }
     // ... 前置 open 逻辑 ...
     uint32_t current_pkg_rem = 0; // 记录当前包还没写完的剩余长度
 
@@ -954,7 +942,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
         if (current_pkg_rem > 0) {
             // 还在还上一包的“债”
             uint32_t can_write = (Total_Len_resp > current_pkg_rem) ? current_pkg_rem : Total_Len_resp;
-            lv_fs_write(&github_rev_file.fp, DEAL_BUF, can_write, &write_len);
+            lv_fs_write(&ui_setting_update.file_p, DEAL_BUF, can_write, &write_len);
             
             uint32_t extra = Total_Len_resp - can_write;
             if(extra > 0) memmove(DEAL_BUF, DEAL_BUF + can_write, extra);
@@ -970,13 +958,13 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
                 
                 if(remain >= ipd_data_len) {
                     // 整包都在，写完平移
-                    lv_fs_write(&github_rev_file.fp, data_ptr, ipd_data_len, &write_len);
+                    lv_fs_write(&ui_setting_update.file_p, data_ptr, ipd_data_len, &write_len);
                     remain -= ipd_data_len;
                     memmove(DEAL_BUF, data_ptr + ipd_data_len, remain);
                     Total_Len_resp = remain;
                 } else {
                     // 货不够，写掉现有的，记住还差多少
-                    lv_fs_write(&github_rev_file.fp, data_ptr, remain, &write_len);
+                    lv_fs_write(&ui_setting_update.file_p, data_ptr, remain, &write_len);
                     current_pkg_rem = ipd_data_len - remain;
                     Total_Len_resp = 0;
                 }
@@ -986,7 +974,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
         total_received_file_size += write_len;
        
         if (total_received_file_size >= ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t)) {
-            lv_fs_close(&github_rev_file.fp);
+            lv_fs_close(&ui_setting_update.file_p);
             update_is_ready=has_sd_new;
             printf("下载完毕\r\n");
             return; // 下载完成

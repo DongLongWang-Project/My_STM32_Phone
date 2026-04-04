@@ -141,7 +141,7 @@ void SD_get_update_file_head(const char*update_file_path)
       lv_fs_close(&ui_setting_update.file_p);
       ui_setting_update.file_p.drv=NULL;
     }
-      lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,update_file_path,LV_FS_MODE_RD);
+      lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,update_file_path,LV_FS_MODE_RD|LV_FS_MODE_WR);
       if(res!=LV_FS_RES_OK)
       {
         printf("打开app文件失败\r\n");
@@ -226,7 +226,11 @@ uint8_t update_is_valid(head_enum head_)
         printf("Flash CRC OK: 0x%08X\r\n", current_crc);
         return 1;
     }
-    
+//  if(ui_setting_update.file_p.drv!=NULL)
+//  {
+//    lv_fs_close(&ui_setting_update.file_p);
+//    ui_setting_update.file_p.drv=NULL;
+//  }
     printf("Flash CRC Error! Calc: 0x%08X, Target: 0x%08X\r\n", current_crc, ui_setting_update.head[head_].crc32);
     // 在 APP 校验失败时，执行这个：
     return 0;
@@ -271,7 +275,7 @@ static void event_check_update_cb(lv_event_t*e)
             printf("update_flag:0X%08X\r\n",update_flag_info.update_flag);
             #endif
             lv_label_set_text(ui_setting_update.update_obj.new_version_label,"正在更新");
-            update_is_ready=false;
+            
              #if keil
             NVIC_SystemReset();
              #endif
