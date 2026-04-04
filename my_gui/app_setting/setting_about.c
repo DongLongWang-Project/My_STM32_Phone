@@ -141,7 +141,7 @@ void SD_get_update_file_head(const char*update_file_path)
       lv_fs_close(&ui_setting_update.file_p);
       ui_setting_update.file_p.drv=NULL;
     }
-      lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,update_file_path,LV_FS_MODE_RD);
+      lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,update_file_path,LV_FS_MODE_RD|LV_FS_MODE_WR);
       if(res!=LV_FS_RES_OK)
       {
         printf("打开app文件失败\r\n");
@@ -209,7 +209,6 @@ uint8_t update_is_valid(head_enum head_)
           case HEAD_SD:       lv_fs_read(&ui_setting_update.file_p,DEAL_BUF,read_len,&num);break;
            #if keil
           case HEAD_FLASH:    myFLASH_ReadData(APP_Addr + offset, DEAL_BUF, read_len);num=read_len;break;
-//          case HEAD_W25Q_Cur: W25Qxx_DMA_ReadData(Application_Addr_1+ offset+sizeof(head_t),DEAL_BUF,read_len);num=read_len;break;
           case HEAD_W25Q_Pre: W25Qxx_DMA_ReadData(Application_Addr_2+ offset+sizeof(head_t),DEAL_BUF,read_len);num=read_len;break;
           #endif // keil
           
@@ -221,10 +220,10 @@ uint8_t update_is_valid(head_enum head_)
         remain -= num;
     }
     
-    if(head_==HEAD_SD)
-    {
-      lv_fs_close(&ui_setting_update.file_p);
-    }
+//    if(head_==HEAD_SD)
+//    {
+//      lv_fs_close(&ui_setting_update.file_p);
+//    }
     // 最终校验
     if (current_crc == ui_setting_update.head[head_].crc32)
     {
