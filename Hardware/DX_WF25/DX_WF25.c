@@ -929,7 +929,8 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
     printf("创建新更新文件失败res:%d\r\n",res);
     return;
   }
-  const char*p=buf;
+  char *start=strstr(buf,"+IPD");
+  const char*p=start+100;
   uint8_t* data_ptr;
   uint32_t ipd_data_len;
   uint16_t len;
