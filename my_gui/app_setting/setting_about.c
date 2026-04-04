@@ -234,26 +234,27 @@ uint8_t update_is_valid(head_enum head_)
 
 
 
+update_is_ready_t update_is_ready=has_no_new;
 static void event_check_update_cb(lv_event_t*e)
 {
-        static bool update_is_ready=false;
-        if(update_is_ready==false)
+        if(update_is_ready==has_no_new)
         {
             if(get_update_file_head(HEAD_SD) && update_is_valid(HEAD_SD))
             {
               if(ui_setting_update.head[HEAD_SD].version>ui_setting_update.head[HEAD_FLASH].version)
               {
-                lv_label_set_text(ui_setting_update.update_obj.new_version_label,"发现新版本,点击更新");
-                update_is_ready=true;
+                lv_label_set_text(ui_setting_update.update_obj.new_version_label,"本地发现新版本,点击更新");
+                update_is_ready=has_sd_new;
               }
               else if(ui_setting_update.head[HEAD_SD].version==ui_setting_update.head[HEAD_FLASH].version )
               {
-              
-                  Get_GitHub_MyPhone_Update_file(Get_GitHub_MyPhone_file_head,get_update_head_str);
-                  
-                lv_label_set_text(ui_setting_update.update_obj.new_version_label,"当前为最新版本");
+                Get_GitHub_MyPhone_Update_file(Get_GitHub_MyPhone_file_head,get_update_head_str); 
               }
             }
+        }
+        else if(update_is_ready==has_git_new)
+        {
+            Get_GitHub_MyPhone_Update_file(Get_GitHub_MyPhone_file,get_update_file_str);        
         }
         else
         {

@@ -20,6 +20,12 @@
 #else
 #define UPDATE_FILE_PATH "0:/GitHub_Code/My_STM32_Phone/SD/bin/myPhone.bin"
 #endif
+typedef enum
+{
+  has_no_new=0,
+  has_sd_new,
+  has_git_new,
+}update_is_ready_t;
 
 typedef enum
 {
@@ -70,5 +76,6 @@ update_obj_t update_obj;
 extern update_flag_info_t update_flag_info;
 extern ui_setting_update_t ui_setting_update;
 void ui_app_setting_about(lv_obj_t*parent);
+extern update_is_ready_t update_is_ready;
 uint8_t update_is_valid(head_enum head_);
 #endif

@@ -479,7 +479,7 @@ static uint8_t DX_WF25_Rev_queue(void)
     const char* final_ptr = q_msg.cmd_str;
     if (final_ptr) {
     
-        memset(DEAL_BUF, 0, sizeof(DEAL_BUF));
+        memset(DEAL_BUF, 0, Total_Len_resp);
         Total_Len_resp=0;
         
         cur_cmd = q_msg.cmd;
@@ -614,7 +614,7 @@ void wifi_cmd_stateMACHINE(void)
               }
               if(cur_cmd==Get_GitHub_MyPhone_file)
               {
-                 if( strstr(DEAL_BUF+Total_Len_resp, "+IPD")!= NULL)
+                 if(strstr(DEAL_BUF+Total_Len_resp, "+IPD")!= NULL)
                   {
                     S = 3;
                     print("命令:%d通道3进入处理阶段\r\n",cur_cmd);                        
@@ -856,6 +856,14 @@ if(p != NULL) {
     }
 }
 
+void new_version_cb(void *user_data)
+{
+  if(lv_obj_is_valid(ui_setting_update.update_obj.new_version_label))
+  {
+     lv_label_set_text(ui_setting_update.update_obj.new_version_label,"发现新版本,点击下载");
+  }
+}
+
 static void Handle_Get_GitHub_MyPhone_file_head(const char*buf){
     // 1. 查找 +IPD,512:
     
@@ -877,7 +885,7 @@ static void Handle_Get_GitHub_MyPhone_file_head(const char*buf){
   if(ui_setting_update.head[HEAD_GitHUB].version>ui_setting_update.head[HEAD_SD].version)
   {
     printf("GitHub有新版本\r\n");
-    Get_GitHub_MyPhone_Update_file(Get_GitHub_MyPhone_file,get_update_file_str);
+    lv_async_call(new_version_cb,NULL);
   }
 }
 // 输入参数：p_buf 是你 DEAL_BUF 的地址
@@ -975,6 +983,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
        
         if (total_received_file_size >= ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t)) {
             lv_fs_close(&github_rev_file.fp);
+            update_is_ready=has_sd_new;
             printf("下载完毕\r\n");
             return; // 下载完成
         }
@@ -999,3 +1008,4 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
         // 此处应添加一个退出 while(1) 的条件，比如文件总大小下完了
     }
 }
+
