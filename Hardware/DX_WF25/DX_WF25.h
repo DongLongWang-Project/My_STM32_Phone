@@ -14,7 +14,7 @@
 #include "lvgl.h"
 
 
-#define USART3_RX_BUF_SIZE 256       //串口的缓冲区大小
+#define USART3_RX_BUF_SIZE 2048       //串口的缓冲区大小
 #define DEAL_BUF_SIZE       4096
 #define FIFO_BUF_SIZE       8192
 #define AT_CMD_MAX_LEN 256             //wifi的AT最长命令
