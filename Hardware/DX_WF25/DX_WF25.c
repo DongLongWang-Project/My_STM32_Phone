@@ -923,10 +923,10 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
   FRESULT res;
   static FIL f;
   
-  res=f_open(&f,UPDATE_FILE_PATH,FA_CREATE_ALWAYS|FA_WRITE|FA_READ);
+  res=f_open(&f,"0:/test_root.bin",FA_CREATE_ALWAYS|FA_WRITE);
   if(res!=FR_OK)
   {
-    printf("创建新更新文件失败\r\n");
+    printf("创建新更新文件失败res:%d\r\n",res);
     return;
   }
   const char*p=buf;
@@ -994,13 +994,15 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
         write_len=0;
         if (total_received_file_size >= ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t)) 
         {
+//        if (total_received_file_size >= 595424) 
+//        {
 //          lv_fs_close(&ui_setting_update.file_p);
             f_close(&f);
             update_is_ready=has_sd_new;
             printf("下载完毕\r\n");
             return; // 下载完成
         }
-        
+//        f_sync(&f);
         // 关键：必须给系统喘息机会，否则进度条不跑，看门狗会叫
         vTaskDelay(1); 
         

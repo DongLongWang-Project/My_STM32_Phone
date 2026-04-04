@@ -237,7 +237,7 @@ uint8_t update_is_valid(head_enum head_)
 
 
 
-update_is_ready_t update_is_ready=has_no_new;
+update_is_ready_t update_is_ready=has_git_new;
 static void event_check_update_cb(lv_event_t*e)
 {
         if(update_is_ready==has_no_new)
