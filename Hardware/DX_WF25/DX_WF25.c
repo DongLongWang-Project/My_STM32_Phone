@@ -979,7 +979,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
                     total_received_file_size += write_len;
                     remain -= ipd_data_len;
 //                    memmove(DEAL_BUF, data_ptr + ipd_data_len, remain);
-                    memmove(DEAL_BUF, data_ptr + Total_Len_resp-remain, remain);
+                    memmove(DEAL_BUF, DEAL_BUF +(Total_Len_resp-remain) , remain);
                     Total_Len_resp = remain;
                 } else {
                     // 货不够，写掉现有的，记住还差多少
