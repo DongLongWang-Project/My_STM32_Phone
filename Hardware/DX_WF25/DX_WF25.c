@@ -936,7 +936,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
   FRESULT res;
   static FIL f;
   
-  res=f_open(&f,"0:/test_root.bin",FA_CREATE_ALWAYS|FA_WRITE);
+  res=f_open(&f,UPDATE_FILE_PATH,FA_CREATE_ALWAYS|FA_WRITE);
   if(res!=FR_OK)
   {
     printf("创建新更新文件失败res:%d\r\n",res);
