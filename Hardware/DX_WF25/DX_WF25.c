@@ -1014,7 +1014,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
 //        {
 //          lv_fs_close(&ui_setting_update.file_p);
             f_close(&f);
-            update_is_ready=has_sd_new;
+            update_is_ready=has_no_new;
             printf("下载完毕\r\n");
             return; // 下载完成
         }

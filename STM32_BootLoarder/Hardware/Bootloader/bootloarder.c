@@ -472,6 +472,10 @@ void update_my_phone(void)
                 printf("错误：更新记录版本与 SD 卡文件不一致\r\n");
             }
         }
+        else
+        {
+            printf("错误：SD 卡文件异常,数据错误\r\n");
+        }
     }
     // 2. 无更新标志（正常启动流程）
     else
