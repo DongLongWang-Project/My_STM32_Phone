@@ -901,26 +901,46 @@ uint8_t* parse_ipd_info_with_filter(const char *p_buf, uint32_t *save_len)
     p_ipd = strstr(p_buf, "+IPD,");
     if (p_ipd == NULL) return NULL;
 
-    // 2. 寻找冒号，解析长度
+    // 2. 解析 AT 指令声明的原始长度
     char *p_num = p_ipd + 5; 
     p_colon = strchr(p_num, ':');
     if (p_colon == NULL) return NULL;
 
-    *save_len = (uint32_t)atoi(p_num);
+    uint32_t raw_ipd_len = (uint32_t)atoi(p_num);
     uint8_t* data_start = (uint8_t*)(p_colon + 1);
-
-    // --- 核心改动：识别并过滤非数据包 ---
     
-    // A. 过滤 HTTP Header (通常包含 "HTTP/" 字符串)
-    if (strstr((const char*)data_start, "HTTP/1.1") != NULL) {
-        printf("检测到 HTTP Header，跳过本次写入\r\n");
-        *save_len = 0; // 告诉主循环，这包有效数据长度为 0
-        return data_start; 
+    // 先默认有效长度就是原始长度
+    *save_len = raw_ipd_len; 
+
+    // --- 核心改动：精准切割 HTTP Header ---
+    
+    // A. 处理包含 HTTP 报头的第一包
+    if (strstr((const char*)data_start, "HTTP/1.") != NULL) {
+        char *p_body = strstr((const char*)data_start, "\r\n\r\n");
+        if (p_body != NULL) {
+            p_body += 4; // 越过 \r\n\r\n 这 4 个字节，指向真数据起点
+            
+            // 计算 Header 占用了多少字节
+            uint32_t header_len = (uint8_t*)p_body - data_start;
+            
+            // 重要：修正 save_len，只让主循环写入 Body 部分
+            if (*save_len >= header_len) {
+                *save_len -= header_len;
+            } else {
+                *save_len = 0; 
+            }
+            
+            printf("切除 Header: %d 字节, 保留 Body: %d 字节\r\n", header_len, *save_len);
+            return (uint8_t*)p_body; // 返回 Body 起点，找回丢失的 2 字节
+        } else {
+            // 如果还没收全 \r\n\r\n，暂时不写入
+            *save_len = 0;
+            return data_start;
+        }
     }
 
-    // B. 过滤关闭连接的提示 (某些模块会把 CLOSED 拼在 IPD 后面)
+    // B. 过滤关闭连接等纯文本提示 (这些包通常很短且不含 +IPD 之后的数据)
     if (strstr((const char*)data_start, "CLOSED") != NULL) {
-        printf("检测到连接关闭标志\r\n");
         *save_len = 0;
         return data_start;
     }

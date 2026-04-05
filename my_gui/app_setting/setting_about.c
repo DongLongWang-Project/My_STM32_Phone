@@ -179,7 +179,7 @@ uint8_t get_update_file_head(head_enum head_)
         }
        uint32_t buf_size = ui_setting_update.head[head_].file_size;
        printf("%d:version:%u\r\n",head_,ui_setting_update.head[head_].version);
-       if (buf_size == 0 || buf_size == 0xFFFFFFFF) return 0; 
+       if (buf_size == 0 || buf_size == 0xFFFFFFFF || buf_size >=0x00EFF00) return 0;  
        else return 1;
 //       if(update_is_valid(head_)) return 1;
        

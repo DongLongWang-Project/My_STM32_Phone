@@ -470,6 +470,8 @@ void update_my_phone(void)
             }
             else {
                 printf("错误：更新记录版本与 SD 卡文件不一致\r\n");
+                update_flag_info.update_flag = 0;
+                update_flag(&update_flag_info);
             }
         }
         else

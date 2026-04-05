@@ -21,7 +21,7 @@ int main(void)
     W25Qxx_SPI_Init();
 //    LCD_Init(BLACK);
 
-    update_my_phone();
+
 //     Calculate_Sectors_From_KB(1024*100);
 
 //    if(W25Qxx_SectorErase(UPDATE_INFO_Addr,W25Qxx_SECTOR_ERASE_4KB)==0)
@@ -44,7 +44,7 @@ int main(void)
 
 	while(1)
 	{
-
+         update_my_phone();
 	}
 }
 //    if(W25Qxx_SectorErase(UPDATE_INFO_Addr,W25Qxx_SECTOR_ERASE_4KB)==0)
