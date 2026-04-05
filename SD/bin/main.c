@@ -20,7 +20,7 @@ typedef struct
 }head_t;
 head_t head=
 {
-    .version=20260415,
+    .version=20260416,
     .name="MyPhoneOS_v1.5",
     .update_state=update_none,
     .reserved="This is my Graduation Project Work",
@@ -91,7 +91,7 @@ int main(void)
         // 初始值给 0xFFFFFFFF
         //  Continue_CRC32(0xFFFFFFFF, buf, 0XFFFF*3);
         current_crc=Continue_CRC32(current_crc,buf,count);
-        printf("%02X %02X %02X %02X count:%d current_crc:0X%08X\r\n",buf[count-4],buf[count-3],buf[count-2],buf[count-1],count,current_crc);
+        // printf("%02X %02X %02X %02X count:%d current_crc:0X%08X\r\n",buf[count-4],buf[count-3],buf[count-2],buf[count-1],count,current_crc);
 
      
         // printf("文件长度: %u 字节\r\n", count); 
