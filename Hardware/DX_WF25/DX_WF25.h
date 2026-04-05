@@ -171,6 +171,4 @@ extern const char*weather_api_key_str;
 extern const char*weather_api_str;
 extern const char*get_update_head_str;
 extern const char*get_update_file_str;
-
-uint8_t* parse_ipd_info(const char *p_buf, uint32_t *save_len);
 #endif

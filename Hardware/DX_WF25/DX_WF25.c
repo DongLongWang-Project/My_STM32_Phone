@@ -892,27 +892,40 @@ static void Handle_Get_GitHub_MyPhone_file_head(const char*buf){
 // 输入参数：p_buf 是你 DEAL_BUF 的地址
 // 输出参数：save_len 用来存解析出的 1371
 // 返回值：指向冒号后面第一个字节的指针（即真数据的开头）
-uint8_t* parse_ipd_info(const char *p_buf, uint32_t *save_len) 
+uint8_t* parse_ipd_info_with_filter(const char *p_buf, uint32_t *save_len) 
 {
-    char *p_start = NULL;
-    char *p_end = NULL;
+    char *p_ipd = NULL;
+    char *p_colon = NULL;
 
-    // 1. 寻找核心标志
-    p_start = strstr(p_buf, "+IPD,");
-    if (p_start == NULL) return NULL;
+    // 1. 定位 +IPD 标志
+    p_ipd = strstr(p_buf, "+IPD,");
+    if (p_ipd == NULL) return NULL;
 
-    // 2. 跳过 "+IPD," 这 5 个字符，指向数字开头
-    p_start += 5; 
+    // 2. 寻找冒号，解析长度
+    char *p_num = p_ipd + 5; 
+    p_colon = strchr(p_num, ':');
+    if (p_colon == NULL) return NULL;
 
-    // 3. 寻找数字结束的冒号 ":"
-    p_end = strchr(p_start, ':');
-    if (p_end == NULL) return NULL; // 没找到冒号说明数据还没收齐
+    *save_len = (uint32_t)atoi(p_num);
+    uint8_t* data_start = (uint8_t*)(p_colon + 1);
 
-    // 4. 将字符串转为数字 (atoi 会在遇到 ':' 时自动停止)
-    *save_len = (uint32_t)atoi(p_start);
+    // --- 核心改动：识别并过滤非数据包 ---
+    
+    // A. 过滤 HTTP Header (通常包含 "HTTP/" 字符串)
+    if (strstr((const char*)data_start, "HTTP/1.1") != NULL) {
+        printf("检测到 HTTP Header，跳过本次写入\r\n");
+        *save_len = 0; // 告诉主循环，这包有效数据长度为 0
+        return data_start; 
+    }
 
-    // 5. 返回冒号后面的地址（数据的真正起点）
-    return (uint8_t*)(p_end + 1);
+    // B. 过滤关闭连接的提示 (某些模块会把 CLOSED 拼在 IPD 后面)
+    if (strstr((const char*)data_start, "CLOSED") != NULL) {
+        printf("检测到连接关闭标志\r\n");
+        *save_len = 0;
+        return data_start;
+    }
+
+    return data_start;
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -929,25 +942,24 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
     printf("创建新更新文件失败res:%d\r\n",res);
     return;
   }
-  char *start=strstr(buf,"+IPD");
-  const char*p=start+100;
+  const char*p=buf;
   uint8_t* data_ptr;
   uint32_t ipd_data_len;
   uint16_t len;
-//  uint32_t write_len=0;
-  UINT  write_len=0;
   uint32_t remain;
   static uint32_t total_received_file_size = 0;
-
+  static uint32_t total_received_file_size_pre = 0;
   uint32_t current_pkg_rem = 0; // 记录当前包还没写完的剩余长度
 
     while(1) {
+      UINT  write_len=0;
         // --- 1. 先消化存量 ---
         if (current_pkg_rem > 0) {
             
             uint32_t can_write = (Total_Len_resp > current_pkg_rem) ? current_pkg_rem : Total_Len_resp;
 //            lv_fs_write(&ui_setting_update.file_p, DEAL_BUF, can_write, &write_len);
             f_write(&f, DEAL_BUF, can_write, &write_len);
+            total_received_file_size += write_len;
             uint32_t extra = Total_Len_resp - can_write;
             if(extra > 0) memmove(DEAL_BUF, DEAL_BUF + can_write, extra);
             Total_Len_resp = extra;
@@ -955,7 +967,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
         } 
         else {
             // 尝试解析新包头
-            data_ptr = parse_ipd_info(p, &ipd_data_len);
+            data_ptr = parse_ipd_info_with_filter(p, &ipd_data_len);
             if(data_ptr != NULL) {
                 len = data_ptr - (uint8_t*)p;
                 remain = Total_Len_resp - len;
@@ -963,7 +975,8 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
                 if(remain >= ipd_data_len) {
                     // 整包都在，写完平移
 //                    lv_fs_write(&ui_setting_update.file_p, data_ptr, ipd_data_len, &write_len);
-                    f_write(&f, data_ptr, ipd_data_len, &write_len);
+                    f_write(&f, data_ptr, ipd_data_len, &write_len); 
+                    total_received_file_size += write_len;
                     remain -= ipd_data_len;
                     memmove(DEAL_BUF, data_ptr + ipd_data_len, remain);
                     Total_Len_resp = remain;
@@ -971,6 +984,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
                     // 货不够，写掉现有的，记住还差多少
 //                    lv_fs_write(&ui_setting_update.file_p, data_ptr, remain, &write_len);
                     f_write(&f, data_ptr, remain, &write_len);
+                    total_received_file_size += write_len;
                     current_pkg_rem = ipd_data_len - remain;
                     Total_Len_resp = 0;
                 }
@@ -990,9 +1004,10 @@ static void Handle_Get_GitHub_MyPhone_file(const char*buf)
                 DEAL_BUF[Total_Len_resp] = '\0';
             }
 //        }
-        print("%u\r\n",total_received_file_size);
-        total_received_file_size += write_len;
-        write_len=0;
+        if(total_received_file_size_pre!=total_received_file_size)
+          print("file_size:%u\r\n",total_received_file_size);
+        
+        total_received_file_size_pre=total_received_file_size;
         if (total_received_file_size >= ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t)) 
         {
 //        if (total_received_file_size >= 595424) 
