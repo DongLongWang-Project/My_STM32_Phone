@@ -1097,7 +1097,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
     uint32_t current_pkg_rem = 0; // 上一包还没写完的剩余字节
     uint32_t raw_pkg_len = 0;    
 
-    res = f_open(&f, "0:/SD/bin/myPhone.bin", FA_CREATE_ALWAYS | FA_WRITE);
+    res = f_open(&f, "0:/SD/bin/os.bin", FA_CREATE_ALWAYS | FA_WRITE);
     if(res != FR_OK) {
         printf("Create file failed: %d\r\n", res);
         return;
