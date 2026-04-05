@@ -1045,11 +1045,11 @@ static void Handle_Get_GitHub_MyPhone_file_head(const char*buf){
 //}
 
 /**
- * @brief  解析IPD报头并过滤HTTP
+ * @brief  解析IPD报头并过滤HTTP响应头
  * @param  p_buf: 缓冲区起点 (DEAL_BUF)
  * @param  save_len: [传出] 真正需要写入SD卡的数据长度
- * @param  raw_pkg_len: [传出] ESP8266声明的原始数据长度 (用于物理平移)
- * @return uint8_t*: 指向真正有效数据的起始地址
+ * @param  raw_pkg_len: [传出] ESP8266声明的原始数据长度 (AT指令里的那个数字)
+ * @return uint8_t*: 指向真正有效数据（BIN开头）的起始地址
  */
 uint8_t* parse_ipd_info_with_filter(const char *p_buf, uint32_t *save_len, uint32_t *raw_pkg_len) 
 {
@@ -1059,34 +1059,33 @@ uint8_t* parse_ipd_info_with_filter(const char *p_buf, uint32_t *save_len, uint3
     // 1. 提取原始长度 (例如 895 或 1460)
     char *p_colon = strchr(p_ipd, ':');
     if (p_colon == NULL) return NULL;
+    
+    // atoi(p_ipd + 5) 只有在单路连接下才准，这里建议用更稳妥的办法找到数字
     *raw_pkg_len = (uint32_t)atoi(p_ipd + 5); 
     
-    uint8_t* data_start = (uint8_t*)(p_colon + 1);
-    *save_len = *raw_pkg_len; // 默认全存
+    uint8_t* data_start = (uint8_t*)(p_colon + 1); // 真正的原始数据起点
+    *save_len = *raw_pkg_len;                      // 默认存整包
 
-    // 2. 特殊处理第一包：过滤 HTTP 报头
-    // 检查这一包里是否包含 HTTP 响应头
+    // 2. 过滤 HTTP 报头（仅针对含有响应头的包）
     if (strstr((const char*)data_start, "HTTP/1.1") != NULL) {
         char *p_body = strstr((const char*)data_start, "\r\n\r\n");
         if (p_body != NULL) {
-            p_body += 4; // 跳过 \r\n\r\n
+            p_body += 4; // 跨过这 4 个字节的分界线
             uint32_t header_len = (uint8_t*)p_body - data_start;
             
-            // 计算剩下的有效 BIN 数据长度
+            // 剩下的才是真肉 (BIN数据)
             if (*raw_pkg_len > header_len) {
                 *save_len = *raw_pkg_len - header_len;
             } else {
-                *save_len = 0; // 全是报头
+                *save_len = 0; 
             }
-            return (uint8_t*)p_body; // 返回 Body 起点
+            return (uint8_t*)p_body; 
         } else {
-            // 还没收到完整的 \r\n\r\n，这一包先不写，等下一波
+            // 还没收到完整的空行，这一包先不写，等下一波凑齐
             *save_len = 0;
             return data_start;
         }
     }
-
-    // 3. 普通数据包，直接原样返回
     return data_start;
 }
 
@@ -1095,81 +1094,91 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
     FRESULT res;
     static FIL f;
     static uint32_t total_received_file_size = 0;
-    uint32_t current_pkg_rem = 0; // 记录跨包未写完的剩余长度
-    uint32_t raw_pkg_len = 0;    // 物理包长度
+    uint32_t current_pkg_rem = 0; // 上一包还没写完的剩余字节
+    uint32_t raw_pkg_len = 0;    
 
     res = f_open(&f, "0:/SD/bin/myPhone.bin", FA_CREATE_ALWAYS | FA_WRITE);
-    if(res != FR_OK) 
-  {
-    printf("创建新更新文件失败res:%d\r\n",res);
-    return;
-  }
+    if(res != FR_OK) {
+        printf("Create file failed: %d\r\n", res);
+        return;
+    }
 
     while(1) {
         UINT write_len = 0;
 
-        // --- 1. 处理逻辑：如果是上一包没写完的残余 ---
+        // --- A. 处理跨包残余 (断点续传) ---
         if (current_pkg_rem > 0) {
+            // 能写多少取决于缓冲区里现有的数据量
             uint32_t can_write = (Total_Len_resp > current_pkg_rem) ? current_pkg_rem : Total_Len_resp;
-            f_write(&f, DEAL_BUF, can_write, &write_len);
-            total_received_file_size += write_len;
+            
+            if (can_write > 0) {
+                f_write(&f, DEAL_BUF, can_write, &write_len);
+                total_received_file_size += write_len;
 
-            // 物理平移：吃掉多少挪走多少
-            if(Total_Len_resp > can_write) {
-                memmove(DEAL_BUF, DEAL_BUF + can_write, Total_Len_resp - can_write);
+                // 物理平移：吃掉多少挪走多少
+                uint32_t next_len = Total_Len_resp - write_len;
+                if(next_len > 0) {
+                    memmove(DEAL_BUF, DEAL_BUF + write_len, next_len);
+                }
+                Total_Len_resp = next_len;
+                current_pkg_rem -= write_len;
             }
-            Total_Len_resp -= can_write;
-            current_pkg_rem -= can_write;
+            // 如果这一包还没补齐，跳出循环去读 FIFO
+            if (current_pkg_rem > 0) goto READ_FIFO;
         } 
-        // --- 2. 处理逻辑：解析新包 ---
-        else {
+
+        // --- B. 解析新包 ---
+        char *p_ipd = strstr((char*)DEAL_BUF, "+IPD,");
+        if (p_ipd != NULL) {
             uint32_t ipd_save_len = 0;
             uint8_t* data_ptr = parse_ipd_info_with_filter((const char*)DEAL_BUF, &ipd_save_len, &raw_pkg_len);
+            
+            if (data_ptr != NULL) {
+                char *p_colon = strchr(p_ipd, ':');
+                // 核心对齐公式：跳过长度 = (+IPD到冒号距离) + 1冒号 + 原始总长度
+                uint32_t pkg_physical_size = (p_colon - p_ipd) + 1 + raw_pkg_len;
+                uint32_t total_skip = ( (uint8_t*)p_ipd - (uint8_t*)DEAL_BUF ) + pkg_physical_size;
 
-            if(data_ptr != NULL) {
-                // 计算从 DEAL_BUF 开头到 +IPD 冒号后第一个字节的物理距离
-                uint32_t head_offset = data_ptr - (uint8_t*)DEAL_BUF;
-                // 注意：这里要用真正的“物理剩余数据量”来判断包是否收全
-                // 物理包结束位置 = (+IPD到冒号的距离) + raw_pkg_len
-                uint32_t pkg_physical_end = (data_ptr - (uint8_t*)strstr((char*)DEAL_BUF, "+IPD,")) + raw_pkg_len;
-                uint32_t current_buffer_pos = (uint8_t*)strstr((char*)DEAL_BUF, "+IPD,") - (uint8_t*)DEAL_BUF;
-                uint32_t total_skip = current_buffer_pos + pkg_physical_end;
-
-                if(Total_Len_resp >= total_skip) {
-                    // 整包都在：写出有效部分，平移整个物理包
-                    if(ipd_save_len > 0) {
+                if (Total_Len_resp >= total_skip) {
+                    // 整包已到：写有效数据，平移整个物理块
+                    if (ipd_save_len > 0) {
                         f_write(&f, data_ptr, ipd_save_len, &write_len);
                         total_received_file_size += write_len;
                     }
-                    
                     uint32_t next_len = Total_Len_resp - total_skip;
                     memmove(DEAL_BUF, DEAL_BUF + total_skip, next_len);
                     Total_Len_resp = next_len;
                 } else {
-                    // 包没收全：先把能写的写了
-                    uint32_t can_read_now = Total_Len_resp - head_offset;
-                    if(can_read_now > 0 && ipd_save_len > 0) {
-                        uint32_t actual_w = (can_read_now > ipd_save_len) ? ipd_save_len : can_read_now;
-                        f_write(&f, data_ptr, actual_w, &write_len);
+                    // 包没收全：把当前缓冲区里属于这一包的数据先写了
+                    uint32_t data_in_buf = Total_Len_resp - (data_ptr - (uint8_t*)DEAL_BUF);
+                    if (data_in_buf > 0 && ipd_save_len > 0) {
+                        uint32_t can_w = (data_in_buf > ipd_save_len) ? ipd_save_len : data_in_buf;
+                        f_write(&f, data_ptr, can_w, &write_len);
                         total_received_file_size += write_len;
                         current_pkg_rem = ipd_save_len - write_len;
                     }
-                    Total_Len_resp = 0; // 缓冲区清空，等下一波 FIFO 读取
+                    // 这里绝对不能 Total_Len_resp = 0，要精准平移掉已处理的
+                    uint32_t consumed = Total_Len_resp; 
+                    Total_Len_resp = 0; 
                 }
             }
         }
 
-        // --- 3. 补充新数据 (从 FIFO 读) ---
-        uint16_t fifo_size = fifo_get_occupy_size(&WF25_Rev_fifo);
-        if(fifo_size > 0) {
-            uint16_t space = DEAL_BUF_SIZE - Total_Len_resp - 1;
-            uint16_t read_len = (fifo_size > space) ? space : fifo_size;
-            fifo_read(&WF25_Rev_fifo, (uint8_t *)(DEAL_BUF + Total_Len_resp), read_len);
-            Total_Len_resp += read_len;
-            DEAL_BUF[Total_Len_resp] = '\0';
-        }
+    READ_FIFO:
+    {
+            // --- C. 补充新数据 (从 FIFO 读) ---
+            uint16_t fifo_size = fifo_get_occupy_size(&WF25_Rev_fifo);
+            if(fifo_size > 0) {
+                uint16_t space = DEAL_BUF_SIZE - Total_Len_resp - 1;
+                uint16_t read_len = (fifo_size > space) ? space : fifo_size;
+                fifo_read(&WF25_Rev_fifo, (uint8_t *)(DEAL_BUF + Total_Len_resp), read_len);
+                Total_Len_resp += read_len;
+                DEAL_BUF[Total_Len_resp] = '\0';
+            }
+    }
 
-        // 检查是否下载完成
+
+        // 检查下载是否结束
         if (total_received_file_size >= (ui_setting_update.head[HEAD_GitHUB].file_size + sizeof(head_t))) {
             f_close(&f);
             return;
