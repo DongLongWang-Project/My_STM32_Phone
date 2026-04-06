@@ -1305,11 +1305,10 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
         uint16_t len = fifo_get_occupy_size(&WF25_Rev_fifo);
         if(len > 0)
         {
-            uint8_t tmp[256];
-            uint16_t read_len = (len > sizeof(tmp)) ? sizeof(tmp) : len;
-            fifo_read(&WF25_Rev_fifo, tmp, read_len);
+            uint16_t read_len = (len > sizeof(DEAL_BUF)) ? sizeof(DEAL_BUF) : len;
+            fifo_read(&WF25_Rev_fifo, (uint8_t*)DEAL_BUF, read_len);
             
-            ipd_stream_process(&ipd_ctx, tmp, read_len);
+            ipd_stream_process(&ipd_ctx,  (uint8_t*)DEAL_BUF, read_len);
 
             // 每隔 1000ms 打印一次下载进度 (使用 HAL_GetTick 或其他系统时钟)
             if (xTaskGetTickCount() - last_print_time > 1000) {
