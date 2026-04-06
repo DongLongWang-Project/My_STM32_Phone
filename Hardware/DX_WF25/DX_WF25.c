@@ -1240,22 +1240,24 @@ void ipd_stream_process(ipd_ctx_t *ctx, uint8_t *buf, uint32_t len)
                 break;
 
             case IPD_READ_DATA:
-                // --- 1. HTTP 报头过滤逻辑 ---
                 if(!ctx->header_done) {
-                    // 严格序列匹配: \r -> \n -> \r -> \n
+                    // 严格匹配 \r\n\r\n
                     if      (ctx->crlf_step == 0 && ch == '\r') ctx->crlf_step = 1;
                     else if (ctx->crlf_step == 1 && ch == '\n') ctx->crlf_step = 2;
                     else if (ctx->crlf_step == 2 && ch == '\r') ctx->crlf_step = 3;
                     else if (ctx->crlf_step == 3 && ch == '\n') {
-                        ctx->header_done = 1; // 跨过分界线
+                        ctx->header_done = 1; 
+                        printf("\r\n[OK] HTTP Header 过滤完成，开始写入 BIN 数据...\r\n");
                     } else {
-                        ctx->crlf_step = (ch == '\r') ? 1 : 0; // 匹配失败重置
+                        ctx->crlf_step = (ch == '\r') ? 1 : 0; 
                     }
+                    // 注意：这里没有 ctx->cache[ptr] = ch，所以报头字符被全部丢弃
                 } 
-                // --- 2. 有效数据缓存逻辑 ---
                 else {
+                    // 只有 header_done 为 1 后，数据才进入缓存和计数
                     ctx->cache[ctx->cache_ptr++] = ch;
-                    // 凑满一个扇区再写，极大提高SD卡寿命和速度
+                    ctx->total_saved++; 
+
                     if(ctx->cache_ptr >= 512) {
                         UINT bw;
                         f_write(ctx->file_handle, ctx->cache, 512, &bw);
@@ -1264,7 +1266,6 @@ void ipd_stream_process(ipd_ctx_t *ctx, uint8_t *buf, uint32_t len)
                 }
 
                 ctx->data_cnt++;
-                // --- 3. 物理包结束判断 ---
                 if(ctx->data_cnt >= ctx->data_len) {
                     ctx->state = IPD_FIND_HEAD;
                     ctx->match_idx = 0;
@@ -1274,24 +1275,30 @@ void ipd_stream_process(ipd_ctx_t *ctx, uint8_t *buf, uint32_t len)
     }
 }
 
-ipd_ctx_t  ipd_ctx;
+ipd_ctx_t ipd_ctx; // 建议放在全局
+
 static void Handle_Get_GitHub_MyPhone_file(const char* buf)
 {
     FRESULT res;
-    static FIL f; // 必须是 static 或全局，防止栈溢出
+    static FIL f; 
     uint32_t target_size = ui_setting_update.head[HEAD_GitHUB].file_size + sizeof(head_t);
-    // 1. 初始化状态机结构体
+    uint32_t last_print_time = 0;
+
+    // 1. 初始化
     memset(&ipd_ctx, 0, sizeof(ipd_ctx));
     ipd_ctx.file_handle = &f; 
 
-    // 2. 循环前打开文件
+    // 2. 打开文件
     res = f_open(&f, "0:/SD/bin/os.bin", FA_CREATE_ALWAYS | FA_WRITE);
     if(res != FR_OK) {
-        printf("创建文件失败: %d\r\n", res);
+        printf("[Error] SD卡文件创建失败: %d\r\n", res);
         return;
     }
 
-    printf("开始下载，目标大小: %d 字节...\r\n", target_size);
+    printf("\r\n==========================================\r\n");
+    printf("  OTA 开始下载: os.bin\r\n");
+    printf("  目标大小: %u 字节\r\n", target_size);
+    printf("==========================================\r\n");
 
     while(1)
     {
@@ -1300,32 +1307,42 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
         {
             uint8_t tmp[256];
             uint16_t read_len = (len > sizeof(tmp)) ? sizeof(tmp) : len;
-            
             fifo_read(&WF25_Rev_fifo, tmp, read_len);
             
-            // 记录当前已写入量（可以通过 ctx 内部累计，也可以让 process 返回写入量）
-            // 这里我们假设你在 ipd_stream_process 内部更新了某个全局或 ctx 内的计数器
             ipd_stream_process(&ipd_ctx, tmp, read_len);
 
-            // ⚠️ 注意：这里的 total_saved 需要根据状态机实际写出的数据来累加
-            // 建议在 ipd_ctx 结构体里加一个 .total_saved 成员
+            // 每隔 1000ms 打印一次下载进度 (使用 HAL_GetTick 或其他系统时钟)
+            if (xTaskGetTickCount() - last_print_time > 1000) {
+                last_print_time = xTaskGetTickCount();
+                printf("下载进度: %u / %u (%u%%)\r\n", 
+                        ipd_ctx.total_saved, 
+                        target_size, 
+                        (ipd_ctx.total_saved * 100) / target_size);
+            }
+
             if (ipd_ctx.total_saved >= target_size) {
-                break; // 下载完成，跳出循环
+                printf("\r\n[Success] 已达到目标大小: %u\r\n", ipd_ctx.total_saved);
+                break; 
             }
         }
         
-        // 给系统喘息机会，防止看门狗复位
+        // 增加一个简单的超时处理 (如果超过 10 秒没数据，认为网络断开)
+        // 这里需要你自己根据系统增加计时逻辑
+        
         vTaskDelay(1);
     }
 
-    // 3. 循环结束后，处理“零头”并关闭文件
+    // 3. 收尾
     if(ipd_ctx.cache_ptr > 0) {
         UINT bw;
         f_write(&f, ipd_ctx.cache, ipd_ctx.cache_ptr, &bw);
-        printf("刷入最后剩余数据: %d 字节\r\n", ipd_ctx.cache_ptr);
+        printf("[System] 刷入最后余量数据: %d 字节\r\n", ipd_ctx.cache_ptr);
         ipd_ctx.cache_ptr = 0;
     }
 
     f_close(&f);
-    printf("文件下载并保存成功！共接收: %d\r\n", ipd_ctx.total_saved);
+    printf("==========================================\r\n");
+    printf("  下载完成！文件已保存至 SD 卡。\r\n");
+    printf("  总写入量: %u 字节\r\n", ipd_ctx.total_saved);
+    printf("==========================================\r\n");
 }
