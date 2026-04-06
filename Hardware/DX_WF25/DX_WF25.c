@@ -1300,7 +1300,8 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
     printf("  OTA 开始下载: os.bin\r\n");
     printf("  目标大小: %u 字节\r\n", target_size);
     printf("==========================================\r\n");
-
+    ipd_stream_process(&ipd_ctx,  (uint8_t*)DEAL_BUF, Total_Len_resp);
+    
     while(1)
     {
         uint16_t len = fifo_get_occupy_size(&WF25_Rev_fifo);
