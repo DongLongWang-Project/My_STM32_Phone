@@ -1503,12 +1503,12 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
 
     uint32_t last_print_time = 0;
     uint32_t last_data_time  = 0;
-    uint32_t last_saved      = 0;
+    uint32_t last_in         = 0; // 用于判断是否有新数据到来
 
-    // 初始化
+    // --- 初始化 ---
     ipd_init(&ipd_ctx, &f);
 
-    // 打开文件
+    // --- 打开文件 ---
     res = f_open(&f, "0:/SD/bin/os.bin", FA_CREATE_ALWAYS | FA_WRITE);
     if(res != FR_OK) {
         printf("[ERR] 文件创建失败: %d\r\n", res);
@@ -1516,11 +1516,11 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
     }
 
     printf("\r\n========== OTA START ==========\r\n");
-    printf("目标大小: %u\r\n", target_size);
+    printf("目标大小: %u 字节\r\n", target_size);
 
     last_data_time = xTaskGetTickCount();
 
-    // ⭐ 处理初始缓冲区
+    // ⭐ 处理已有缓冲区数据
     if(Total_Len_resp > 0)
     {
         ipd_stream_process(&ipd_ctx, (uint8_t*)DEAL_BUF, Total_Len_resp);
@@ -1534,7 +1534,6 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
         if(len > 0)
         {
             uint16_t read_len = (len > sizeof(DEAL_BUF)) ? sizeof(DEAL_BUF) : len;
-
             fifo_read(&WF25_Rev_fifo, (uint8_t*)DEAL_BUF, read_len);
 
             ipd_stream_process(&ipd_ctx, (uint8_t*)DEAL_BUF, read_len);
@@ -1542,42 +1541,43 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
             last_data_time = xTaskGetTickCount();
         }
 
-        // 每1秒打印
-        if (xTaskGetTickCount() - last_print_time > 1000)
+        // --- 每1秒打印状态 ---
+        if(xTaskGetTickCount() - last_print_time > 1000)
         {
             last_print_time = xTaskGetTickCount();
 
             uint32_t percent = (ipd_ctx.total_out * 100) / target_size;
 
-            printf("[INFO] in:%lu out:%lu (%lu%%) ipd:%lu err:%lu\r\n",
+            printf("[INFO] in:%u out:%u (%u%%) ipd_len:%u err:%u\r\n",
                    ipd_ctx.total_in,
                    ipd_ctx.total_out,
                    percent,
                    ipd_ctx.last_ipd_len,
                    ipd_ctx.err_cnt);
 
-            if(ipd_ctx.total_out == last_saved)
+            // 判断是否有新数据到来
+            if(ipd_ctx.total_in == last_in)
             {
                 printf("[WARN] 数据无增长\r\n");
             }
-            last_saved = ipd_ctx.total_out;
+            last_in = ipd_ctx.total_in;
         }
 
-        // 超时
-        if (xTaskGetTickCount() - last_data_time > 5000)
+        // --- 超时检测（5秒无数据） ---
+        if(xTaskGetTickCount() - last_data_time > 5000)
         {
-            printf("[ERR] 超时\r\n");
+            printf("[ERR] 超时：5秒未收到数据\r\n");
             break;
         }
 
-        // 越界保护
+        // --- 越界保护 ---
         if (ipd_ctx.total_out > target_size + 1024)
         {
-            printf("[ERR] 数据错位\r\n");
+            printf("[ERR] 数据超出目标范围，疑似错位\r\n");
             break;
         }
 
-        // 完成
+        // --- 完成 ---
         if (ipd_ctx.total_out >= target_size)
         {
             printf("[OK] 下载完成\r\n");
@@ -1587,14 +1587,20 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
         vTaskDelay(1);
     }
 
-    // flush
+    // --- flush尾数据 ---
     if(ipd_ctx.cache_ptr > 0)
     {
         UINT bw;
         f_write(&f, ipd_ctx.cache, ipd_ctx.cache_ptr, &bw);
+        printf("[INFO] Flush尾数据: %d 字节\r\n", ipd_ctx.cache_ptr);
+        ipd_ctx.cache_ptr = 0;
     }
 
     f_close(&f);
 
     printf("========== OTA END ==========\r\n");
+    printf("总接收: %u 字节, 总写入: %u 字节\r\n",
+           ipd_ctx.total_in,
+           ipd_ctx.total_out);
+    printf("==================================\r\n");
 }
