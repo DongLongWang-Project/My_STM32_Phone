@@ -1348,259 +1348,60 @@ static void Handle_Get_GitHub_MyPhone_file_head(const char*buf){
 //    printf("==========================================\r\n");
 //}
 
-typedef enum {
-    IPD_S_HEAD,
-    IPD_S_LEN,
-    IPD_S_DATA
-} ipd_state_t;
-
-typedef struct {
-    ipd_state_t state;
-
-    uint32_t data_len;
-    uint32_t data_cnt;
-    uint8_t  match_idx;
-
-    // HTTP过滤
-    uint8_t  header_done;
-    uint8_t  crlf_step;
-
-    // 输出缓存
-    uint8_t  cache[512];
-    uint16_t cache_ptr;
-
-    // 统计
-    uint32_t total_out;
-    uint32_t total_in;
-
-    // 调试
-    uint32_t last_ipd_len;
-    uint32_t err_cnt;
-
-    FIL *fp;
-
-} ipd_ctx_t;
-
-void ipd_init(ipd_ctx_t *ctx, FIL *fp)
-{
-    memset(ctx, 0, sizeof(ipd_ctx_t));
-    ctx->fp = fp;
-}
-
-static void ipd_output(ipd_ctx_t *ctx, uint8_t ch)
-{
-    ctx->cache[ctx->cache_ptr++] = ch;
-    ctx->total_out++;
-
-    if(ctx->cache_ptr >= sizeof(ctx->cache))
-    {
-        UINT bw;
-        f_write(ctx->fp, ctx->cache, ctx->cache_ptr, &bw);
-        ctx->cache_ptr = 0;
-    }
-}
-static uint8_t http_filter(ipd_ctx_t *ctx, uint8_t ch)
-{
-    if(ctx->header_done) return 1;
-
-    if      (ctx->crlf_step == 0 && ch == '\r') ctx->crlf_step = 1;
-    else if (ctx->crlf_step == 1 && ch == '\n') ctx->crlf_step = 2;
-    else if (ctx->crlf_step == 2 && ch == '\r') ctx->crlf_step = 3;
-    else if (ctx->crlf_step == 3 && ch == '\n')
-    {
-        ctx->header_done = 1;
-        ctx->crlf_step = 0;
-        return 0;
-    }
-    else
-    {
-        ctx->crlf_step = (ch == '\r') ? 1 : 0;
-    }
-
-    return 0;
-}
-
-void ipd_stream_process(ipd_ctx_t *ctx, uint8_t *buf, uint32_t len)
-{
-    for(uint32_t i = 0; i < len; i++)
-    {
-        uint8_t ch = buf[i];
-
-        ctx->total_in++;
-
-        switch(ctx->state)
-        {
-            case IPD_S_HEAD:
-                if(ch == "+IPD,"[ctx->match_idx])
-                {
-                    ctx->match_idx++;
-                    if(ctx->match_idx == 5)
-                    {
-                        ctx->match_idx = 0;
-                        ctx->state = IPD_S_LEN;
-                        ctx->data_len = 0;
-                    }
-                }
-                else
-                {
-                    ctx->match_idx = 0;
-                }
-                break;
-
-            case IPD_S_LEN:
-                if(ch >= '0' && ch <= '9')
-                {
-                    ctx->data_len = ctx->data_len * 10 + (ch - '0');
-                }
-                else if(ch == ':')
-                {
-                    ctx->data_cnt = 0;
-
-                    ctx->last_ipd_len = ctx->data_len;
-
-                    // ⭐ 每个IPD必须重置HTTP状态
-                    ctx->header_done = 0;
-                    ctx->crlf_step = 0;
-
-                    // 防御
-                    if(ctx->data_len == 0 || ctx->data_len > 2048)
-                    {
-                        ctx->err_cnt++;
-                    }
-
-                    ctx->state = IPD_S_DATA;
-                }
-                break;
-
-            case IPD_S_DATA:
-
-                if(http_filter(ctx, ch))
-                {
-                    ipd_output(ctx, ch);
-                }
-
-                ctx->data_cnt++;
-
-                if(ctx->data_cnt >= ctx->data_len)
-                {
-                    ctx->state = IPD_S_HEAD;
-                    ctx->match_idx = 0;
-                }
-
-                break;
-        }
-    }
-}
-
-ipd_ctx_t ipd_ctx;
-
 static void Handle_Get_GitHub_MyPhone_file(const char* buf)
 {
     FRESULT res;
-    static FIL f; 
+    static FIL f;
+    uint32_t total_raw_saved = 0;
+    uint32_t last_data_time = xTaskGetTickCount(); // 记录最后一次抓到数据的时间
+    uint8_t write_buf[1024]; 
 
-    uint32_t target_size = ui_setting_update.head[HEAD_GitHUB].file_size + sizeof(head_t);
-
-    uint32_t last_print_time = 0;
-    uint32_t last_data_time  = 0;
-    uint32_t last_in         = 0; // 用于判断是否有新数据到来
-
-    // --- 初始化 ---
-    ipd_init(&ipd_ctx, &f);
-
-    // --- 打开文件 ---
-    res = f_open(&f, "0:/SD/bin/os.bin", FA_CREATE_ALWAYS | FA_WRITE);
+    res = f_open(&f, "0:/SD/bin/raw_dump.bin", FA_CREATE_ALWAYS | FA_WRITE);
     if(res != FR_OK) {
-        printf("[ERR] 文件创建失败: %d\r\n", res);
+        printf("[Error] SD卡打开失败: %d\r\n", res);
         return;
     }
 
-    printf("\r\n========== OTA START ==========\r\n");
-    printf("目标大小: %u 字节\r\n", target_size);
-
-    last_data_time = xTaskGetTickCount();
-
-    // ⭐ 处理已有缓冲区数据
-    if(Total_Len_resp > 0)
-    {
-        ipd_stream_process(&ipd_ctx, (uint8_t*)DEAL_BUF, Total_Len_resp);
-        Total_Len_resp = 0;
-    }
+    printf("\r\n[System] 暴力模式启动！监测到 5 秒无数据将自动退出...\r\n");
 
     while(1)
     {
         uint16_t len = fifo_get_occupy_size(&WF25_Rev_fifo);
-
+        
         if(len > 0)
         {
-            uint16_t read_len = (len > sizeof(DEAL_BUF)) ? sizeof(DEAL_BUF) : len;
-            fifo_read(&WF25_Rev_fifo, (uint8_t*)DEAL_BUF, read_len);
+            // 1. 只要有数据，就更新时间戳
+            last_data_time = xTaskGetTickCount(); 
 
-            ipd_stream_process(&ipd_ctx, (uint8_t*)DEAL_BUF, read_len);
+            uint16_t read_len = (len > sizeof(write_buf)) ? sizeof(write_buf) : len;
+            fifo_read(&WF25_Rev_fifo, write_buf, read_len);
+            
+            UINT bw;
+            f_write(&f, write_buf, read_len, &bw);
+            total_raw_saved += bw;
 
-            last_data_time = xTaskGetTickCount();
+            // 顺便打个点，表示正在工作
+            if(total_raw_saved % 4096 == 0) printf("."); 
         }
-
-        // --- 每1秒打印状态 ---
-        if(xTaskGetTickCount() - last_print_time > 1000)
+        else 
         {
-            last_print_time = xTaskGetTickCount();
-
-            uint32_t percent = (ipd_ctx.total_out * 100) / target_size;
-
-            printf("[INFO] in:%u out:%u (%u%%) ipd_len:%u err:%u\r\n",
-                   ipd_ctx.total_in,
-                   ipd_ctx.total_out,
-                   percent,
-                   ipd_ctx.last_ipd_len,
-                   ipd_ctx.err_cnt);
-
-            // 判断是否有新数据到来
-            if(ipd_ctx.total_in == last_in)
+            // 2. 没数据时，检查是否超时
+            if ((xTaskGetTickCount() - last_data_time) > pdMS_TO_TICKS(5000)) 
             {
-                printf("[WARN] 数据无增长\r\n");
+                printf("\r\n[Timeout] 持续 5 秒无数据，判定下载结束。\r\n");
+                break; 
             }
-            last_in = ipd_ctx.total_in;
         }
 
-        // --- 超时检测（5秒无数据） ---
-        if(xTaskGetTickCount() - last_data_time > 5000)
-        {
-            printf("[ERR] 超时：5秒未收到数据\r\n");
+        // 3. 安全冗余：防止无限下载（比如服务器抽风发个不停）
+        if (total_raw_saved > 2 * 1024 * 1024) { // 如果超过 2MB 还没停，强制掐断
+            printf("\r\n[Warning] 达到安全阈值(2MB)，强制保存退出。\r\n");
             break;
         }
 
-        // --- 越界保护 ---
-        if (ipd_ctx.total_out > target_size + 1024)
-        {
-            printf("[ERR] 数据超出目标范围，疑似错位\r\n");
-            break;
-        }
-
-        // --- 完成 ---
-        if (ipd_ctx.total_out >= target_size)
-        {
-            printf("[OK] 下载完成\r\n");
-            break;
-        }
-
-        vTaskDelay(1);
-    }
-
-    // --- flush尾数据 ---
-    if(ipd_ctx.cache_ptr > 0)
-    {
-        UINT bw;
-        f_write(&f, ipd_ctx.cache, ipd_ctx.cache_ptr, &bw);
-        printf("[INFO] Flush尾数据: %d 字节\r\n", ipd_ctx.cache_ptr);
-        ipd_ctx.cache_ptr = 0;
+        vTaskDelay(5); // 稍微加长一点，给 FIFO 留出堆积的空间，提高写入效率
     }
 
     f_close(&f);
-
-    printf("========== OTA END ==========\r\n");
-    printf("总接收: %u 字节, 总写入: %u 字节\r\n",
-           ipd_ctx.total_in,
-           ipd_ctx.total_out);
-    printf("==================================\r\n");
+    printf("[Success] 原始数据已固化至 SD 卡，共 %u 字节。\r\n", total_raw_saved);
 }
