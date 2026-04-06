@@ -1242,14 +1242,15 @@ void ipd_stream_process(ipd_ctx_t *ctx, uint8_t *buf, uint32_t len)
             case IPD_READ_DATA:
                 if(!ctx->header_done) {
                     // 严格匹配 \r\n\r\n
-                    if      (ctx->crlf_step == 0 && ch == '\r') ctx->crlf_step = 1;
-                    else if (ctx->crlf_step == 1 && ch == '\n') ctx->crlf_step = 2;
-                    else if (ctx->crlf_step == 2 && ch == '\r') ctx->crlf_step = 3;
-                    else if (ctx->crlf_step == 3 && ch == '\n') {
+                    if      (ctx->crlf_step == 0 && ch == 'H') ctx->crlf_step = 1;
+                    else if (ctx->crlf_step == 1 && ch == 'T') ctx->crlf_step = 2;
+                    else if (ctx->crlf_step == 2 && ch == 'T') ctx->crlf_step = 3;
+                    else if (ctx->crlf_step == 3 && ch == 'P') {
                         ctx->header_done = 1; 
+                        ctx->state = IPD_FIND_HEAD;
                         printf("\r\n[OK] HTTP Header 过滤完成，开始写入 BIN 数据...\r\n");
                     } else {
-                        ctx->crlf_step = (ch == '\r') ? 1 : 0; 
+                        ctx->crlf_step = (ch == 'H') ? 1 : 0; 
                     }
                     // 注意：这里没有 ctx->cache[ptr] = ch，所以报头字符被全部丢弃
                 } 
