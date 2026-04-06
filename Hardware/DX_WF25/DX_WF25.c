@@ -1261,7 +1261,7 @@ void ipd_stream_process(ipd_ctx_t *ctx, uint8_t *buf, uint32_t len)
 
                     if(ctx->cache_ptr >= 512) {
                         UINT bw;
-                        f_write(ctx->file_handle, ctx->cache, 512, &bw);
+                        f_write(ctx->file_handle, ctx->cache, ctx->cache_ptr, &bw);
                         ctx->cache_ptr = 0;
                     }
                 }
