@@ -317,6 +317,7 @@ void download_update_timer(lv_timer_t*t)
           printf("下载完毕,删除定时器\r\n");
           lv_label_set_text(ui_setting_update.update_obj.new_version_label,"下载完毕,点击检查");
           update_is_ready=has_no_new;
+          lv_timer_del(t);
         }
 }
 
