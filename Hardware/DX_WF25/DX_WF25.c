@@ -1181,20 +1181,38 @@ void ipd_stream_process(ipd_ctx_t *ctx, uint8_t *buf, uint16_t buf_len)
 
             // --- 阶段 3：搬运数据 (核心部分) ---
             case IPD_READ_DATA:
-                ctx->cache[ctx->cache_ptr++] = ch;
-                ctx->data_cnt++;
-                ctx->total_saved++;
-
-                // 只要满了 512，立刻物理写入
-                if (ctx->cache_ptr == 512) { 
-                    UINT bw;
-                    FRESULT res = f_write(ctx->file_handle, ctx->cache, 512, &bw);
-                    if(res != FR_OK || bw < 512) {
-                        printf("SD Write Error! res:%d\n", res);
+                if (!ctx->is_header_passed) {
+                    // --- 报头过滤逻辑 ---
+                    // 我们在找 \r\n\r\n (ASCII: 13 10 13 10)
+                    if ((ctx->header_match_cnt == 0 || ctx->header_match_cnt == 2) && ch == '\r') {
+                        ctx->header_match_cnt++;
+                    } else if ((ctx->header_match_cnt == 1 || ctx->header_match_cnt == 3) && ch == '\n') {
+                        ctx->header_match_cnt++;
+                    } else {
+                        ctx->header_match_cnt = 0; // 匹配失败，重置
                     }
-                    ctx->cache_ptr = 0; // 清零，确保下一个字符从 cache[0] 开始
+
+                    // 匹配到了 4 个字符 (\r\n\r\n)，说明报头结束，下一位就是 BIN 开始
+                    if (ctx->header_match_cnt == 4) {
+                        ctx->is_header_passed = 1;
+                        printf("HTTP Header Stripped Successfully!\r\n");
+                    }
+                } 
+                else {
+                    // --- 真正的数据写入逻辑 ---
+                    ctx->cache[ctx->cache_ptr++] = ch;
+                    // 注意：这里的 total_saved 应该只统计有效 BIN 数据
+                    ctx->total_saved++; 
+
+                    if (ctx->cache_ptr == 512) {
+                        UINT bw;
+                        f_write(ctx->file_handle, ctx->cache, 512, &bw);
+                        ctx->cache_ptr = 0;
+                    }
                 }
 
+                // 无论是否是报头，IPD 声明的字节数都要消耗
+                ctx->data_cnt++; 
                 if (ctx->data_cnt >= ctx->data_len) {
                     ctx->state = IPD_FIND_HEAD;
                     ctx->match_idx = 0;

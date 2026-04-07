@@ -154,9 +154,13 @@ typedef struct {
     uint32_t data_cnt;    
     uint32_t total_saved;  
     uint16_t cache_ptr;   
-    ipd_state_t state;    
-    uint8_t  match_idx;   
-    uint8_t  _reserved[3]; // 手动补齐 4 字节对齐
+    ipd_state_t state; 
+    
+    uint8_t  match_idx;
+    uint8_t is_header_passed; // 0: 正在过滤报头, 1: 正在写有效数据
+    uint8_t header_match_cnt; // 用于匹配 \r\n\r\n 的计数器
+    uint8_t  _reserved; // 手动补齐 4 字节对齐
+    
     uint8_t  cache[512] __attribute__((aligned(4))); 
 } ipd_ctx_t;
 
