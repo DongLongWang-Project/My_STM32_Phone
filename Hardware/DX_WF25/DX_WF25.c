@@ -622,7 +622,6 @@ void wifi_cmd_stateMACHINE(void)
               }
 
               Total_Len_resp+= Total_Len; 
-              Total_Len_resp%=DEAL_BUF_SIZE;
           }
       }
   }
@@ -1138,24 +1137,7 @@ static void Handle_Get_GitHub_file(const char* buf)
     printf("[Success] 原始数据已固化至 SD 卡，共 %u 字节。\r\n", total_raw_saved);
 }
 
-typedef enum {
-    IPD_FIND_HEAD,   // 寻找 "+IPD,"
-    IPD_PARSE_LEN,   // 解析长度数字，直到 ':'
-    IPD_READ_DATA    // 正在读取 BIN 数据
-} ipd_state_t;
 
-typedef struct {
-    ipd_state_t state;    // 当前状态
-    uint32_t data_len;    // 当前包声明的总长度
-    uint32_t data_cnt;    // 当前包已收到的字节数
-    uint8_t  match_idx;   // "+IPD," 匹配索引
-    
-    uint8_t  cache[512];  // 512字节扇区缓存 (针对SD卡优化)
-    uint16_t cache_ptr;   // 缓存当前位置指针
-    
-    FIL      *file_handle; // 指向已打开的 FatFs 文件句柄
-    uint32_t total_saved;  // 累计保存的有效字节数
-} ipd_ctx_t;
 void ipd_stream_process(ipd_ctx_t *ctx, uint8_t *buf, uint16_t buf_len)
 {
     const char *ipd_str = "+IPD,";

@@ -142,6 +142,24 @@ typedef struct {
   char         hotspot_ip[WIFI_IP_MAX_LEN]; 
 }Hotspot_data_t;
 
+typedef enum {
+    IPD_FIND_HEAD,   // 寻找 "+IPD,"
+    IPD_PARSE_LEN,   // 解析长度数字，直到 ':'
+    IPD_READ_DATA    // 正在读取 BIN 数据
+} ipd_state_t;
+
+typedef struct {
+    ipd_state_t state;    // 当前状态
+    uint32_t data_len;    // 当前包声明的总长度
+    uint32_t data_cnt;    // 当前包已收到的字节数
+    uint8_t  match_idx;   // "+IPD," 匹配索引
+    
+    uint8_t  cache[512];  // 512字节扇区缓存 (针对SD卡优化)
+    uint16_t cache_ptr;   // 缓存当前位置指针
+    
+    FIL      *file_handle; // 指向已打开的 FatFs 文件句柄
+    uint32_t total_saved;  // 累计保存的有效字节数
+} ipd_ctx_t;
 
 extern  const wifi_cmd_t wifi_cmd_table[AT_CMD_NONE];
 extern const char*get_time_weather_str;
@@ -167,6 +185,8 @@ void DX_WF25_CMD_EVENT(AT_CMD_WIFI_ENUM CMD_AT);
 void Get_Weather_data(const char*api_str,const char*api_key_str,const char*place_str);
 bool check_ip_conflict(const char *sta_ip,const char *ap_ip);
 void Get_GitHub_MyPhone_Update_file(AT_CMD_WIFI_ENUM Github_cmd,const char*str);
+
+void ipd_stream_process(ipd_ctx_t *ctx, uint8_t *buf, uint16_t buf_len);
 extern const char*weather_api_key_str;
 extern const char*weather_api_str;
 extern const char*get_update_head_str;
