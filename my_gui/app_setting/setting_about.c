@@ -172,8 +172,8 @@ uint8_t get_update_file_head(head_enum head_)
           default:break;
         }
        uint32_t buf_size = ui_setting_update.head[head_].file_size;
-       printf("%d:version:%u\r\n",head_,ui_setting_update.head[head_].version);
-       if (buf_size == 0 || buf_size == 0xFFFFFFFF || buf_size >=0x00EFF00) return 0;  
+       print("head_:%d,buf_size:%u version:%u\r\n",head_,buf_size,ui_setting_update.head[head_].version);
+       if (buf_size == 0 ||  buf_size >=0x00EFF00) return 0;  
 //       else return 1;
        if(update_is_valid(head_)) return 1;
        
