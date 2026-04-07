@@ -272,6 +272,7 @@ static void event_check_update_cb(lv_event_t*e)
               }
               else if(ui_setting_update.head[HEAD_SD].version==ui_setting_update.head[HEAD_FLASH].version )
               {
+                lv_label_set_text(ui_setting_update.update_obj.new_version_label,"已是最新版本");
                 Get_GitHub_MyPhone_Update_file(Get_GitHub_MyPhone_file_head,get_update_head_str); 
               }
             }
@@ -302,16 +303,12 @@ static void event_check_update_cb(lv_event_t*e)
             update_flag_info.file_version=ui_setting_update.head[HEAD_SD].version;
             update_flag_info.update_flag=0x5A5A1234;
             update_flag_to_W25Qxx(&update_flag_info);
-            printf("file_crc:0X%08X\r\n",update_flag_info.file_crc);
-            printf("file_size:%u    \r\n",update_flag_info.file_size);
-            printf("file_version:%u    \r\n",update_flag_info.file_version);
-            printf("update_flag:0X%08X\r\n",update_flag_info.update_flag);
-            #endif
-            lv_label_set_text(ui_setting_update.update_obj.new_version_label,"正在更新");
             
-             #if keil
-            NVIC_SystemReset();
-             #endif
+            printf("文件CRC:0X%08X \r\n",update_flag_info.file_crc);
+            printf("文件大小:%u字节\r\n",update_flag_info.file_size);
+            printf("文件版本:%u\r\n",update_flag_info.file_version);            
+            NVIC_SystemReset(); //复位
+            #endif
         }
 }
 
