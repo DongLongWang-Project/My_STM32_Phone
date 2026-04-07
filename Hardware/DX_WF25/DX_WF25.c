@@ -580,8 +580,8 @@ void wifi_cmd_stateMACHINE(void)
   }
   else if(S==2)
   {  
-      print("Total_Len_resp:%d",Total_Len_resp);
-      printf("DEBUG: Buffer start content: %02X %02X %02X\r\n", DEAL_BUF[0], DEAL_BUF[1], DEAL_BUF[2]);
+//      print("Total_Len_resp:%d",Total_Len_resp);
+//      printf("DEBUG: Buffer start content: %02X %02X %02X\r\n", DEAL_BUF[0], DEAL_BUF[1], DEAL_BUF[2]);
       if((xTaskGetTickCount() - at_start_tick) >= pdMS_TO_TICKS(wifi_cmd_table[cur_cmd].Delay_Tick))
         {
             S = 0; 
@@ -1169,6 +1169,9 @@ void ipd_stream_process(ipd_ctx_t *ctx, uint8_t *buf, uint16_t buf_len)
                     // 看到冒号，解析完成
                     ctx->data_cnt = 0;
                     ctx->state = IPD_READ_DATA;
+                   if (i + 1 < buf_len) {
+                    printf("DEBUG: Colon found! Next byte in buf is: 0x%02X\r\n", buf[i+1]);
+                }
                 } else {
                     // 意外字符，说明不是合法的 IPD 格式，回退
                     ctx->state = IPD_FIND_HEAD;
@@ -1233,7 +1236,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
         uint16_t save_len = fifo_get_occupy_size(&WF25_Rev_fifo); 
         if(save_len > 0) {
             // 确保读取长度不超过缓冲区
-            uint16_t read_len = (save_len > 2048) ? 2048 : save_len;
+            uint16_t read_len = (save_len > DEAL_BUF_SIZE) ? DEAL_BUF_SIZE : save_len;
             fifo_read(&WF25_Rev_fifo, (uint8_t *)DEAL_BUF, read_len);
             
             // 喂给状态机：逐字节剥离 +IPD，合并写入 512 缓存
