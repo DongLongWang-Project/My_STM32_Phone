@@ -357,7 +357,7 @@ void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
     lv_obj_add_event_cb(update_obj->new_version_label,event_check_update_cb,LV_EVENT_CLICKED,NULL);  
     lv_obj_add_flag(update_obj->new_version_label,LV_OBJ_FLAG_CLICKABLE);
     lv_obj_center(update_obj->new_version_label);
-    lv_obj_set_style_text_color(update_obj->new_version_label,lv_color_hex(0xFFFFFF),0);
+    lv_obj_set_style_text_color(update_obj->new_version_label,lv_color_hex(0x00FF00),0);
     if(update_is_ready==has_no_new)
     {
      lv_label_set_text(update_obj->new_version_label,"点击检查新版本"); 
