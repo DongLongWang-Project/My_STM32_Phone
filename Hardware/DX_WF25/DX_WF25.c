@@ -479,7 +479,7 @@ static uint8_t DX_WF25_Rev_queue(void)
     const char* final_ptr = q_msg.cmd_str;
     if (final_ptr) {
     
-        memset(DEAL_BUF, 0, Total_Len_resp);
+        memset(DEAL_BUF, 0, sizeof(DEAL_BUF));
         Total_Len_resp=0;
         
         cur_cmd = q_msg.cmd;
@@ -580,7 +580,8 @@ void wifi_cmd_stateMACHINE(void)
   }
   else if(S==2)
   {  
-      
+      print("Total_Len_resp:%d",Total_Len_resp);
+      printf("DEBUG: Buffer start content: %02X %02X %02X\r\n", DEAL_BUF[0], DEAL_BUF[1], DEAL_BUF[2]);
       if((xTaskGetTickCount() - at_start_tick) >= pdMS_TO_TICKS(wifi_cmd_table[cur_cmd].Delay_Tick))
         {
             S = 0; 
