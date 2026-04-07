@@ -149,16 +149,15 @@ typedef enum {
 } ipd_state_t;
 
 typedef struct {
-    ipd_state_t state;    // 当前状态
-    uint32_t data_len;    // 当前包声明的总长度
-    uint32_t data_cnt;    // 当前包已收到的字节数
-    uint8_t  match_idx;   // "+IPD," 匹配索引
-    
-    uint8_t  cache[512];  // 512字节扇区缓存 (针对SD卡优化)
-    uint16_t cache_ptr;   // 缓存当前位置指针
-    
-    FIL      *file_handle; // 指向已打开的 FatFs 文件句柄
-    uint32_t total_saved;  // 累计保存的有效字节数
+    FIL      *file_handle; 
+    uint32_t data_len;    
+    uint32_t data_cnt;    
+    uint32_t total_saved;  
+    uint16_t cache_ptr;   
+    ipd_state_t state;    
+    uint8_t  match_idx;   
+    uint8_t  _reserved[3]; // 手动补齐 4 字节对齐
+    uint8_t  cache[512] __attribute__((aligned(4))); 
 } ipd_ctx_t;
 
 extern  const wifi_cmd_t wifi_cmd_table[AT_CMD_NONE];
