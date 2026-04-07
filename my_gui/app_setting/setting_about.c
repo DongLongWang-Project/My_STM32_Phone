@@ -271,7 +271,8 @@ static void event_check_update_cb(lv_event_t*e)
         {
             Get_GitHub_MyPhone_Update_file(Get_GitHub_MyPhone_file,get_update_file_str);
             update_is_ready=has_download;
-            lv_label_set_text(ui_setting_update.update_obj.new_version_label,"Github上找到新版本,正在下载");
+//            lv_label_set_text(ui_setting_update.update_obj.new_version_label,"Github上找到新版本,正在下载");
+            
         }
         else if(update_is_ready==has_download)
         {
@@ -313,8 +314,10 @@ void download_update_timer(lv_timer_t*t)
     if(ui_setting_update.update_obj.obj_update!=NULL)
       {
        lv_bar_set_value(ui_setting_update.update_obj.progress_update_bar,percent,LV_ANIM_OFF);
+       lv_label_set_text_fmt(ui_setting_update.update_obj.new_version_label,"正在下载:%d%%",percent);
+       print("当前的长度:%u 进度:%d%%",my_ipd_ctx.total_saved,percent);
       }
-      print("当前的长度:%u 进度:%d%%",my_ipd_ctx.total_saved,percent);
+
   }
    pre_len=cur_len;
    
@@ -359,7 +362,8 @@ void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
     lv_obj_set_size(update_obj->progress_update_bar,lv_pct(100),lv_pct(30));
     lv_obj_align(update_obj->progress_update_bar,LV_ALIGN_BOTTOM_MID,0,0);
     lv_bar_set_range(update_obj->progress_update_bar,0,100);
-   
+    
+    
     update_obj->new_version_label=lv_label_create(update_obj->progress_update_bar);
     lv_obj_add_event_cb(update_obj->new_version_label,event_check_update_cb,LV_EVENT_CLICKED,NULL);  
     lv_obj_add_flag(update_obj->new_version_label,LV_OBJ_FLAG_CLICKABLE);
@@ -374,8 +378,8 @@ void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
      lv_label_set_text(update_obj->new_version_label,"Github上找到新版本,正在下载"); 
     }
 //    lv_obj_add_flag(update_obj->progress_update_bar,LV_OBJ_FLAG_HIDDEN);
-
-   update_obj->timer=lv_timer_create(download_update_timer,500,NULL);
+   
+   update_obj->timer=lv_timer_create(download_update_timer,1000,NULL);
    lv_obj_add_event_cb(update_obj->obj_update,event_obj_update_cb,LV_EVENT_DELETE,NULL); 
 }
 /*--------------------------------------------------------------------------------↓
