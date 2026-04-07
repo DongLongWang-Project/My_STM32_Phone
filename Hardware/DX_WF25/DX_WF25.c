@@ -1088,272 +1088,11 @@ static void Handle_Get_GitHub_MyPhone_file_head(const char*buf){
 //    }
 //    return data_start;
 //}
-
-//static void Handle_Get_GitHub_MyPhone_file(const char* buf)
-//{
-//    FRESULT res;
-//    static FIL f;
-//    static uint32_t total_received_file_size = 0;
-//    uint32_t current_pkg_rem = 0; // 上一包还没写完的剩余字节
-//    uint32_t raw_pkg_len = 0;    
-
-//    res = f_open(&f, "0:/SD/bin/os.bin", FA_CREATE_ALWAYS | FA_WRITE);
-//    if(res != FR_OK) {
-//        printf("Create file failed: %d\r\n", res);
-//        return;
-//    }
-
-//    while(1) {
-//        UINT write_len = 0;
-
-//        // --- A. 处理跨包残余 (断点续传) ---
-//        if (current_pkg_rem > 0) {
-//            // 能写多少取决于缓冲区里现有的数据量
-//            uint32_t can_write = (Total_Len_resp > current_pkg_rem) ? current_pkg_rem : Total_Len_resp;
-//            
-//            if (can_write > 0) {
-//                f_write(&f, DEAL_BUF, can_write, &write_len);
-//                total_received_file_size += write_len;
-
-//                // 物理平移：吃掉多少挪走多少
-//                uint32_t next_len = Total_Len_resp - write_len;
-//                if(next_len > 0) {
-//                    memmove(DEAL_BUF, DEAL_BUF + write_len, next_len);
-//                }
-//                Total_Len_resp = next_len;
-//                current_pkg_rem -= write_len;
-//            }
-//            // 如果这一包还没补齐，跳出循环去读 FIFO
-//            if (current_pkg_rem > 0) goto READ_FIFO;
-//        } 
-
-//        // --- B. 解析新包 ---
-//        char *p_ipd = strstr((char*)DEAL_BUF, "+IPD,");
-//        if (p_ipd != NULL) {
-//            uint32_t ipd_save_len = 0;
-//            uint8_t* data_ptr = parse_ipd_info_with_filter((const char*)DEAL_BUF, &ipd_save_len, &raw_pkg_len);
-//            
-//            if (data_ptr != NULL) {
-//                char *p_colon = strchr(p_ipd, ':');
-//                // 核心对齐公式：跳过长度 = (+IPD到冒号距离) + 1冒号 + 原始总长度
-//                uint32_t pkg_physical_size = (p_colon - p_ipd) + 1 + raw_pkg_len;
-//                uint32_t total_skip = ( (uint8_t*)p_ipd - (uint8_t*)DEAL_BUF ) + pkg_physical_size;
-
-//                if (Total_Len_resp >= total_skip) {
-//                    // 整包已到：写有效数据，平移整个物理块
-//                    if (ipd_save_len > 0) {
-//                        f_write(&f, data_ptr, ipd_save_len, &write_len);
-//                        total_received_file_size += write_len;
-//                    }
-//                    uint32_t next_len = Total_Len_resp - total_skip;
-//                    memmove(DEAL_BUF, DEAL_BUF + total_skip, next_len);
-//                    Total_Len_resp = next_len;
-//                } else {
-//                    // 包没收全：把当前缓冲区里属于这一包的数据先写了
-//                    uint32_t data_in_buf = Total_Len_resp - (data_ptr - (uint8_t*)DEAL_BUF);
-//                    if (data_in_buf > 0 && ipd_save_len > 0) {
-//                        uint32_t can_w = (data_in_buf > ipd_save_len) ? ipd_save_len : data_in_buf;
-//                        f_write(&f, data_ptr, can_w, &write_len);
-//                        total_received_file_size += write_len;
-//                        current_pkg_rem = ipd_save_len - write_len;
-//                    }
-//                    // 这里绝对不能 Total_Len_resp = 0，要精准平移掉已处理的
-//                    uint32_t consumed = Total_Len_resp; 
-//                    Total_Len_resp = 0; 
-//                }
-//            }
-//        }
-
-//    READ_FIFO:
-//    {
-//            // --- C. 补充新数据 (从 FIFO 读) ---
-//            uint16_t fifo_size = fifo_get_occupy_size(&WF25_Rev_fifo);
-//            if(fifo_size > 0) {
-//                uint16_t space = DEAL_BUF_SIZE - Total_Len_resp - 1;
-//                uint16_t read_len = (fifo_size > space) ? space : fifo_size;
-//                fifo_read(&WF25_Rev_fifo, (uint8_t *)(DEAL_BUF + Total_Len_resp), read_len);
-//                Total_Len_resp += read_len;
-//                DEAL_BUF[Total_Len_resp] = '\0';
-//            }
-//    }
-
-
-//        // 检查下载是否结束
-//        if (total_received_file_size >= (ui_setting_update.head[HEAD_GitHUB].file_size + sizeof(head_t))) {
-//            f_close(&f);
-//            return;
-//        }
-//        vTaskDelay(1);
-//    }
-//}
-
-//typedef enum {
-//    IPD_FIND_HEAD,
-//    IPD_PARSE_LEN,
-//    IPD_READ_DATA
-//} ipd_state_t;
-
-//typedef struct {
-//    ipd_state_t state;
-//    uint32_t data_len;     // 当前 +IPD 声明的总长度
-//    uint32_t data_cnt;     // 当前已收到的字节计数
-//    
-//    uint8_t header_done;   // 是否跨过了 HTTP 报头
-//    uint8_t crlf_step;     // 用于严格匹配 \r\n\r\n (0->\r, 1->\n, 2->\r, 3->\n)
-//    uint8_t match_idx;     // 用于匹配 "+IPD,"
-
-//    uint8_t cache[512];    // SD卡扇区缓存
-//    uint16_t cache_ptr;    // 缓存当前指针
-//    uint32_t total_saved;  // ✨ 新增：记录总共写进 SD 卡的有效字节数
-//    FIL *file_handle;      // 外部传入文件句柄
-//} ipd_ctx_t;
-
-
-//void ipd_stream_process(ipd_ctx_t *ctx, uint8_t *buf, uint32_t len)
-//{
-//    for(uint32_t i = 0; i < len; i++)
-//    {
-//        uint8_t ch = buf[i];
-
-//        switch(ctx->state)
-//        {
-//            case IPD_FIND_HEAD:
-//                if(ch == "+IPD,"[ctx->match_idx]) {
-//                    ctx->match_idx++;
-//                    if(ctx->match_idx == 5) {
-//                        ctx->match_idx = 0;
-//                        ctx->state = IPD_PARSE_LEN;
-//                        ctx->data_len = 0;
-//                    }
-//                } else {
-//                    ctx->match_idx = 0;
-//                }
-//                break;
-
-//            case IPD_PARSE_LEN:
-//                if(ch >= '0' && ch <= '9') {
-//                    ctx->data_len = ctx->data_len * 10 + (ch - '0');
-//                } else if(ch == ':') {
-//                    ctx->data_cnt = 0;
-//                    ctx->state = IPD_READ_DATA;
-//                }
-//                break;
-
-//            case IPD_READ_DATA:
-//                if(!ctx->header_done) {
-//                    // 严格匹配 \r\n\r\n
-//                    if      (ctx->crlf_step == 0 && ch == 'H') ctx->crlf_step = 1;
-//                    else if (ctx->crlf_step == 1 && ch == 'T') ctx->crlf_step = 2;
-//                    else if (ctx->crlf_step == 2 && ch == 'T') ctx->crlf_step = 3;
-//                    else if (ctx->crlf_step == 3 && ch == 'P') {
-//                        ctx->header_done = 1; 
-//                        ctx->state = IPD_FIND_HEAD;
-//                        printf("\r\n[OK] HTTP Header 过滤完成，开始写入 BIN 数据...\r\n");
-//                    } else {
-//                        ctx->crlf_step = (ch == 'H') ? 1 : 0; 
-//                    }
-//                    // 注意：这里没有 ctx->cache[ptr] = ch，所以报头字符被全部丢弃
-//                } 
-//                else {
-//                    // 只有 header_done 为 1 后，数据才进入缓存和计数
-//                    ctx->cache[ctx->cache_ptr++] = ch;
-//                    ctx->total_saved++; 
-
-//                    if(ctx->cache_ptr >= 512) {
-//                        UINT bw;
-//                        f_write(ctx->file_handle, ctx->cache, ctx->cache_ptr, &bw);
-//                        ctx->cache_ptr = 0;
-//                    }
-//                }
-
-//                ctx->data_cnt++;
-//                if(ctx->data_cnt >= ctx->data_len) {
-//                    ctx->state = IPD_FIND_HEAD;
-//                    ctx->match_idx = 0;
-//                }
-//                break;
-//        }
-//    }
-//}
-
-//ipd_ctx_t ipd_ctx; // 建议放在全局
-
-//static void Handle_Get_GitHub_MyPhone_file(const char* buf)
-//{
-//    FRESULT res;
-//    static FIL f; 
-//    uint32_t target_size = ui_setting_update.head[HEAD_GitHUB].file_size + sizeof(head_t);
-//    uint32_t last_print_time = 0;
-
-//    // 1. 初始化
-//    memset(&ipd_ctx, 0, sizeof(ipd_ctx));
-//    ipd_ctx.file_handle = &f; 
-
-//    // 2. 打开文件
-//    res = f_open(&f, "0:/SD/bin/os.bin", FA_CREATE_ALWAYS | FA_WRITE);
-//    if(res != FR_OK) {
-//        printf("[Error] SD卡文件创建失败: %d\r\n", res);
-//        return;
-//    }
-
-//    printf("\r\n==========================================\r\n");
-//    printf("  OTA 开始下载: os.bin\r\n");
-//    printf("  目标大小: %u 字节\r\n", target_size);
-//    printf("==========================================\r\n");
-//    ipd_stream_process(&ipd_ctx,  (uint8_t*)DEAL_BUF, Total_Len_resp);
-//    
-//    while(1)
-//    {
-//        uint16_t len = fifo_get_occupy_size(&WF25_Rev_fifo);
-//        if(len > 0)
-//        {
-//            uint16_t read_len = (len > sizeof(DEAL_BUF)) ? sizeof(DEAL_BUF) : len;
-//            fifo_read(&WF25_Rev_fifo, (uint8_t*)DEAL_BUF, read_len);
-//            
-//            ipd_stream_process(&ipd_ctx,  (uint8_t*)DEAL_BUF, read_len);
-
-//            // 每隔 1000ms 打印一次下载进度 (使用 HAL_GetTick 或其他系统时钟)
-//            if (xTaskGetTickCount() - last_print_time > 1000) {
-//                last_print_time = xTaskGetTickCount();
-//                printf("下载进度: %u / %u (%u%%)\r\n", 
-//                        ipd_ctx.total_saved, 
-//                        target_size, 
-//                        (ipd_ctx.total_saved * 100) / target_size);
-//            }
-
-//            if (ipd_ctx.total_saved >= target_size) {
-//                printf("\r\n[Success] 已达到目标大小: %u\r\n", ipd_ctx.total_saved);
-//                break; 
-//            }
-//        }
-//        
-//        // 增加一个简单的超时处理 (如果超过 10 秒没数据，认为网络断开)
-//        // 这里需要你自己根据系统增加计时逻辑
-//        
-//        vTaskDelay(1);
-//    }
-
-//    // 3. 收尾
-//    if(ipd_ctx.cache_ptr > 0) {
-//        UINT bw;
-//        f_write(&f, ipd_ctx.cache, ipd_ctx.cache_ptr, &bw);
-//        printf("[System] 刷入最后余量数据: %d 字节\r\n", ipd_ctx.cache_ptr);
-//        ipd_ctx.cache_ptr = 0;
-//    }
-
-//    f_close(&f);
-//    printf("==========================================\r\n");
-//    printf("  下载完成！文件已保存至 SD 卡。\r\n");
-//    printf("  总写入量: %u 字节\r\n", ipd_ctx.total_saved);
-//    printf("==========================================\r\n");
-//}
-
-static void Handle_Get_GitHub_MyPhone_file(const char* buf)
+static void Handle_Get_GitHub_file(const char* buf)
 {
     FRESULT res;
     static FIL f;
     static uint32_t total_raw_saved = 0;
-    static uint32_t total_raw_saved_pre = 0;
     uint32_t last_data_time = xTaskGetTickCount(); // 记录最后一次抓到数据的时间
     UINT bw;
     
@@ -1381,7 +1120,6 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
             
             f_write(&f, DEAL_BUF, read_len, &bw);
             total_raw_saved += bw;
-            total_raw_saved_pre=total_raw_saved;
             // 顺便打个点，表示正在工作
         }
         else 
@@ -1393,14 +1131,159 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
                 break; 
             }
         }
-        if(total_raw_saved!=total_raw_saved_pre)
-        {
-          print("当前进度:%u\r\n",total_raw_saved);
-        }
-        
         vTaskDelay(5); // 稍微加长一点，给 FIFO 留出堆积的空间，提高写入效率
     }
 
     f_close(&f);
     printf("[Success] 原始数据已固化至 SD 卡，共 %u 字节。\r\n", total_raw_saved);
+}
+
+typedef enum {
+    IPD_FIND_HEAD,   // 寻找 "+IPD,"
+    IPD_PARSE_LEN,   // 解析长度数字，直到 ':'
+    IPD_READ_DATA    // 正在读取 BIN 数据
+} ipd_state_t;
+
+typedef struct {
+    ipd_state_t state;    // 当前状态
+    uint32_t data_len;    // 当前包声明的总长度
+    uint32_t data_cnt;    // 当前包已收到的字节数
+    uint8_t  match_idx;   // "+IPD," 匹配索引
+    
+    uint8_t  cache[512];  // 512字节扇区缓存 (针对SD卡优化)
+    uint16_t cache_ptr;   // 缓存当前位置指针
+    
+    FIL      *file_handle; // 指向已打开的 FatFs 文件句柄
+    uint32_t total_saved;  // 累计保存的有效字节数
+} ipd_ctx_t;
+void ipd_stream_process(ipd_ctx_t *ctx, uint8_t *buf, uint16_t buf_len)
+{
+    const char *ipd_str = "+IPD,";
+
+    for (uint16_t i = 0; i < buf_len; i++) {
+        uint8_t ch = buf[i];
+
+        switch (ctx->state) {
+            // --- 阶段 1：找包头 ---
+            case IPD_FIND_HEAD:
+                if (ch == ipd_str[ctx->match_idx]) {
+                    ctx->match_idx++;
+                    if (ctx->match_idx == 5) {
+                        ctx->state = IPD_PARSE_LEN;
+                        ctx->data_len = 0; // 准备开始累加长度
+                    }
+                } else {
+                    // 失配回退机制：如果错的这个字符恰好是 '+'，保留为下一次匹配的第一位
+                    ctx->match_idx = (ch == '+') ? 1 : 0;
+                }
+                break;
+
+            // --- 阶段 2：解析长度 ---
+            case IPD_PARSE_LEN:
+                if (ch >= '0' && ch <= '9') {
+                    ctx->data_len = (ctx->data_len * 10) + (ch - '0');
+                } else if (ch == ':') {
+                    // 看到冒号，解析完成
+                    ctx->data_cnt = 0;
+                    ctx->state = IPD_READ_DATA;
+                } else {
+                    // 意外字符，说明不是合法的 IPD 格式，回退
+                    ctx->state = IPD_FIND_HEAD;
+                    ctx->match_idx = 0;
+                }
+                break;
+
+            // --- 阶段 3：搬运数据 (核心部分) ---
+            case IPD_READ_DATA:
+                // 1. 将字节存入 512 字节的扇区缓存
+                ctx->cache[ctx->cache_ptr++] = ch;
+                ctx->data_cnt++;
+                ctx->total_saved++;
+
+                // 2. 缓存满了，执行一次物理写入
+                if (ctx->cache_ptr >= 512) {
+                    UINT bw;
+                    f_write(ctx->file_handle, ctx->cache, 512, &bw);
+                    ctx->cache_ptr = 0; // 复位缓存指针
+                }
+
+                // 3. 检查这一包是否收够了
+                if (ctx->data_cnt >= ctx->data_len) {
+                    ctx->state = IPD_FIND_HEAD;
+                    ctx->match_idx = 0;
+                    // 注意：此时可能 cache 里还有不满 512 的余量数据，
+                    // 我们留到下一包 IPD 或者最终文件关闭时统一写出。
+                }
+                break;
+        }
+    }
+    
+}
+
+static void Handle_Get_GitHub_MyPhone_file(const char* buf)
+{
+    FRESULT res;
+    static FIL f;
+    static ipd_ctx_t my_ipd_ctx; // static 确保不在栈上占用 512+ 字节
+    
+    // 1. 初始化
+    memset(&my_ipd_ctx, 0, sizeof(ipd_ctx_t));
+    uint32_t last_data_time = xTaskGetTickCount(); // 赋予初值，防止随机超时
+
+    res = f_open(&f, "0:/SD/bin/os.bin", FA_CREATE_ALWAYS | FA_WRITE);
+    if(res != FR_OK) {
+        printf("创建新更新文件失败 res:%d\r\n", res);
+        return;
+    }
+    
+    my_ipd_ctx.file_handle = &f; 
+
+    // 处理进入函数前已经在 DEAL_BUF 里的“第一桶金”
+    if(Total_Len_resp > 0) {
+        ipd_stream_process(&my_ipd_ctx, (uint8_t*)DEAL_BUF, Total_Len_resp);
+    }
+    
+    printf("[OTA] 状态机启动，正在解析数据流...\r\n");
+
+    while(1)
+    {
+        uint16_t save_len = fifo_get_occupy_size(&WF25_Rev_fifo); 
+        if(save_len > 0) {
+            // 确保读取长度不超过缓冲区
+            uint16_t read_len = (save_len > DEAL_BUF_SIZE) ? DEAL_BUF_SIZE : save_len;
+            fifo_read(&WF25_Rev_fifo, (uint8_t *)DEAL_BUF, read_len);
+            
+            // 喂给状态机：逐字节剥离 +IPD，合并写入 512 缓存
+            ipd_stream_process(&my_ipd_ctx, (uint8_t*)DEAL_BUF, read_len);
+            
+            last_data_time = xTaskGetTickCount(); // 只要有东西动，就重置超时
+        }
+        else 
+        {
+            // 2. 检查是否 5 秒没动静了
+            if ((xTaskGetTickCount() - last_data_time) > pdMS_TO_TICKS(5000)) 
+            {
+                printf("\r\n[Timeout] 数据流中断，保存已收到的部分。\r\n");
+                break; 
+            }
+        }
+        
+        // 如果文件已经收够了（如果你知道总长度的话），也可以在这里 break
+        vTaskDelay(5); 
+    }
+    
+    // 3. 必须执行：把 cache 里最后一点“碎数据”强行刷入 SD 卡
+    if (my_ipd_ctx.cache_ptr > 0) {
+        UINT bw;
+        f_write(&f, my_ipd_ctx.cache, my_ipd_ctx.cache_ptr, &bw);
+    }
+    
+    f_close(&f);
+    
+    printf("------------------------------------------\r\n");
+    printf(" 下载完成总结:\r\n");
+    printf(" - 实际写入 SD 卡有效载荷: %u 字节\r\n", my_ipd_ctx.total_saved);
+    printf(" - 目标文件总尺寸参考: %u\r\n", ui_setting_update.head[HEAD_GitHUB].file_size + sizeof(head_t));
+    printf(" [提示] 如果写入字节稍大，是因为包含了第一包的 HTTP Header。\r\n");
+    printf("------------------------------------------\r\n");
 }
