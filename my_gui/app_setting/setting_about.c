@@ -134,13 +134,7 @@ uint8_t Read_Latest_update_info_(update_flag_info_t *update_flag_info)
  #endif // keil
 void SD_get_update_file_head(const char*update_file_path)
 {
-   uint32_t num;
-   
-    if(ui_setting_update.file_p.drv!=NULL)
-    {
-      lv_fs_close(&ui_setting_update.file_p);
-      ui_setting_update.file_p.drv=NULL;
-    }
+      uint32_t num;
       lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,update_file_path,LV_FS_MODE_RD|LV_FS_MODE_WR);
       if(res!=LV_FS_RES_OK)
       {
@@ -148,20 +142,20 @@ void SD_get_update_file_head(const char*update_file_path)
       }
       else
       {        
-      res=lv_fs_read(&ui_setting_update.file_p,&ui_setting_update.head[HEAD_SD],sizeof(head_t),&num);
+          res=lv_fs_read(&ui_setting_update.file_p,&ui_setting_update.head[HEAD_SD],sizeof(head_t),&num);
          if(res==LV_FS_RES_OK && num==sizeof(head_t))
          {
-           printf("读取app头部成功\r\n");
-//           printf("head[HEAD_SD].CRC32:0X%08X\r\n",head[HEAD_SD].CRC32);
-//           printf("head[HEAD_SD].version:%u\r\n",head[HEAD_SD].version);
+           printf("读取SD卡app头部成功\r\n");
+    //         printf("head[HEAD_SD].CRC32:0X%08X\r\n",head[HEAD_SD].CRC32);
+    //         printf("head[HEAD_SD].version:%u\r\n",head[HEAD_SD].version);
+            lv_fs_close(&ui_setting_update.file_p);
+            ui_setting_update.file_p.drv=NULL;
          }
          else
          {
-            printf("读取app头部失败\r\n");
-         }
-         
+            printf("读取SD卡app头部失败\r\n");
+         } 
       }
-//      f_unmount("0");
 }
 
 uint8_t get_update_file_head(head_enum head_)
@@ -196,8 +190,19 @@ uint8_t update_is_valid(head_enum head_)
     uint32_t num;
     // 基本合法性检查
     if (remain == 0 || remain == 0xFFFFFFFF) return 0;
-    if(head_==HEAD_SD )  
-    lv_fs_seek(&ui_setting_update.file_p,sizeof(head_t),LV_FS_SEEK_SET);
+    if(head_==HEAD_SD ) 
+    {
+      lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,UPDATE_FILE_PATH,LV_FS_MODE_RD|LV_FS_MODE_WR);
+      if(res!=LV_FS_RES_OK)
+      {
+        printf("打开app文件失败\r\n");
+      }
+      else
+      {
+        lv_fs_seek(&ui_setting_update.file_p,sizeof(head_t),LV_FS_SEEK_SET);
+      }
+    }    
+    
     while (remain > 0)
     {
         // 计算本次读取长度：取 buf_size 和 剩余长度 的最小值
@@ -308,7 +313,7 @@ void download_update_timer(lv_timer_t*t)
       {
        lv_bar_set_value(ui_setting_update.update_obj.progress_update_bar,percent,LV_ANIM_OFF);
       }
-      print("当前的长度:%u 进度:%d",my_ipd_ctx.total_saved,percent);
+      print("当前的长度:%u 进度:%d%%",my_ipd_ctx.total_saved,percent);
   }
    pre_len=cur_len;
    
