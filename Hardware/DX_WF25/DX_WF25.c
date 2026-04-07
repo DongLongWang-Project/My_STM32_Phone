@@ -883,7 +883,7 @@ static void Handle_Get_GitHub_MyPhone_file_head(const char*buf){
     printf("\r\nname:%s",ui_setting_update.head[HEAD_GitHUB].name);
     printf("\r\nreserved:%s",ui_setting_update.head[HEAD_GitHUB].reserved);
     printf("\r\nversion:%u\r\n",ui_setting_update.head[HEAD_GitHUB].version); 
-  if(ui_setting_update.head[HEAD_GitHUB].version>ui_setting_update.head[HEAD_SD].version)
+  if(ui_setting_update.head[HEAD_GitHUB].version>ui_setting_update.head[HEAD_FLASH].version)
   {
     printf("GitHub有新版本\r\n");
     update_is_ready=has_git_new;
@@ -1193,7 +1193,7 @@ void ipd_stream_process(ipd_ctx_t *ctx, uint8_t *buf, uint16_t buf_len)
                     // 匹配到了 4 个字符 (\r\n\r\n)，说明报头结束，下一位就是 BIN 开始
                     if (ctx->header_match_cnt == 4) {
                         ctx->is_header_passed = 1;
-                        printf("HTTP Header Stripped Successfully!\r\n");
+                        print("HTTP Header Stripped Successfully!\r\n");
                     }
                 } 
                 else {
@@ -1233,13 +1233,13 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
 
     res = f_open(&f, "0:/SD/bin/myPhone.bin", FA_CREATE_ALWAYS | FA_WRITE);
     if(res != FR_OK) {
-        printf("创建新更新文件失败 res:%d\r\n", res);
+        print("创建新更新文件失败 res:%d\r\n", res);
         return;
     }
     
     my_ipd_ctx.file_handle = &f; 
 
-    printf("[OTA] 状态机启动，正在解析数据流...\r\n");
+    print("[OTA] 状态机启动，正在解析数据流...\r\n");
     
     // 处理进入函数前已经在 DEAL_BUF 里的“第一桶金”
     if(Total_Len_resp > 0) {
@@ -1262,9 +1262,9 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
         else 
         {
             // 2. 检查是否 5 秒没动静了
-            if ((xTaskGetTickCount() - last_data_time) > pdMS_TO_TICKS(5000)) 
+            if ((xTaskGetTickCount() - last_data_time) > pdMS_TO_TICKS(10000)) 
             {
-                printf("\r\n[Timeout] 数据流中断，保存已收到的部分。\r\n");
+                print("\r\n[Timeout] 数据流中断，保存已收到的部分。\r\n");
                 break; 
             }
         }
@@ -1272,7 +1272,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
         // 如果文件已经收够了（如果你知道总长度的话），也可以在这里 break
         if(my_ipd_ctx.total_saved>=ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t))
         {
-          printf("\r\n[Timeout] 数据流接受完毕。\r\n");
+          print("\r\n[Timeout] 数据流接受完毕。\r\n");
           break;
         }
         

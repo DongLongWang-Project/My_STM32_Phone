@@ -332,13 +332,13 @@ void download_update_timer(lv_timer_t*t)
   }
    pre_len=cur_len;
    
-        if(my_ipd_ctx.total_saved>=ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t))
-        {
-          printf("下载完毕,删除定时器\r\n");
-          lv_label_set_text(ui_setting_update.update_obj.new_version_label,"下载完毕,点击检查");
-          update_is_ready=has_no_new;
-          lv_timer_del(t);
-        }
+  if(my_ipd_ctx.total_saved>=ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t))
+  {
+    printf("下载完毕,删除定时器\r\n");
+    lv_label_set_text(ui_setting_update.update_obj.new_version_label,"下载完毕,点击检查");
+    update_is_ready=has_no_new;
+    lv_timer_del(t);
+  }
 }
 
 static void event_obj_update_cb(lv_event_t*e)
