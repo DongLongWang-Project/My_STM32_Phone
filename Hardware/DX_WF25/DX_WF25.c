@@ -24,7 +24,8 @@ wifi_context_t wifi_scan_list;/*扫描当前环境wifi的结构体*/
 wifi_connect_t connected_wifi;/*已连接wifi结构体*/
 wifi_save_t wifi_save_list;   /*已保存在w25q的wifi结构体*/
 _fifo_t WF25_Rev_fifo;
-
+ipd_ctx_t my_ipd_ctx; // static 确保不在栈上占用 512+ 字节
+    
 Hotspot_data_t  hotspot_data=  /*热点的初始化配置*/
 {
     .hotspot_name="donglongwang", /*热点名称*/
@@ -1169,9 +1170,6 @@ void ipd_stream_process(ipd_ctx_t *ctx, uint8_t *buf, uint16_t buf_len)
                     // 看到冒号，解析完成
                     ctx->data_cnt = 0;
                     ctx->state = IPD_READ_DATA;
-                   if (i + 1 < buf_len) {
-                    printf("DEBUG: Colon found! Next byte in buf is: 0x%02X\r\n", buf[i+1]);
-                }
                 } else {
                     // 意外字符，说明不是合法的 IPD 格式，回退
                     ctx->state = IPD_FIND_HEAD;
@@ -1227,27 +1225,27 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
 {
     FRESULT res;
     static FIL f;
-    static ipd_ctx_t my_ipd_ctx; // static 确保不在栈上占用 512+ 字节
+
     
     // 1. 初始化
     memset(&my_ipd_ctx, 0, sizeof(ipd_ctx_t));
     uint32_t last_data_time = xTaskGetTickCount(); // 赋予初值，防止随机超时
 
-    res = f_open(&f, "0:/SD/bin/os.bin", FA_CREATE_ALWAYS | FA_WRITE);
+    res = f_open(&f, "0:/SD/bin/myPhone.bin", FA_CREATE_ALWAYS | FA_WRITE);
     if(res != FR_OK) {
         printf("创建新更新文件失败 res:%d\r\n", res);
         return;
     }
     
     my_ipd_ctx.file_handle = &f; 
-
+    ui_setting_update.update_obj.timer=lv_timer_create(download_update_timer,500,NULL);
+    printf("[OTA] 状态机启动，正在解析数据流...\r\n");
+    
     // 处理进入函数前已经在 DEAL_BUF 里的“第一桶金”
     if(Total_Len_resp > 0) {
         ipd_stream_process(&my_ipd_ctx, (uint8_t*)DEAL_BUF, Total_Len_resp);
     }
     
-    printf("[OTA] 状态机启动，正在解析数据流...\r\n");
-
     while(1)
     {
         uint16_t save_len = fifo_get_occupy_size(&WF25_Rev_fifo); 
@@ -1272,6 +1270,12 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
         }
         
         // 如果文件已经收够了（如果你知道总长度的话），也可以在这里 break
+        if(my_ipd_ctx.total_saved>=ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t))
+        {
+          printf("\r\n[Timeout] 数据流接受完毕。\r\n");
+          break;
+        }
+        
         vTaskDelay(5); 
     }
     
@@ -1282,7 +1286,11 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
     }
     
     f_close(&f);
-    
+    if(ui_setting_update.update_obj.timer!=NULL)
+    {
+      lv_timer_del(ui_setting_update.update_obj.timer);
+      ui_setting_update.update_obj.timer=NULL;
+    }
     printf("------------------------------------------\r\n");
     printf(" 下载完成总结:\r\n");
     printf(" - 实际写入 SD 卡有效载荷: %u 字节\r\n", my_ipd_ctx.total_saved);

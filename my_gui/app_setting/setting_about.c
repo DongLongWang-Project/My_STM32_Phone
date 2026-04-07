@@ -242,7 +242,7 @@ static void event_check_update_cb(lv_event_t*e)
 {
         if(update_is_ready==has_no_new)
         {
-            if(get_update_file_head(HEAD_SD) && update_is_valid(HEAD_SD))
+            if( (get_update_file_head(HEAD_SD) && update_is_valid(HEAD_SD)) )
             {
               if(ui_setting_update.head[HEAD_SD].version>ui_setting_update.head[HEAD_FLASH].version)
               {
@@ -281,6 +281,24 @@ static void event_check_update_cb(lv_event_t*e)
         }
 }
 
+extern ipd_ctx_t my_ipd_ctx; 
+void download_update_timer(lv_timer_t*t)
+{
+  static uint32_t pre_len=0;
+  uint32_t cur_len=my_ipd_ctx.total_saved;
+  uint32_t file_size=ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t);
+  
+  if(pre_len!=cur_len)
+  {
+      uint32_t percent=(uint32_t)(((uint64_t)my_ipd_ctx.total_saved*100)/file_size);
+    if(lv_obj_is_valid(ui_setting_update.update_obj.obj_update))
+      {
+       lv_bar_set_value(ui_setting_update.update_obj.progress_update_bar,percent,LV_ANIM_OFF);
+      }
+      print("当前的长度:%u 进度:d",my_ipd_ctx.total_saved,percent);
+  }
+   pre_len=cur_len;
+}
 void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
 {
     update_obj->obj_update=lv_obj_create(parent);
@@ -302,6 +320,8 @@ void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
     update_obj->progress_update_bar=lv_bar_create(update_obj->obj_update);
     lv_obj_set_size(update_obj->progress_update_bar,lv_pct(100),lv_pct(30));
     lv_obj_align(update_obj->progress_update_bar,LV_ALIGN_BOTTOM_MID,0,0);
+    lv_bar_set_range(update_obj->progress_update_bar,0,100);
+   
     update_obj->new_version_label=lv_label_create(update_obj->progress_update_bar);
     lv_obj_add_event_cb(update_obj->new_version_label,event_check_update_cb,LV_EVENT_CLICKED,NULL);  
     lv_obj_add_flag(update_obj->new_version_label,LV_OBJ_FLAG_CLICKABLE);

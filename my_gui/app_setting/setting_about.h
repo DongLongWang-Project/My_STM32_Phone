@@ -63,6 +63,7 @@ typedef struct
     lv_obj_t*label_name;
     lv_obj_t*progress_update_bar;
     lv_obj_t*new_version_label;
+    lv_timer_t*timer;
 }update_obj_t;
 
 typedef struct
@@ -78,4 +79,5 @@ extern ui_setting_update_t ui_setting_update;
 void ui_app_setting_about(lv_obj_t*parent);
 extern update_is_ready_t update_is_ready;
 uint8_t update_is_valid(head_enum head_);
+void download_update_timer(lv_timer_t*t);
 #endif
