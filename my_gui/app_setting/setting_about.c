@@ -243,7 +243,7 @@ static void event_check_update_cb(lv_event_t*e)
       lv_obj_t*target=lv_event_get_target(e);
         if(update_is_ready==has_no_new)
         {
-            if( (get_update_file_head(HEAD_SD) && update_is_valid(HEAD_SD)) )
+            if((get_update_file_head(HEAD_SD) && update_is_valid(HEAD_SD)) )
             {
               if(ui_setting_update.head[HEAD_SD].version>ui_setting_update.head[HEAD_FLASH].version)
               {
@@ -254,6 +254,11 @@ static void event_check_update_cb(lv_event_t*e)
               {
                 Get_GitHub_MyPhone_Update_file(Get_GitHub_MyPhone_file_head,get_update_head_str); 
               }
+            }
+            else
+            {
+              lv_label_set_text(ui_setting_update.update_obj.new_version_label,"文件错误,请重新下载");
+              Get_GitHub_MyPhone_Update_file(Get_GitHub_MyPhone_file_head,get_update_head_str);
             }
         }
         else if(update_is_ready==has_git_new)
@@ -303,9 +308,16 @@ void download_update_timer(lv_timer_t*t)
       {
        lv_bar_set_value(ui_setting_update.update_obj.progress_update_bar,percent,LV_ANIM_OFF);
       }
-      print("当前的长度:%u 进度:d",my_ipd_ctx.total_saved,percent);
+      print("当前的长度:%u 进度:%d",my_ipd_ctx.total_saved,percent);
   }
    pre_len=cur_len;
+   
+        if(my_ipd_ctx.total_saved>=ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t))
+        {
+          printf("下载完毕,删除定时器\r\n");
+          lv_label_set_text(ui_setting_update.update_obj.new_version_label,"下载完毕,点击检查");
+          update_is_ready=has_no_new;
+        }
 }
 
 static void event_obj_update_cb(lv_event_t*e)
