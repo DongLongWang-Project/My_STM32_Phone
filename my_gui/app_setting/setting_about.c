@@ -148,8 +148,8 @@ void SD_get_update_file_head(const char*update_file_path)
            printf("读取SD卡app头部成功\r\n");
     //         printf("head[HEAD_SD].CRC32:0X%08X\r\n",head[HEAD_SD].CRC32);
     //         printf("head[HEAD_SD].version:%u\r\n",head[HEAD_SD].version);
-            lv_fs_close(&ui_setting_update.file_p);
-            ui_setting_update.file_p.drv=NULL;
+//            lv_fs_close(&ui_setting_update.file_p);
+//            ui_setting_update.file_p.drv=NULL;
          }
          else
          {
@@ -174,10 +174,10 @@ uint8_t get_update_file_head(head_enum head_)
        uint32_t buf_size = ui_setting_update.head[head_].file_size;
        printf("%d:version:%u\r\n",head_,ui_setting_update.head[head_].version);
        if (buf_size == 0 || buf_size == 0xFFFFFFFF || buf_size >=0x00EFF00) return 0;  
-       else return 1;
-//       if(update_is_valid(head_)) return 1;
+//       else return 1;
+       if(update_is_valid(head_)) return 1;
        
-//       return 0;   
+       return 0;   
 }
 
 uint8_t update_is_valid(head_enum head_)
@@ -192,15 +192,15 @@ uint8_t update_is_valid(head_enum head_)
     if (remain == 0 || remain == 0xFFFFFFFF) return 0;
     if(head_==HEAD_SD ) 
     {
-      lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,UPDATE_FILE_PATH,LV_FS_MODE_RD|LV_FS_MODE_WR);
-      if(res!=LV_FS_RES_OK)
-      {
-        printf("打开app文件失败\r\n");
-      }
-      else
-      {
+//      lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,UPDATE_FILE_PATH,LV_FS_MODE_RD|LV_FS_MODE_WR);
+//      if(res!=LV_FS_RES_OK)
+//      {
+//        printf("打开app文件失败\r\n");
+//      }
+//      else
+//      {
         lv_fs_seek(&ui_setting_update.file_p,sizeof(head_t),LV_FS_SEEK_SET);
-      }
+//      }
     }    
     
     while (remain > 0)
@@ -227,7 +227,8 @@ uint8_t update_is_valid(head_enum head_)
     
     if(head_==HEAD_SD)
     {
-      lv_fs_close(&ui_setting_update.file_p);
+        lv_fs_close(&ui_setting_update.file_p);
+        ui_setting_update.file_p.drv=NULL;
     }
     // 最终校验
     if (current_crc == ui_setting_update.head[head_].crc32)
@@ -248,7 +249,7 @@ static void event_check_update_cb(lv_event_t*e)
       lv_obj_t*target=lv_event_get_target(e);
         if(update_is_ready==has_no_new)
         {
-            if((get_update_file_head(HEAD_SD) && update_is_valid(HEAD_SD)) )
+            if(get_update_file_head(HEAD_SD))
             {
               if(ui_setting_update.head[HEAD_SD].version>ui_setting_update.head[HEAD_FLASH].version)
               {
