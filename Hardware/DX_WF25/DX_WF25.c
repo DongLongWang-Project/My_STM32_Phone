@@ -1352,16 +1352,18 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
 {
     FRESULT res;
     static FIL f;
-    uint32_t total_raw_saved = 0;
+    static uint32_t total_raw_saved = 0;
+    static uint32_t total_raw_saved_pre = 0;
     uint32_t last_data_time = xTaskGetTickCount(); // 记录最后一次抓到数据的时间
-    uint8_t write_buf[1024]; 
-
+    UINT bw;
+    
     res = f_open(&f, "0:/SD/bin/raw_dump.bin", FA_CREATE_ALWAYS | FA_WRITE);
     if(res != FR_OK) {
         printf("[Error] SD卡打开失败: %d\r\n", res);
         return;
     }
-
+    f_write(&f, DEAL_BUF, Total_Len_resp, &bw);
+    Total_Len_resp=0;
     printf("\r\n[System] 暴力模式启动！监测到 5 秒无数据将自动退出...\r\n");
 
     while(1)
@@ -1373,15 +1375,14 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
             // 1. 只要有数据，就更新时间戳
             last_data_time = xTaskGetTickCount(); 
 
-            uint16_t read_len = (len > sizeof(write_buf)) ? sizeof(write_buf) : len;
-            fifo_read(&WF25_Rev_fifo, write_buf, read_len);
+            uint16_t read_len = (len > sizeof(DEAL_BUF)) ? sizeof(DEAL_BUF) : len;
+            fifo_read(&WF25_Rev_fifo, (uint8_t*)DEAL_BUF, read_len);
             
-            UINT bw;
-            f_write(&f, write_buf, read_len, &bw);
+            
+            f_write(&f, DEAL_BUF, read_len, &bw);
             total_raw_saved += bw;
-
+            total_raw_saved_pre=total_raw_saved;
             // 顺便打个点，表示正在工作
-            if(total_raw_saved % 4096 == 0) printf("."); 
         }
         else 
         {
@@ -1392,13 +1393,11 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
                 break; 
             }
         }
-
-        // 3. 安全冗余：防止无限下载（比如服务器抽风发个不停）
-        if (total_raw_saved > 2 * 1024 * 1024) { // 如果超过 2MB 还没停，强制掐断
-            printf("\r\n[Warning] 达到安全阈值(2MB)，强制保存退出。\r\n");
-            break;
+        if(total_raw_saved!=total_raw_saved_pre)
+        {
+          print("当前进度:%u\r\n",total_raw_saved);
         }
-
+        
         vTaskDelay(5); // 稍微加长一点，给 FIFO 留出堆积的空间，提高写入效率
     }
 

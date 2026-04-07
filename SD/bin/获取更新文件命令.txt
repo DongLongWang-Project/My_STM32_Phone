@@ -1,0 +1,28 @@
+GET /DongLongWang-Project/My_STM32_Phone/main/SD/bin/myPhone.bin HTTP/1.1\r\nHost: raw.githubusercontent.com\r\nConnection: close\r\n\r\n
+
+AT+CIPSEND=129\r\n
+
+AT+CIPSTART="SSL","raw.githubusercontent.com",443\r\n
+
+
+
+
+
+
+
+GET /DongLongWang-Project/My_STM32_Phone/main/SD/bin/myPhone.bin HTTP/1.1\r\nHost: raw.githubusercontent.com\r\nRange: bytes=0-511\r\nConnection: close\r\n\r\n
+
+
+AT+CIPSEND=149\r\n
+
+
+AT+CIPSTART="SSL","raw.githubusercontent.com",443\r\n
+
+
+GET /DongLongWang-Project/My_STM32_Phone/main/SD/bin/myPhone.bin HTTP/1.1
+Host: raw.githubusercontent.com
+Connection: close
+
+AT+CIPSTART="SSL","raw.githubusercontent.com",443
+
+AT+CIPSEND=129
