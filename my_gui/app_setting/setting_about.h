@@ -25,6 +25,7 @@ typedef enum
   has_no_new=0,
   has_sd_new,
   has_git_new,
+  has_download,
 }update_is_ready_t;
 
 typedef enum

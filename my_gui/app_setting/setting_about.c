@@ -240,6 +240,7 @@ uint8_t update_is_valid(head_enum head_)
 update_is_ready_t update_is_ready=has_no_new;
 static void event_check_update_cb(lv_event_t*e)
 {
+      lv_obj_t*target=lv_event_get_target(e);
         if(update_is_ready==has_no_new)
         {
             if( (get_update_file_head(HEAD_SD) && update_is_valid(HEAD_SD)) )
@@ -257,8 +258,15 @@ static void event_check_update_cb(lv_event_t*e)
         }
         else if(update_is_ready==has_git_new)
         {
-            Get_GitHub_MyPhone_Update_file(Get_GitHub_MyPhone_file,get_update_file_str);        
+            Get_GitHub_MyPhone_Update_file(Get_GitHub_MyPhone_file,get_update_file_str);
+            update_is_ready=has_download;
+            lv_label_set_text(ui_setting_update.update_obj.new_version_label,"Github上找到新版本,正在下载");
         }
+        else if(update_is_ready==has_download)
+        {
+           print("正在下载,请稍等\r\n");
+        }
+
         else
         {
             printf("设置更新信息,准备复位更新\r\n");
@@ -311,7 +319,11 @@ void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
     
     lv_label_set_text(update_obj->label_name,"MyPhoneOS");
     #if keil
-      get_update_file_head(HEAD_FLASH);
+      if(update_is_ready==has_no_new)
+      {
+           get_update_file_head(HEAD_FLASH);
+      }
+
       printf("name:%s\r\n",ui_setting_update.head[HEAD_FLASH].name);
       lv_label_set_text(ui_setting_update.update_obj.label_name,ui_setting_update.head[HEAD_FLASH].name);
     #endif
