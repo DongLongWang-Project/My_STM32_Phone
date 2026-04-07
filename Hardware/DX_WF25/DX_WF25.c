@@ -1233,7 +1233,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
         uint16_t save_len = fifo_get_occupy_size(&WF25_Rev_fifo); 
         if(save_len > 0) {
             // 确保读取长度不超过缓冲区
-            uint16_t read_len = (save_len > DEAL_BUF_SIZE) ? DEAL_BUF_SIZE : save_len;
+            uint16_t read_len = (save_len > 2048) ? 2048 : save_len;
             fifo_read(&WF25_Rev_fifo, (uint8_t *)DEAL_BUF, read_len);
             
             // 喂给状态机：逐字节剥离 +IPD，合并写入 512 缓存
