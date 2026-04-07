@@ -175,7 +175,15 @@ uint8_t get_update_file_head(head_enum head_)
        print("head_:%d,buf_size:%u version:%u\r\n",head_,buf_size,ui_setting_update.head[head_].version);
        if (buf_size == 0 ||  buf_size >=0x00EFF00) return 0;  
 //       else return 1;
-       if(update_is_valid(head_)) return 1;
+        if(head_!=HEAD_GitHUB)
+        {
+         if(update_is_valid(head_)) return 1; 
+        }
+        else
+        {
+          return 1; 
+        }
+       
        
        return 0;   
 }
@@ -189,7 +197,7 @@ uint8_t update_is_valid(head_enum head_)
     uint32_t current_crc = 0XFFFFFFFF;
     uint32_t num;
     // 基本合法性检查
-    if (remain == 0 || remain == 0xFFFFFFFF) return 0;
+    if (remain == 0 ||  remain >=0x00EFF00) return 0; 
     if(head_==HEAD_SD ) 
     {
 //      lv_fs_res_t res=lv_fs_open(&ui_setting_update.file_p,UPDATE_FILE_PATH,LV_FS_MODE_RD|LV_FS_MODE_WR);
@@ -223,6 +231,12 @@ uint8_t update_is_valid(head_enum head_)
 //        printf("%02X %02X %02X %02X num:%d current_crc:0X%08X\r\n",DEAL_BUF[num-4],DEAL_BUF[num-3],DEAL_BUF[num-2],DEAL_BUF[num-1],num,current_crc);
         offset += num;
         remain -= num;
+        if(num==0)  
+        {
+          print("出现读取错误,读取数据为0,将强制退出while\r\n");
+          break;
+        }
+ 
     }
     
     if(head_==HEAD_SD)
