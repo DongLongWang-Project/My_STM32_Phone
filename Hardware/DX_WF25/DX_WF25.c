@@ -1238,7 +1238,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
     }
     
     my_ipd_ctx.file_handle = &f; 
-    ui_setting_update.update_obj.timer=lv_timer_create(download_update_timer,500,NULL);
+
     printf("[OTA] 状态机启动，正在解析数据流...\r\n");
     
     // 处理进入函数前已经在 DEAL_BUF 里的“第一桶金”
@@ -1286,11 +1286,7 @@ static void Handle_Get_GitHub_MyPhone_file(const char* buf)
     }
     
     f_close(&f);
-    if(ui_setting_update.update_obj.timer!=NULL)
-    {
-      lv_timer_del(ui_setting_update.update_obj.timer);
-      ui_setting_update.update_obj.timer=NULL;
-    }
+
     printf("------------------------------------------\r\n");
     printf(" 下载完成总结:\r\n");
     printf(" - 实际写入 SD 卡有效载荷: %u 字节\r\n", my_ipd_ctx.total_saved);

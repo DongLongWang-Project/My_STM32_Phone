@@ -299,13 +299,25 @@ void download_update_timer(lv_timer_t*t)
   if(pre_len!=cur_len)
   {
       uint32_t percent=(uint32_t)(((uint64_t)my_ipd_ctx.total_saved*100)/file_size);
-    if(lv_obj_is_valid(ui_setting_update.update_obj.obj_update))
+    if(ui_setting_update.update_obj.obj_update!=NULL)
       {
        lv_bar_set_value(ui_setting_update.update_obj.progress_update_bar,percent,LV_ANIM_OFF);
       }
       print("当前的长度:%u 进度:d",my_ipd_ctx.total_saved,percent);
   }
    pre_len=cur_len;
+}
+
+static void event_obj_update_cb(lv_event_t*e)
+{
+   ui_setting_update.update_obj.obj_update=NULL;
+   ui_setting_update.update_obj.progress_update_bar=NULL;
+   
+    if(ui_setting_update.update_obj.timer!=NULL)
+    {
+      lv_timer_del(ui_setting_update.update_obj.timer);
+      ui_setting_update.update_obj.timer=NULL;
+    }
 }
 void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
 {
@@ -318,15 +330,15 @@ void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
     lv_obj_set_style_text_font(update_obj->label_name,&my_font_16,0);
     
     lv_label_set_text(update_obj->label_name,"MyPhoneOS");
-    #if keil
-      if(update_is_ready==has_no_new)
-      {
-           get_update_file_head(HEAD_FLASH);
-      }
+//    #if keil
+//      if(update_is_ready==has_no_new)
+//      {
+//           get_update_file_head(HEAD_FLASH);
+//      }
 
-      printf("name:%s\r\n",ui_setting_update.head[HEAD_FLASH].name);
-      lv_label_set_text(ui_setting_update.update_obj.label_name,ui_setting_update.head[HEAD_FLASH].name);
-    #endif
+//      printf("name:%s\r\n",ui_setting_update.head[HEAD_FLASH].name);
+//      lv_label_set_text(ui_setting_update.update_obj.label_name,ui_setting_update.head[HEAD_FLASH].name);
+//    #endif
     
 
     update_obj->progress_update_bar=lv_bar_create(update_obj->obj_update);
@@ -338,9 +350,19 @@ void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
     lv_obj_add_event_cb(update_obj->new_version_label,event_check_update_cb,LV_EVENT_CLICKED,NULL);  
     lv_obj_add_flag(update_obj->new_version_label,LV_OBJ_FLAG_CLICKABLE);
     lv_obj_center(update_obj->new_version_label);
-    lv_label_set_text(update_obj->new_version_label,"点击检查新版本");
+    lv_obj_set_style_text_color(update_obj->new_version_label,lv_color_hex(0xFFFFFF),0);
+    if(update_is_ready==has_no_new)
+    {
+     lv_label_set_text(update_obj->new_version_label,"点击检查新版本"); 
+    }
+    else if(update_is_ready==has_download)
+    {
+     lv_label_set_text(update_obj->new_version_label,"Github上找到新版本,正在下载"); 
+    }
 //    lv_obj_add_flag(update_obj->progress_update_bar,LV_OBJ_FLAG_HIDDEN);
-    
+
+   update_obj->timer=lv_timer_create(download_update_timer,500,NULL);
+   lv_obj_add_event_cb(update_obj->obj_update,event_obj_update_cb,LV_EVENT_DELETE,NULL); 
 }
 /*--------------------------------------------------------------------------------↓
 	@函数	  :  创建关于本机的ui
@@ -352,7 +374,7 @@ void ui_app_setting_about(lv_obj_t*parent)
 {
     lv_obj_t*list_about=lv_list_create (parent);/*创建列表*/
     
-
+    
     lv_obj_set_size(list_about, lv_pct(100), lv_pct(100));
     lv_obj_set_style_border_width(list_about, 0, 0);
     lv_obj_set_style_radius(list_about, 0, 0);
