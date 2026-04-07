@@ -1181,24 +1181,23 @@ void ipd_stream_process(ipd_ctx_t *ctx, uint8_t *buf, uint16_t buf_len)
 
             // --- 阶段 3：搬运数据 (核心部分) ---
             case IPD_READ_DATA:
-                // 1. 将字节存入 512 字节的扇区缓存
                 ctx->cache[ctx->cache_ptr++] = ch;
                 ctx->data_cnt++;
                 ctx->total_saved++;
 
-                // 2. 缓存满了，执行一次物理写入
-                if (ctx->cache_ptr >= 512) {
+                // 只要满了 512，立刻物理写入
+                if (ctx->cache_ptr == 512) { 
                     UINT bw;
-                    f_write(ctx->file_handle, ctx->cache, 512, &bw);
-                    ctx->cache_ptr = 0; // 复位缓存指针
+                    FRESULT res = f_write(ctx->file_handle, ctx->cache, 512, &bw);
+                    if(res != FR_OK || bw < 512) {
+                        printf("SD Write Error! res:%d\n", res);
+                    }
+                    ctx->cache_ptr = 0; // 清零，确保下一个字符从 cache[0] 开始
                 }
 
-                // 3. 检查这一包是否收够了
                 if (ctx->data_cnt >= ctx->data_len) {
                     ctx->state = IPD_FIND_HEAD;
                     ctx->match_idx = 0;
-                    // 注意：此时可能 cache 里还有不满 512 的余量数据，
-                    // 我们留到下一包 IPD 或者最终文件关闭时统一写出。
                 }
                 break;
         }
