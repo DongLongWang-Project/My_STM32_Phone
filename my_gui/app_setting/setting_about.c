@@ -330,15 +330,10 @@ void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
     lv_obj_set_style_text_font(update_obj->label_name,&my_font_16,0);
     
     lv_label_set_text(update_obj->label_name,"MyPhoneOS");
-//    #if keil
-//      if(update_is_ready==has_no_new)
-//      {
-//           get_update_file_head(HEAD_FLASH);
-//      }
-
-//      printf("name:%s\r\n",ui_setting_update.head[HEAD_FLASH].name);
-//      lv_label_set_text(ui_setting_update.update_obj.label_name,ui_setting_update.head[HEAD_FLASH].name);
-//    #endif
+    #if keil
+      printf("name:%s\r\n",ui_setting_update.head[HEAD_FLASH].name);
+      lv_label_set_text(ui_setting_update.update_obj.label_name,ui_setting_update.head[HEAD_FLASH].name);
+    #endif
     
 
     update_obj->progress_update_bar=lv_bar_create(update_obj->obj_update);

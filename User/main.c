@@ -44,4 +44,6 @@ void my_phone_config(void)
      #if keil
      Alarm_System_Init();
      #endif  
+     
+     get_update_file_head(HEAD_FLASH);
 }
