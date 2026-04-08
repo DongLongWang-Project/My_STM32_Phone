@@ -3633,9 +3633,9 @@
       </Doc>
       <Doc>
         <Name>.\my_gui\app_setting\setting_about.c</Name>
-        <ColumnNumber>33</ColumnNumber>
-        <TopLine>301</TopLine>
-        <CurrentLine>290</CurrentLine>
+        <ColumnNumber>45</ColumnNumber>
+        <TopLine>334</TopLine>
+        <CurrentLine>349</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>

@@ -348,11 +348,6 @@ static void event_obj_update_cb(lv_event_t*e)
    ui_setting_update.update_obj.obj_update=NULL;
    ui_setting_update.update_obj.progress_update_bar=NULL;
    
-    if(ui_setting_update.update_obj.timer!=NULL)
-    {
-      lv_timer_del(ui_setting_update.update_obj.timer);
-      ui_setting_update.update_obj.timer=NULL;
-    }
 }
 void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
 {
