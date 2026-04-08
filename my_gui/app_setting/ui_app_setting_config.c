@@ -6,7 +6,7 @@
     .language       = CHINESE,
     .font_size        = FONT_SIZE_12,  
     .scr_dir            = REV_VER,    
-    .Brightness      = 50,
+    .Brightness      = 100,
     .wifi_switch_state=false,
     .hotspot_switch_state=false,
 };

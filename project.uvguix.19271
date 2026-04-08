@@ -110,8 +110,8 @@
     <MDIClientArea>
       <RegID>0</RegID>
       <MDITabState>
-        <Len>1142</Len>
-        <Data>0100000004000000010000000100000001000000010000000000000002000000000000000100000001000000000000002800000028000000010000000C000000030000000100000038473A5C4769744875625F436F64655C4D795F53544D33325F50686F6E655C48617264776172655C44585F574632355C44585F574632352E63000000000944585F574632352E6300000000C5D4F200FFFFFFFF38473A5C4769744875625F436F64655C4D795F53544D33325F50686F6E655C48617264776172655C44585F574632355C44585F574632352E68000000000944585F574632352E6800000000FFDC7800FFFFFFFF40473A5C4769744875625F436F64655C4D795F53544D33325F50686F6E655C6D795F6775695C6170705F73657474696E675C73657474696E675F61626F75742E68000000000F73657474696E675F61626F75742E6800000000BECEA100FFFFFFFF40473A5C4769744875625F436F64655C4D795F53544D33325F50686F6E655C6D795F6775695C6170705F73657474696E675C73657474696E675F61626F75742E63000000000F73657474696E675F61626F75742E6300000000F0A0A100FFFFFFFF28473A5C4769744875625F436F64655C4D795F53544D33325F50686F6E655C46415446535C66662E68000000000466662E6800000000BCA8E100FFFFFFFF37473A5C4769744875625F436F64655C4D795F53544D33325F50686F6E655C4C56474C5C7372635C776964676574735C6C765F6261722E6300000000086C765F6261722E63000000009CC1B600FFFFFFFF35473A5C4769744875625F436F64655C4D795F53544D33325F50686F6E655C4C56474C5C7372635C6D6973635C6C765F616E696D2E6800000000096C765F616E696D2E6800000000F7B88600FFFFFFFF3D473A5C4769744875625F436F64655C4D795F53544D33325F50686F6E655C6D795F6775695C6170705F636C6F636B5C75695F6170705F636C6F636B2E63000000000E75695F6170705F636C6F636B2E6300000000D9ADC200FFFFFFFF36473A5C4769744875625F436F64655C4D795F53544D33325F50686F6E655C4C56474C5C7372635C6D6973635C6C765F636F6C6F722E68000000000A6C765F636F6C6F722E6800000000A5C2D700FFFFFFFF29473A5C4769744875625F436F64655C4D795F53544D33325F50686F6E655C557365725C6D61696E2E6300000000066D61696E2E6300000000B3A6BE00FFFFFFFF29473A5C4769744875625F436F64655C4D795F53544D33325F50686F6E655C557365725C6D61696E2E6800000000066D61696E2E6800000000EAD6A300FFFFFFFF36473A5C4769744875625F436F64655C4D795F53544D33325F50686F6E655C4C56474C5C7372635C6D6973635C6C765F6173796E632E63000000000A6C765F6173796E632E6300000000F6FA7D00FFFFFFFF0100000010000000C5D4F200FFDC7800BECEA100F0A0A100BCA8E1009CC1B600F7B88600D9ADC200A5C2D700B3A6BE00EAD6A300F6FA7D00B5E99D005FC3CF00C1838300CACAD5000100000000000000020000005F0100006A000000AB0600009C020000</Data>
+        <Len>348</Len>
+        <Data>01000000040000000100000001000000010000000100000000000000020000000000000001000000010000000000000028000000280000000100000002000000000000000100000040473A5C4769744875625F436F64655C4D795F53544D33325F50686F6E655C6D795F6775695C6170705F73657474696E675C73657474696E675F61626F75742E63000000000F73657474696E675F61626F75742E6300000000C5D4F200FFFFFFFF31473A5C4769744875625F436F64655C4D795F53544D33325F50686F6E655C6D795F6775695C75695F776964676574732E63000000000C75695F776964676574732E6300000000FFDC7800FFFFFFFF0100000010000000C5D4F200FFDC7800BECEA100F0A0A100BCA8E1009CC1B600F7B88600D9ADC200A5C2D700B3A6BE00EAD6A300F6FA7D00B5E99D005FC3CF00C1838300CACAD5000100000000000000020000005F0100006A000000AB0600009C020000</Data>
       </MDITabState>
     </MDIClientArea>
     <ViewEx>
@@ -3603,111 +3603,21 @@
     <ActiveMDIGroup>0</ActiveMDIGroup>
     <MDIGroup>
       <Size>100</Size>
-      <ActiveTab>3</ActiveTab>
-      <Doc>
-        <Name>.\Hardware\DX_WF25\DX_WF25.c</Name>
-        <ColumnNumber>73</ColumnNumber>
-        <TopLine>1225</TopLine>
-        <CurrentLine>1265</CurrentLine>
-        <Folding>1</Folding>
-        <ContractedFolders></ContractedFolders>
-        <PaneID>0</PaneID>
-      </Doc>
-      <Doc>
-        <Name>Hardware\DX_WF25\DX_WF25.h</Name>
-        <ColumnNumber>29</ColumnNumber>
-        <TopLine>145</TopLine>
-        <CurrentLine>162</CurrentLine>
-        <Folding>1</Folding>
-        <ContractedFolders></ContractedFolders>
-        <PaneID>0</PaneID>
-      </Doc>
-      <Doc>
-        <Name>my_gui\app_setting\../../SD/Font/../../my_gui/app_setting/setting_about.h</Name>
-        <ColumnNumber>23</ColumnNumber>
-        <TopLine>63</TopLine>
-        <CurrentLine>82</CurrentLine>
-        <Folding>1</Folding>
-        <ContractedFolders></ContractedFolders>
-        <PaneID>0</PaneID>
-      </Doc>
+      <ActiveTab>0</ActiveTab>
       <Doc>
         <Name>.\my_gui\app_setting\setting_about.c</Name>
-        <ColumnNumber>45</ColumnNumber>
-        <TopLine>334</TopLine>
-        <CurrentLine>349</CurrentLine>
+        <ColumnNumber>83</ColumnNumber>
+        <TopLine>366</TopLine>
+        <CurrentLine>381</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>
       </Doc>
       <Doc>
-        <Name>.\FATFS\ff.h</Name>
+        <Name>.\my_gui\ui_widgets.c</Name>
         <ColumnNumber>0</ColumnNumber>
-        <TopLine>1</TopLine>
-        <CurrentLine>1</CurrentLine>
-        <Folding>1</Folding>
-        <ContractedFolders></ContractedFolders>
-        <PaneID>0</PaneID>
-      </Doc>
-      <Doc>
-        <Name>.\LVGL\src\widgets\lv_bar.c</Name>
-        <ColumnNumber>0</ColumnNumber>
-        <TopLine>83</TopLine>
-        <CurrentLine>90</CurrentLine>
-        <Folding>1</Folding>
-        <ContractedFolders></ContractedFolders>
-        <PaneID>0</PaneID>
-      </Doc>
-      <Doc>
-        <Name>LVGL\src\extra\widgets\animimg\../../../../src/misc/lv_anim.h</Name>
-        <ColumnNumber>0</ColumnNumber>
-        <TopLine>33</TopLine>
-        <CurrentLine>40</CurrentLine>
-        <Folding>1</Folding>
-        <ContractedFolders></ContractedFolders>
-        <PaneID>0</PaneID>
-      </Doc>
-      <Doc>
-        <Name>.\my_gui\app_clock\ui_app_clock.c</Name>
-        <ColumnNumber>8</ColumnNumber>
-        <TopLine>202</TopLine>
-        <CurrentLine>214</CurrentLine>
-        <Folding>1</Folding>
-        <ContractedFolders></ContractedFolders>
-        <PaneID>0</PaneID>
-      </Doc>
-      <Doc>
-        <Name>LVGL\src\extra\widgets\menu\../../../core/../misc/lv_color.h</Name>
-        <ColumnNumber>0</ColumnNumber>
-        <TopLine>592</TopLine>
-        <CurrentLine>599</CurrentLine>
-        <Folding>1</Folding>
-        <ContractedFolders></ContractedFolders>
-        <PaneID>0</PaneID>
-      </Doc>
-      <Doc>
-        <Name>.\User\main.c</Name>
-        <ColumnNumber>21</ColumnNumber>
-        <TopLine>26</TopLine>
-        <CurrentLine>48</CurrentLine>
-        <Folding>1</Folding>
-        <ContractedFolders></ContractedFolders>
-        <PaneID>0</PaneID>
-      </Doc>
-      <Doc>
-        <Name>User\main.h</Name>
-        <ColumnNumber>0</ColumnNumber>
-        <TopLine>1</TopLine>
-        <CurrentLine>22</CurrentLine>
-        <Folding>1</Folding>
-        <ContractedFolders></ContractedFolders>
-        <PaneID>0</PaneID>
-      </Doc>
-      <Doc>
-        <Name>.\LVGL\src\misc\lv_async.c</Name>
-        <ColumnNumber>0</ColumnNumber>
-        <TopLine>38</TopLine>
-        <CurrentLine>45</CurrentLine>
+        <TopLine>55</TopLine>
+        <CurrentLine>73</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>
