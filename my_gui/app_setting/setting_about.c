@@ -284,6 +284,8 @@ static void event_check_update_cb(lv_event_t*e)
         }
         else if(update_is_ready==has_git_new)
         {
+           ui_setting_update.update_obj.timer=lv_timer_create(download_update_timer,1000,NULL);
+
             Get_GitHub_MyPhone_Update_file(Get_GitHub_MyPhone_file,get_update_file_str);
             update_is_ready=has_download;
 //            lv_label_set_text(ui_setting_update.update_obj.new_version_label,"Github上找到新版本,正在下载");
@@ -390,7 +392,6 @@ void setting_update_create(lv_obj_t*parent,update_obj_t *update_obj)
     }
 //    lv_obj_add_flag(update_obj->progress_update_bar,LV_OBJ_FLAG_HIDDEN);
    
-   update_obj->timer=lv_timer_create(download_update_timer,1000,NULL);
    lv_obj_add_event_cb(update_obj->obj_update,event_obj_update_cb,LV_EVENT_DELETE,NULL); 
 }
 /*--------------------------------------------------------------------------------↓
