@@ -50,13 +50,13 @@ lv_obj_t* ui_app_music_list_creat(lv_obj_t*parent)
 void ui_app_music_detail_creat(lv_obj_t*parent,const char*path)
 {
     
-memset(&lrc_obj,0,sizeof(lrc_obj_t));
+    memset(&lrc_obj,0,sizeof(lrc_obj_t));
 
  #if keil
-//    get_file_name(path,music_win.wav_data.cur_playing_music);
-          load_lrc_file(parent,path,LRC_BUF); 
-          
+// get_file_name(path,music_win.wav_data.cur_playing_music);
+   load_lrc_file(parent,path,LRC_BUF);      
    uint8_t file_index=video_get_list_to_file(path,FILE_BUF[0],FILE_BUF[1],"wav");
+   printf("文件索引:%d\r\n",file_index);
    printf("上一个文件:%s\r\n下一个文件:%s\r\n",FILE_BUF[0],FILE_BUF[1]);
     if(music_win.state!=MUSIC_STATE_PLAYING || strcmp(music_win.wav_data.pre_playing_music,music_win.wav_data.cur_playing_music)!=0)
     {
@@ -74,11 +74,11 @@ memset(&lrc_obj,0,sizeof(lrc_obj_t));
                   res = lv_fs_read(&music_win.file, wav_head, sizeof(wav_head), &num);
                     if(res==LV_FS_RES_OK) 
                  {
-                   printf("num:%d\r\n",num);
+                   
                    music_win.wav_data.NumChannels=*(uint16_t*)(&wav_head[22]);  
                    music_win.wav_data.SampleRate=*(uint32_t*)(&wav_head[24]);
                    music_win.wav_data.BitsPerSample=*(uint16_t*)(&wav_head[34]);
-                   for(uint8_t i=34;i<256;i++)
+                   for(uint16_t i=34;i<256;i++)
                    {
                     if(wav_head[i] == 0x64 && wav_head[i+1] == 0x61 && wav_head[i+2] == 0x74 && wav_head[i+3] == 0x61)
                        {
@@ -145,6 +145,20 @@ memset(&lrc_obj,0,sizeof(lrc_obj_t));
   {
      lv_obj_add_flag(music_play_control_bar.next_btn,LV_OBJ_FLAG_HIDDEN);
   }
+//    if(FILE_BUF[0]=='\0')
+//    {
+//      lv_obj_add_flag(music_play_control_bar.pre_btn,LV_OBJ_FLAG_HIDDEN);
+//    }
+//    else if(FILE_BUF[1]=='\0')
+//    {
+//       lv_obj_add_flag(music_play_control_bar.next_btn,LV_OBJ_FLAG_HIDDEN); 
+//    }
+//    else if(FILE_BUF[0]=='\0' && FILE_BUF[1]=='\0')
+//    {
+//      lv_obj_add_flag(music_play_control_bar.next_btn,LV_OBJ_FLAG_HIDDEN);
+//      lv_obj_add_flag(music_play_control_bar.pre_btn,LV_OBJ_FLAG_HIDDEN);
+//    }
+      
   #if keil
   lv_label_set_text(music_play_control_bar.progress_label,music_win.wav_data.cur_playing_music);
   lv_bar_set_range(music_play_control_bar.progress_bar,0,music_win.music_time.music_total_sec);
