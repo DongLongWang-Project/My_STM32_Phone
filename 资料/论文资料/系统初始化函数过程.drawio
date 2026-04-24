@@ -1,0 +1,49 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="uqczTquHsbc_J-U4emL9">
+    <mxGraphModel dx="880" dy="539" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="6iWznPsnnXkbDQJn1-Hk-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="6iWznPsnnXkbDQJn1-Hk-2" target="6iWznPsnnXkbDQJn1-Hk-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6iWznPsnnXkbDQJn1-Hk-2" value="系统初始化" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="145" width="127" height="33" as="geometry" />
+        </mxCell>
+        <mxCell id="6iWznPsnnXkbDQJn1-Hk-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="6iWznPsnnXkbDQJn1-Hk-3" target="6iWznPsnnXkbDQJn1-Hk-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6iWznPsnnXkbDQJn1-Hk-3" value="开启中断,设置中断向量表偏移,设置中断优先级分组" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="336" y="204" width="195" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6iWznPsnnXkbDQJn1-Hk-8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="6iWznPsnnXkbDQJn1-Hk-5" target="6iWznPsnnXkbDQJn1-Hk-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6iWznPsnnXkbDQJn1-Hk-5" value="初始化系统时钟" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="336" y="292" width="195" height="47" as="geometry" />
+        </mxCell>
+        <mxCell id="6iWznPsnnXkbDQJn1-Hk-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="6iWznPsnnXkbDQJn1-Hk-7" target="6iWznPsnnXkbDQJn1-Hk-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6iWznPsnnXkbDQJn1-Hk-7" value="初始化外设(串口,按键,SPI,FSMC,I2S,USB)" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="338" y="373" width="192" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="6iWznPsnnXkbDQJn1-Hk-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="6iWznPsnnXkbDQJn1-Hk-9" target="6iWznPsnnXkbDQJn1-Hk-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6iWznPsnnXkbDQJn1-Hk-9" value="初始化变量配置" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="339" y="452" width="192" height="39" as="geometry" />
+        </mxCell>
+        <mxCell id="6iWznPsnnXkbDQJn1-Hk-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="6iWznPsnnXkbDQJn1-Hk-11" target="6iWznPsnnXkbDQJn1-Hk-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6iWznPsnnXkbDQJn1-Hk-11" value="&#xa;&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;&quot;&gt;创建FreeRTOS任务&lt;/span&gt;&#xa;&#xa;" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="338" y="522" width="194" height="39" as="geometry" />
+        </mxCell>
+        <mxCell id="6iWznPsnnXkbDQJn1-Hk-13" value="运行" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="372" y="584" width="125" height="24" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

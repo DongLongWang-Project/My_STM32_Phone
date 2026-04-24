@@ -1,0 +1,89 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="B1FmKn9yVjhCtOzCS7p0">
+    <mxGraphModel dx="1257" dy="770" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="oB6TCnTXk3ZWtHOSI9oX-1" target="oB6TCnTXk3ZWtHOSI9oX-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-1" value="OTA升级" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="377" y="142" width="120" height="39" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="oB6TCnTXk3ZWtHOSI9oX-17">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="437" y="317.4666976928711" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="oB6TCnTXk3ZWtHOSI9oX-2" target="oB6TCnTXk3ZWtHOSI9oX-2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="578.9334564208984" y="204.93331146240234" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="579" y="248" />
+              <mxPoint x="579" y="224" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-2" value="检测SD的bin文件夹的二进制文件" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="377" y="214" width="120" height="39" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="oB6TCnTXk3ZWtHOSI9oX-4" target="oB6TCnTXk3ZWtHOSI9oX-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-4" value="设置新的更新标志" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="358" width="120" height="39" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-6" value="有更高版本文件" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="427" y="265" width="102" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="oB6TCnTXk3ZWtHOSI9oX-7" target="oB6TCnTXk3ZWtHOSI9oX-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-7" value="复位,进入升级状态" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="425" width="120" height="39" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="oB6TCnTXk3ZWtHOSI9oX-9" target="oB6TCnTXk3ZWtHOSI9oX-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-9" value="检测是否有新的更新标志" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="489" width="120" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="oB6TCnTXk3ZWtHOSI9oX-11" target="oB6TCnTXk3ZWtHOSI9oX-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-11" value="CRC校验文件完整性" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="551" width="120" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-16" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="oB6TCnTXk3ZWtHOSI9oX-13" target="oB6TCnTXk3ZWtHOSI9oX-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-13" value="进行版本更新" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="608" width="120" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-15" value="载入新版本" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="665" width="120" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="oB6TCnTXk3ZWtHOSI9oX-17">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="437" y="358" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="oB6TCnTXk3ZWtHOSI9oX-2" target="oB6TCnTXk3ZWtHOSI9oX-17">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="437" y="317.4666976928711" as="targetPoint" />
+            <mxPoint x="437" y="253" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-17" value="CRC校验文件完整性" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="377" y="295" width="120" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-25" value="没有新版本" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="576" y="227" width="78" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="oB6TCnTXk3ZWtHOSI9oX-30" value="有标志位" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="431" y="525" width="66" height="26" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

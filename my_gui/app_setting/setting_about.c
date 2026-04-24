@@ -172,7 +172,9 @@ uint8_t get_update_file_head(head_enum head_)
           default:break;
         }
        uint32_t buf_size = ui_setting_update.head[head_].file_size;
+       #if keil
        print("head_:%d,buf_size:%u version:%u\r\n",head_,buf_size,ui_setting_update.head[head_].version);
+       #endif // keil
        if (buf_size == 0 ||  buf_size >=0x00EFF00) return 0;  
 //       else return 1;
         if(head_!=HEAD_GitHUB)
@@ -233,7 +235,9 @@ uint8_t update_is_valid(head_enum head_)
         remain -= num;
         if(num==0)  
         {
+            #if keil
           print("出现读取错误,读取数据为0,将强制退出while\r\n");
+          #endif // keil
           break;
         }
  
@@ -273,27 +277,35 @@ static void event_check_update_cb(lv_event_t*e)
               else if(ui_setting_update.head[HEAD_SD].version==ui_setting_update.head[HEAD_FLASH].version )
               {
                 lv_label_set_text(ui_setting_update.update_obj.new_version_label,"已是最新版本");
+                #if keil
                 Get_GitHub_MyPhone_Update_file(Get_GitHub_MyPhone_file_head,get_update_head_str); 
+              #endif
               }
             }
             else
             {
               lv_label_set_text(ui_setting_update.update_obj.new_version_label,"文件错误,请重新下载");
+              #if keil
               Get_GitHub_MyPhone_Update_file(Get_GitHub_MyPhone_file_head,get_update_head_str);
+              #endif // keil
+              
             }
         }
         else if(update_is_ready==has_git_new)
         {
            ui_setting_update.update_obj.timer=lv_timer_create(download_update_timer,1000,NULL);
-
+        #if keil
             Get_GitHub_MyPhone_Update_file(Get_GitHub_MyPhone_file,get_update_file_str);
+            #endif // keil
             update_is_ready=has_download;
 //            lv_label_set_text(ui_setting_update.update_obj.new_version_label,"Github上找到新版本,正在下载");
             
         }
         else if(update_is_ready==has_download)
         {
+            #if keil
            print("正在下载,请稍等\r\n");
+           #endif // keil
         }
 
         else
@@ -313,12 +325,16 @@ static void event_check_update_cb(lv_event_t*e)
             #endif
         }
 }
-
+#if keil
 extern ipd_ctx_t my_ipd_ctx; 
+#endif
+
 void download_update_timer(lv_timer_t*t)
 {
   static uint32_t pre_len=0;
+  #if keil
   uint32_t cur_len=my_ipd_ctx.total_saved;
+
   uint32_t file_size=ui_setting_update.head[HEAD_GitHUB].file_size+sizeof(head_t);
   
   if(pre_len!=cur_len)
@@ -341,6 +357,7 @@ void download_update_timer(lv_timer_t*t)
     update_is_ready=has_no_new;
     lv_timer_del(t);
   }
+#endif
 }
 
 static void event_obj_update_cb(lv_event_t*e)

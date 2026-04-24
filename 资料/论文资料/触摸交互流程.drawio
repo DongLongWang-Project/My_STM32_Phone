@@ -1,0 +1,69 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="YPAly40cWG9ZUDGQXw6I">
+    <mxGraphModel dx="880" dy="539" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="z99pq9PvZdjuU1nPQwGU-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="z99pq9PvZdjuU1nPQwGU-1" target="z99pq9PvZdjuU1nPQwGU-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="z99pq9PvZdjuU1nPQwGU-1" value="触摸模块(循环检测是否触摸)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="170" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="z99pq9PvZdjuU1nPQwGU-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="z99pq9PvZdjuU1nPQwGU-2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="383" y="416" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="432" y="383" />
+              <mxPoint x="432" y="416" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="z99pq9PvZdjuU1nPQwGU-35" value="刷新显示" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="z99pq9PvZdjuU1nPQwGU-34">
+          <mxGeometry x="-0.01" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="z99pq9PvZdjuU1nPQwGU-38" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="z99pq9PvZdjuU1nPQwGU-2" target="z99pq9PvZdjuU1nPQwGU-37">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="z99pq9PvZdjuU1nPQwGU-2" value="显示模块" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="370" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="z99pq9PvZdjuU1nPQwGU-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="z99pq9PvZdjuU1nPQwGU-3" target="z99pq9PvZdjuU1nPQwGU-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="z99pq9PvZdjuU1nPQwGU-3" value="转换为LVGL点击事件" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="260" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="z99pq9PvZdjuU1nPQwGU-6" value="检测到触摸,去抖处理" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="260" y="240" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="z99pq9PvZdjuU1nPQwGU-16" value="" style="endArrow=none;html=1;rounded=0;endFill=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="319" y="263" as="sourcePoint" />
+            <mxPoint x="466" y="265" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="z99pq9PvZdjuU1nPQwGU-17" value="" style="endArrow=none;html=1;rounded=0;endFill=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="466" y="266" as="sourcePoint" />
+            <mxPoint x="466" y="201" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="z99pq9PvZdjuU1nPQwGU-18" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="467" y="199" as="sourcePoint" />
+            <mxPoint x="380" y="198.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="z99pq9PvZdjuU1nPQwGU-19" value="没有触摸事件,继续检测" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="402" y="217" width="141" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="z99pq9PvZdjuU1nPQwGU-37" value="响应交互功能" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="260" y="457" width="120" height="47" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

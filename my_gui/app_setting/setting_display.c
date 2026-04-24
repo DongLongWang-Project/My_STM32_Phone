@@ -68,14 +68,14 @@ void ui_app_setting_display(lv_obj_t *parent)
 }
 static void event_touch_check_cb(lv_event_t*e)
 {
-    
+    #if keil
     if(W25Qxx_SectorErase(TOUCH_SAVE_VER_Addr,W25Qxx_SECTOR_ERASE_4KB)==0)
     {
      printf("擦除触摸校准记录,并重新进行校准!"); 
      TP_Adjust();
      ui_goto_page(PAGE_APP_DETAIL,APP_SETTING);
     }
-   
+   #endif // keil
 }
 /*--------------------------------------------------------------------------------↓
 	@函数	  :显示设置的下拉框选项设置

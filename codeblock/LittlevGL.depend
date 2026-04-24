@@ -10336,10 +10336,10 @@
 	"lvgl.h"
 	"lvgl/lvgl.h"
 
-1774833308 source:g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock.c
+1775095111 source:g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock.c
 	"ui_app_clock.h"
 
-1774061853 g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock.h
+1774946492 g:\github_code\my_stm32_phone\my_gui\app_clock\ui_app_clock.h
 	"lvgl.h"
 	"../app_setting/setting_display.h"
 	"../ui_widgets.h"
@@ -10973,10 +10973,12 @@
 1770276795 g:\github_code\my_stm32_phone\codeblock\lvgl\src\extra\widgets\span\lv_span.h
 	"../../../lvgl.h"
 
-1771031461 g:\github_code\my_stm32_phone\my_gui\app_setting\setting_display.h
+1774921233 g:\github_code\my_stm32_phone\my_gui\app_setting\setting_display.h
 	"../ui_app_language.h"
 	"../../SD/Font/Font.h"
 	"../ui_main.h"
+	"XPT2046.h"
+	"W25Qxx.h"
 
 1774072889 g:\github_code\my_stm32_phone\my_gui\ui_app_language.h
 	"lvgl.h"
@@ -11004,7 +11006,7 @@
 	"ui_main.h"
 	"ui_app_language.h"
 
-1774919932 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
+1776559808 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting.h
 	"lvgl.h"
 	"../ui_main.h"
 	"../ui_app_language.h"
@@ -11024,7 +11026,7 @@
 	"../ui_app_language.h"
 	"../ui_widgets.h"
 
-1774831690 g:\github_code\my_stm32_phone\my_gui\app_setting\setting_about.h
+1775552982 g:\github_code\my_stm32_phone\my_gui\app_setting\setting_about.h
 	"../ui_app_language.h"
 	"stdio.h"
 	"ui_app_setting.h"
@@ -11069,7 +11071,7 @@
 	"flash.h"
 	"W25Qxx.h"
 
-1774060198 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_display.c
+1776559870 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_display.c
 	"setting_display.h"
 
 1774057481 source:g:\github_code\my_stm32_phone\my_gui\app_setting\setting_hotspot.c
@@ -13808,7 +13810,7 @@
 1774920304 g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.h
 	"lvgl.h"
 
-1771075785 source:g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.c
+1775611409 source:g:\github_code\my_stm32_phone\my_gui\app_setting\ui_app_setting_config.c
 	"ui_app_setting_config.h"
 
 1770601013 g:\github_code\my_stm32_phone\sd\font_w25q\myfont.h
@@ -13849,7 +13851,7 @@
 	"USART1.h"
 	"W25Qxx.h"
 
-1774833341 source:g:\github_code\my_stm32_phone\sd\font\font.c
+1775115627 source:g:\github_code\my_stm32_phone\sd\font\font.c
 	"Font.h"
 
 1770716760 source:g:\github_code\my_stm32_phone\sd\font\font\font_12.c
@@ -13913,7 +13915,7 @@
 	"lvgl.h"
 	"../app_setting/ui_app_setting.h"
 
-1774057171 source:g:\github_code\my_stm32_phone\my_gui\app_music\ui_app_music.c
+1775613654 source:g:\github_code\my_stm32_phone\my_gui\app_music\ui_app_music.c
 	"ui_app_music.h"
 	"stdio.h"
 	"../app_file_sys/ui_app_file.h"
