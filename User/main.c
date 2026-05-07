@@ -19,8 +19,6 @@ int main(void)
     DX_WF25_Init();
     update_font();
     USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
-
-
     my_phone_config();
      
     MyPhone_stm32_task();
@@ -29,6 +27,7 @@ int main(void)
      {
 
      }
+     
 }
 
 void my_phone_config(void)

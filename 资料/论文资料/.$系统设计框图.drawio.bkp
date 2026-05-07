@@ -1,0 +1,76 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="aa-cl5XVoRQmvNx7aZ7N">
+    <mxGraphModel dx="880" dy="539" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-24" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="cui8FwkHQa-KuvhWl9OS-1" target="cui8FwkHQa-KuvhWl9OS-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-1" value="STM32" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="165" width="117" height="197" as="geometry" />
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="cui8FwkHQa-KuvhWl9OS-9" target="cui8FwkHQa-KuvhWl9OS-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-9" value="音频模块" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="609" y="245" width="57" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-16" value="喇叭" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="711" y="245" width="57" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-17" value="显示屏(有触摸)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="609" y="165" width="57" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-18" value="ESP32-C2(WIFI)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="609" y="317" width="57" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-20" value="EXT_SRAM" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="265" y="236" width="68" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-21" value="W25Q128" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="265" y="165" width="68" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-35" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;" edge="1" parent="1" source="cui8FwkHQa-KuvhWl9OS-22" target="cui8FwkHQa-KuvhWl9OS-34">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-22" value="SD" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="265" y="317" width="68" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-28" value="" style="endArrow=classic;html=1;rounded=0;startArrow=classic;startFill=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="525" y="183" as="sourcePoint" />
+            <mxPoint x="608" y="183" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-29" value="" style="endArrow=classic;html=1;rounded=0;startArrow=classic;startFill=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="527" y="335" as="sourcePoint" />
+            <mxPoint x="610" y="335" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-30" value="" style="endArrow=classic;html=1;rounded=0;startArrow=classic;startFill=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="331" y="335" as="sourcePoint" />
+            <mxPoint x="414" y="335" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-31" value="" style="endArrow=classic;html=1;rounded=0;startArrow=classic;startFill=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="330" y="254" as="sourcePoint" />
+            <mxPoint x="413" y="254" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-32" value="" style="endArrow=classic;html=1;rounded=0;startArrow=classic;startFill=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="327" y="183" as="sourcePoint" />
+            <mxPoint x="410" y="183" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cui8FwkHQa-KuvhWl9OS-34" value="PC" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="150" y="317" width="68" height="37" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -137,7 +137,6 @@ void MyPhone_stm32_task(void)
 
      while(1)
      {
-
         wifi_cmd_stateMACHINE();
      }
    }
