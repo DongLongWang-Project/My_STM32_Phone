@@ -1,0 +1,61 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="Wr7HkCFr-kRlbV3TtYFe">
+    <mxGraphModel dx="870" dy="529" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="S-SBftWwik12DrurZYln-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="S-SBftWwik12DrurZYln-1" target="S-SBftWwik12DrurZYln-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-1" value="用户触摸屏幕" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="357" y="129" width="115" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="S-SBftWwik12DrurZYln-2" target="S-SBftWwik12DrurZYln-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-2" value="XPT2046读取触摸坐标" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="353" y="172" width="123" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="S-SBftWwik12DrurZYln-4" target="S-SBftWwik12DrurZYln-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-4" value="滤波与消抖处理" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="348" y="227" width="133" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="S-SBftWwik12DrurZYln-6" target="S-SBftWwik12DrurZYln-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-6" value="转换为LVGL输入事件" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="343" y="278" width="143" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="S-SBftWwik12DrurZYln-8" target="S-SBftWwik12DrurZYln-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-8" value="触发界面控件回调" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="336" y="332" width="157" height="19" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="S-SBftWwik12DrurZYln-10" target="S-SBftWwik12DrurZYln-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-10" value="执行对应功能" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="331" y="374" width="167" height="19" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="S-SBftWwik12DrurZYln-12" target="S-SBftWwik12DrurZYln-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-12" value="LCD更新界面显示" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="325" y="416" width="179" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-14" value="返回" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="373.5" y="458" width="81" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="S-SBftWwik12DrurZYln-17" target="S-SBftWwik12DrurZYln-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="S-SBftWwik12DrurZYln-17" value="开始" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="385" y="79" width="58" height="25" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,119 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="rcbTq-JR-1EzggWwVfyq">
+    <mxGraphModel dx="870" dy="529" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ib5DyJWngDSrSono5UXr-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ib5DyJWngDSrSono5UXr-1" target="ib5DyJWngDSrSono5UXr-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-1" value="开始" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="374" y="259" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ib5DyJWngDSrSono5UXr-2" target="ib5DyJWngDSrSono5UXr-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-37" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ib5DyJWngDSrSono5UXr-2" target="ib5DyJWngDSrSono5UXr-36">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-41" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ib5DyJWngDSrSono5UXr-2" target="ib5DyJWngDSrSono5UXr-40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-2" value="初始化串口及DMA" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="374" y="324" width="120" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-10" value="是" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="238" y="382.5" width="30" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ib5DyJWngDSrSono5UXr-18" target="ib5DyJWngDSrSono5UXr-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-18" value="获取AT指令" style="rhombus;whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="227" y="302.5" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-28" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ib5DyJWngDSrSono5UXr-22" target="ib5DyJWngDSrSono5UXr-27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-22" value="DMA发送AT指令" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="207" y="426" width="120" height="21" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-30" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ib5DyJWngDSrSono5UXr-27" target="ib5DyJWngDSrSono5UXr-29">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-27" value="DMA发送AT指令" style="rhombus;whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="221" y="485.5" width="92" height="64.5" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-29" value="处理wifi数据" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="225.5" y="588" width="83" height="41" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-31" value="发送成功" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="258" y="554" width="66" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-33" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ib5DyJWngDSrSono5UXr-27" target="ib5DyJWngDSrSono5UXr-18">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="93" y="564" as="sourcePoint" />
+            <mxPoint x="119" y="330" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="145" y="518" />
+              <mxPoint x="145" y="343" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-34" value="发送失败" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="141" y="495" width="66" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-36" value="串口空闲中断" style="rhombus;whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="394" y="393" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-49" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ib5DyJWngDSrSono5UXr-40" target="ib5DyJWngDSrSono5UXr-48">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-40" value="DMA循环接收数据" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="574" y="324" width="120" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-43" value="触发中断" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="497" y="405" width="66" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-44" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.064;entryY=0.838;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="ib5DyJWngDSrSono5UXr-29" target="ib5DyJWngDSrSono5UXr-34">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="159" y="700" as="sourcePoint" />
+            <mxPoint x="209" y="650" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="145" y="609" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-52" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="ib5DyJWngDSrSono5UXr-47" target="ib5DyJWngDSrSono5UXr-29">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="531" y="619" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-47" value="保存到FIFO缓冲区" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="474" y="492" width="120" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-51" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" edge="1" parent="1" source="ib5DyJWngDSrSono5UXr-48">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="532.4000701904297" y="433" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-48" value="DMA中断" style="rhombus;whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="594" y="393" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-50" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="ib5DyJWngDSrSono5UXr-36">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="474" y="478.25" as="sourcePoint" />
+            <mxPoint x="531" y="492" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="531" y="433" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ib5DyJWngDSrSono5UXr-53" value="循环" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="153" y="607" width="42" height="26" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

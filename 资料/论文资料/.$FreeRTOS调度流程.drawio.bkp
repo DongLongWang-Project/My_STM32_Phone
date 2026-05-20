@@ -1,0 +1,79 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="syoq3lGmVFPrQA52-ThS">
+    <mxGraphModel dx="871" dy="529" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="u3VTl69TyL7IODHJlNDR-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=default;labelBackgroundColor=none;" edge="1" parent="1" source="u3VTl69TyL7IODHJlNDR-2" target="u3VTl69TyL7IODHJlNDR-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-2" value="系统启动" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="348" y="51" width="57" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=default;labelBackgroundColor=none;" edge="1" parent="1" source="u3VTl69TyL7IODHJlNDR-3" target="u3VTl69TyL7IODHJlNDR-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-3" value="FreeRTOS初始化" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="340" y="102" width="73" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="u3VTl69TyL7IODHJlNDR-5" target="u3VTl69TyL7IODHJlNDR-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-5" value="创建任务" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="299" y="155" width="150" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="u3VTl69TyL7IODHJlNDR-7" target="u3VTl69TyL7IODHJlNDR-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-7" value="启动任务调度器" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="320" y="208" width="113" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="u3VTl69TyL7IODHJlNDR-9" target="u3VTl69TyL7IODHJlNDR-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-9" value="任务进入就绪态" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="320" y="255" width="113" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="u3VTl69TyL7IODHJlNDR-11" target="u3VTl69TyL7IODHJlNDR-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-11" value="调度器根据优先级分配CPU" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="320" y="305" width="113" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-16" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="u3VTl69TyL7IODHJlNDR-13" target="u3VTl69TyL7IODHJlNDR-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-13" value="任务运行" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="299" y="362" width="156" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="u3VTl69TyL7IODHJlNDR-15" target="u3VTl69TyL7IODHJlNDR-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-15" value="任务阻塞或延时" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="320" y="414" width="113" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="u3VTl69TyL7IODHJlNDR-17" target="u3VTl69TyL7IODHJlNDR-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-17" value="释放CPU使用权" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="320" y="469" width="113" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-22" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="u3VTl69TyL7IODHJlNDR-19" target="u3VTl69TyL7IODHJlNDR-21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-19" value="等待时间或时间到达" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="320" y="520" width="113" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-24" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="u3VTl69TyL7IODHJlNDR-21" target="u3VTl69TyL7IODHJlNDR-23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-21" value="重新进入就绪态" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="320" y="574" width="113" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="u3VTl69TyL7IODHJlNDR-23" value="循环调度" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="295" y="631" width="164" height="28" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

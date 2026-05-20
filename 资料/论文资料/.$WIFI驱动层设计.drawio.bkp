@@ -1,0 +1,69 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="rcbTq-JR-1EzggWwVfyq">
+    <mxGraphModel dx="871" dy="529" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="k2oHbv_jTZXW6xxHt3iU-1" target="k2oHbv_jTZXW6xxHt3iU-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-1" value="开始" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="428.5" y="142" width="52" height="17" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="k2oHbv_jTZXW6xxHt3iU-2" target="k2oHbv_jTZXW6xxHt3iU-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-2" value="USART初始化" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="422" y="177" width="65" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="k2oHbv_jTZXW6xxHt3iU-4" target="k2oHbv_jTZXW6xxHt3iU-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-4" value="DMA发送/循环接收初始化" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="413" y="230" width="83" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="k2oHbv_jTZXW6xxHt3iU-8" target="k2oHbv_jTZXW6xxHt3iU-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-8" value="FIFO缓冲区初始化" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="422" y="288" width="65" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="k2oHbv_jTZXW6xxHt3iU-10" target="k2oHbv_jTZXW6xxHt3iU-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-10" value="触发半区/全区/空闲中断" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="406" y="399" width="97" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-16" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="k2oHbv_jTZXW6xxHt3iU-12" target="k2oHbv_jTZXW6xxHt3iU-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-12" value="DMA后台持续接收数据写入FIFO" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="410.5" y="459" width="88" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-27" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="k2oHbv_jTZXW6xxHt3iU-15" target="k2oHbv_jTZXW6xxHt3iU-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-15" value="释放信号量/互斥锁" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="410.5" y="522" width="88" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="k2oHbv_jTZXW6xxHt3iU-18">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="454.5" y="402" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-18" value="创建信号量/互斥锁" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="422" y="345" width="65" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-29" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="k2oHbv_jTZXW6xxHt3iU-26" target="k2oHbv_jTZXW6xxHt3iU-28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-26" value="读取FIFO数据" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="410.5" y="579" width="88" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="k2oHbv_jTZXW6xxHt3iU-28" value="返回" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="428.5" y="632" width="52" height="22" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

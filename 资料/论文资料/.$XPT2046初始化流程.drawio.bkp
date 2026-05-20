@@ -1,0 +1,59 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="-Ic3lMWULpfQLWpv3E-Y">
+    <mxGraphModel dx="880" dy="539" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="MQZQgBhv1BmsYOdhl6g_-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="MQZQgBhv1BmsYOdhl6g_-1" target="MQZQgBhv1BmsYOdhl6g_-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MQZQgBhv1BmsYOdhl6g_-1" value="开始" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="362" y="95" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="MQZQgBhv1BmsYOdhl6g_-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="MQZQgBhv1BmsYOdhl6g_-2" target="MQZQgBhv1BmsYOdhl6g_-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MQZQgBhv1BmsYOdhl6g_-2" value="初始化XPT2046" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="362" y="155" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="MQZQgBhv1BmsYOdhl6g_-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="MQZQgBhv1BmsYOdhl6g_-4" target="MQZQgBhv1BmsYOdhl6g_-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MQZQgBhv1BmsYOdhl6g_-4" value="初始化XPT2046" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="362" y="218" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="MQZQgBhv1BmsYOdhl6g_-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="MQZQgBhv1BmsYOdhl6g_-11" target="MQZQgBhv1BmsYOdhl6g_-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MQZQgBhv1BmsYOdhl6g_-22" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="MQZQgBhv1BmsYOdhl6g_-11" target="MQZQgBhv1BmsYOdhl6g_-21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MQZQgBhv1BmsYOdhl6g_-11" value="获取校准信息" style="rhombus;whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="382" y="274" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="MQZQgBhv1BmsYOdhl6g_-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="MQZQgBhv1BmsYOdhl6g_-17" target="MQZQgBhv1BmsYOdhl6g_-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MQZQgBhv1BmsYOdhl6g_-17" value="获取点击坐标" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="362" y="393" width="120" height="31" as="geometry" />
+        </mxCell>
+        <mxCell id="MQZQgBhv1BmsYOdhl6g_-19" value="返回" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="362" y="449" width="120" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="MQZQgBhv1BmsYOdhl6g_-21" value="校准坐标" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="522" y="302" width="81" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="MQZQgBhv1BmsYOdhl6g_-23" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="MQZQgBhv1BmsYOdhl6g_-17">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="561.5" y="325" as="sourcePoint" />
+            <mxPoint x="562" y="404" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="562" y="355" />
+              <mxPoint x="562" y="409" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

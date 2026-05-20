@@ -1,0 +1,55 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="3RHjOsDwm2GPStdsXv9u">
+    <mxGraphModel dx="870" dy="529" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="MFFUwFzbDBmDTw9ZRpB2-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="MFFUwFzbDBmDTw9ZRpB2-1" target="MFFUwFzbDBmDTw9ZRpB2-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MFFUwFzbDBmDTw9ZRpB2-1" value="选择音频文件" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="419" y="87" width="86" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="MFFUwFzbDBmDTw9ZRpB2-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="MFFUwFzbDBmDTw9ZRpB2-2" target="MFFUwFzbDBmDTw9ZRpB2-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MFFUwFzbDBmDTw9ZRpB2-2" value="打开WAV与LRC文件" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="381.5" y="144" width="161" height="23" as="geometry" />
+        </mxCell>
+        <mxCell id="MFFUwFzbDBmDTw9ZRpB2-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="MFFUwFzbDBmDTw9ZRpB2-4" target="MFFUwFzbDBmDTw9ZRpB2-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MFFUwFzbDBmDTw9ZRpB2-4" value="解析WAV头文件" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="381.5" y="183" width="161" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="MFFUwFzbDBmDTw9ZRpB2-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="MFFUwFzbDBmDTw9ZRpB2-6" target="MFFUwFzbDBmDTw9ZRpB2-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MFFUwFzbDBmDTw9ZRpB2-6" value="读取PCM音频数据" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="381.5" y="230" width="161" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="MFFUwFzbDBmDTw9ZRpB2-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="MFFUwFzbDBmDTw9ZRpB2-8" target="MFFUwFzbDBmDTw9ZRpB2-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MFFUwFzbDBmDTw9ZRpB2-8" value="写入外部SRAM数据" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="381.5" y="280" width="161" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="MFFUwFzbDBmDTw9ZRpB2-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="MFFUwFzbDBmDTw9ZRpB2-10" target="MFFUwFzbDBmDTw9ZRpB2-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MFFUwFzbDBmDTw9ZRpB2-10" value="DMA发送音频数据" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="381.5" y="326" width="161" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="MFFUwFzbDBmDTw9ZRpB2-17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="MFFUwFzbDBmDTw9ZRpB2-14" target="MFFUwFzbDBmDTw9ZRpB2-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MFFUwFzbDBmDTw9ZRpB2-14" value="I2S输出" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="381.5" y="373" width="161" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="MFFUwFzbDBmDTw9ZRpB2-16" value="MAX98357驱动扬声器" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="408" y="426" width="108" height="34" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

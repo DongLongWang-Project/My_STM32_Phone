@@ -1,0 +1,49 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="Jb8rJpoGPbEkGK5ZkS-d">
+    <mxGraphModel dx="880" dy="539" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="HNBVl6ET15l0TKPlIUVH-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HNBVl6ET15l0TKPlIUVH-1" target="HNBVl6ET15l0TKPlIUVH-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HNBVl6ET15l0TKPlIUVH-1" value="开始" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="401" y="122" width="120" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="HNBVl6ET15l0TKPlIUVH-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HNBVl6ET15l0TKPlIUVH-2" target="HNBVl6ET15l0TKPlIUVH-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HNBVl6ET15l0TKPlIUVH-2" value="FSMC初始化" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="383" y="178" width="156" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="HNBVl6ET15l0TKPlIUVH-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HNBVl6ET15l0TKPlIUVH-4" target="HNBVl6ET15l0TKPlIUVH-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HNBVl6ET15l0TKPlIUVH-4" value="LCD初始化" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="383" y="234" width="156" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="HNBVl6ET15l0TKPlIUVH-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HNBVl6ET15l0TKPlIUVH-6" target="HNBVl6ET15l0TKPlIUVH-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HNBVl6ET15l0TKPlIUVH-6" value="设置显示位置" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="383" y="287" width="156" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="HNBVl6ET15l0TKPlIUVH-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HNBVl6ET15l0TKPlIUVH-8" target="HNBVl6ET15l0TKPlIUVH-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HNBVl6ET15l0TKPlIUVH-8" value="清屏" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="383" y="343" width="156" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="HNBVl6ET15l0TKPlIUVH-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HNBVl6ET15l0TKPlIUVH-10" target="HNBVl6ET15l0TKPlIUVH-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HNBVl6ET15l0TKPlIUVH-10" value="送信息到显示屏" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="383" y="393" width="156" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="HNBVl6ET15l0TKPlIUVH-12" value="返回" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="401" y="443" width="120" height="25" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

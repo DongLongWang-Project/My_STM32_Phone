@@ -1,0 +1,55 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="dije3zYmST6LNIJ3KHWA">
+    <mxGraphModel dx="870" dy="529" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="NFgPTSme0dmRUu3vYB5Y-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="NFgPTSme0dmRUu3vYB5Y-1" target="NFgPTSme0dmRUu3vYB5Y-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NFgPTSme0dmRUu3vYB5Y-1" value="USART接收数据" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="448" y="67" width="101" height="33" as="geometry" />
+        </mxCell>
+        <mxCell id="NFgPTSme0dmRUu3vYB5Y-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="NFgPTSme0dmRUu3vYB5Y-2" target="NFgPTSme0dmRUu3vYB5Y-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NFgPTSme0dmRUu3vYB5Y-2" value="DMA循环写入缓冲区" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="422" y="119" width="153" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="NFgPTSme0dmRUu3vYB5Y-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="NFgPTSme0dmRUu3vYB5Y-6" target="NFgPTSme0dmRUu3vYB5Y-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NFgPTSme0dmRUu3vYB5Y-6" value="触发半区/全区中断" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="422" y="164" width="153" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="NFgPTSme0dmRUu3vYB5Y-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="NFgPTSme0dmRUu3vYB5Y-8" target="NFgPTSme0dmRUu3vYB5Y-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NFgPTSme0dmRUu3vYB5Y-8" value="写入FIFO环形缓冲区" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="422" y="212" width="153" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="NFgPTSme0dmRUu3vYB5Y-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="NFgPTSme0dmRUu3vYB5Y-10" target="NFgPTSme0dmRUu3vYB5Y-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NFgPTSme0dmRUu3vYB5Y-10" value="检测串口空闲中断" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="422" y="260" width="153" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="NFgPTSme0dmRUu3vYB5Y-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="NFgPTSme0dmRUu3vYB5Y-12" target="NFgPTSme0dmRUu3vYB5Y-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NFgPTSme0dmRUu3vYB5Y-12" value="读取FIFO数据" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="422" y="311" width="153" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="NFgPTSme0dmRUu3vYB5Y-17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="NFgPTSme0dmRUu3vYB5Y-14" target="NFgPTSme0dmRUu3vYB5Y-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NFgPTSme0dmRUu3vYB5Y-14" value="解析AT响应数据" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="422" y="363" width="153" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="NFgPTSme0dmRUu3vYB5Y-16" value="更新系统状态" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="442.5" y="414" width="112" height="35" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

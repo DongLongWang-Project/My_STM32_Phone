@@ -1,0 +1,67 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="n8AGm6xVJ8Lu893wrJX7">
+    <mxGraphModel dx="1024" dy="622" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="syrlDJqRtP0f2qQr2Slm-1" target="syrlDJqRtP0f2qQr2Slm-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-1" value="LVGL初始化" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="365.5" y="284" width="79" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="syrlDJqRtP0f2qQr2Slm-2" target="syrlDJqRtP0f2qQr2Slm-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-2" value="注册显示驱动" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="325" y="336" width="161" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="syrlDJqRtP0f2qQr2Slm-4" target="syrlDJqRtP0f2qQr2Slm-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-4" value="注册输入设备驱动" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="380" width="171" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="syrlDJqRtP0f2qQr2Slm-6" target="syrlDJqRtP0f2qQr2Slm-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-6" value="周期调用lv_timer_handler()" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="421" width="168" height="23" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="syrlDJqRtP0f2qQr2Slm-8" target="syrlDJqRtP0f2qQr2Slm-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-8" value="采集触摸输入" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="345" y="478" width="120" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="syrlDJqRtP0f2qQr2Slm-10" target="syrlDJqRtP0f2qQr2Slm-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-10" value=" 生成输入事件" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="345" y="520" width="120" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="syrlDJqRtP0f2qQr2Slm-12" target="syrlDJqRtP0f2qQr2Slm-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-12" value=" 控件事件处理" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="311.5" y="561" width="187" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="syrlDJqRtP0f2qQr2Slm-14" target="syrlDJqRtP0f2qQr2Slm-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-14" value=" 刷新显示区域" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="312" y="607" width="187" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="syrlDJqRtP0f2qQr2Slm-16" target="syrlDJqRtP0f2qQr2Slm-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-16" value=" LCD输出显示" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="325" y="650" width="163" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="syrlDJqRtP0f2qQr2Slm-18" value=" 结束" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="365.5" y="694" width="83" height="27" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

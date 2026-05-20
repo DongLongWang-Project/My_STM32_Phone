@@ -1,0 +1,79 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="n8AGm6xVJ8Lu893wrJX7">
+    <mxGraphModel dx="1244" dy="756" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;align=center;" edge="1" parent="1" source="TmzCeMT3bLIMsehpVNsL-1" target="TmzCeMT3bLIMsehpVNsL-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-1" value="开始" style="rounded=1;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="63" width="71" height="29" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;align=center;" edge="1" parent="1" source="TmzCeMT3bLIMsehpVNsL-2" target="TmzCeMT3bLIMsehpVNsL-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-2" value="LVGL初始化" style="rounded=1;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="119" width="71" height="29" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;align=center;" edge="1" parent="1" source="TmzCeMT3bLIMsehpVNsL-4" target="TmzCeMT3bLIMsehpVNsL-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-4" value="注册显示/触摸输入驱动" style="rounded=1;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="177" width="71" height="29" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;align=center;" edge="1" parent="1" source="TmzCeMT3bLIMsehpVNsL-6" target="TmzCeMT3bLIMsehpVNsL-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-6" value="创建界面对象" style="rounded=1;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="235" width="71" height="29" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;align=center;" edge="1" parent="1" source="TmzCeMT3bLIMsehpVNsL-8" target="TmzCeMT3bLIMsehpVNsL-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-8" value="创建LVGL任务" style="rounded=1;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="387" y="290" width="97" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;align=center;" edge="1" parent="1" source="TmzCeMT3bLIMsehpVNsL-10" target="TmzCeMT3bLIMsehpVNsL-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-10" value="周期调用lv_timer_hanndle()" style="rounded=1;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="367.5" y="349" width="136" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;align=center;" edge="1" parent="1" source="TmzCeMT3bLIMsehpVNsL-12" target="TmzCeMT3bLIMsehpVNsL-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-12" value="读取触摸坐标" style="rounded=1;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="393" y="410" width="86" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;align=center;" edge="1" parent="1" source="TmzCeMT3bLIMsehpVNsL-14" target="TmzCeMT3bLIMsehpVNsL-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-14" value="生成输入事件" style="rounded=1;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="378" y="465" width="116" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;align=center;" edge="1" parent="1" source="TmzCeMT3bLIMsehpVNsL-16" target="TmzCeMT3bLIMsehpVNsL-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-16" value="更新界面对象" style="rounded=1;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="380" y="520" width="111" height="21" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;align=center;" edge="1" parent="1" source="TmzCeMT3bLIMsehpVNsL-18" target="TmzCeMT3bLIMsehpVNsL-20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-18" value="刷新显示缓冲区" style="rounded=1;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="381.5" y="572" width="108" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;align=center;" edge="1" parent="1" source="TmzCeMT3bLIMsehpVNsL-20" target="TmzCeMT3bLIMsehpVNsL-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-20" value="LCD显示输出" style="rounded=1;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="378.5" y="624" width="114" height="19" as="geometry" />
+        </mxCell>
+        <mxCell id="TmzCeMT3bLIMsehpVNsL-22" value="循环运行" style="rounded=1;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="381" y="673" width="110" height="32" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,55 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="rFpgb3sRCqzJ1FqepnLX">
+    <mxGraphModel dx="870" dy="529" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="51xgFFpWA48tmNn23Iiw-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="51xgFFpWA48tmNn23Iiw-1" target="51xgFFpWA48tmNn23Iiw-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="51xgFFpWA48tmNn23Iiw-1" value="系统启动" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="396" y="75" width="75" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="51xgFFpWA48tmNn23Iiw-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="51xgFFpWA48tmNn23Iiw-2" target="51xgFFpWA48tmNn23Iiw-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="51xgFFpWA48tmNn23Iiw-2" value="挂载SD卡文件系统" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="354" y="126" width="159" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="51xgFFpWA48tmNn23Iiw-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="51xgFFpWA48tmNn23Iiw-4" target="51xgFFpWA48tmNn23Iiw-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="51xgFFpWA48tmNn23Iiw-4" value="打开目标目录" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="354" y="180" width="159" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="51xgFFpWA48tmNn23Iiw-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="51xgFFpWA48tmNn23Iiw-6" target="51xgFFpWA48tmNn23Iiw-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="51xgFFpWA48tmNn23Iiw-6" value="遍历目录文件" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="354" y="234" width="159" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="51xgFFpWA48tmNn23Iiw-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="51xgFFpWA48tmNn23Iiw-8" target="51xgFFpWA48tmNn23Iiw-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="51xgFFpWA48tmNn23Iiw-8" value="判断文件类型" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="354" y="283" width="159" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="51xgFFpWA48tmNn23Iiw-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="51xgFFpWA48tmNn23Iiw-10" target="51xgFFpWA48tmNn23Iiw-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="51xgFFpWA48tmNn23Iiw-10" value="建立资源索引" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="354" y="337" width="159" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="51xgFFpWA48tmNn23Iiw-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="51xgFFpWA48tmNn23Iiw-12" target="51xgFFpWA48tmNn23Iiw-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="51xgFFpWA48tmNn23Iiw-12" value="生成文件列表" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="354" y="383" width="159" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="51xgFFpWA48tmNn23Iiw-14" value="返回" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="396" y="432" width="75" height="21" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

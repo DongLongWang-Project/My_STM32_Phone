@@ -1,0 +1,67 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="sNr4Bd27-FMHIMssuLbL">
+    <mxGraphModel dx="870" dy="529" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="XTndKfQsrxSXjWldbuzb-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="XTndKfQsrxSXjWldbuzb-1" target="XTndKfQsrxSXjWldbuzb-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-1" value="选择视频文件" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="406" y="49" width="91" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="XTndKfQsrxSXjWldbuzb-2" target="XTndKfQsrxSXjWldbuzb-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-2" value="打开文件头部,获取视频数据大小" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="387" y="104" width="129" height="31" as="geometry" />
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="XTndKfQsrxSXjWldbuzb-4" target="XTndKfQsrxSXjWldbuzb-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-4" value="启动LVGL定时器" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="387" y="156" width="129" height="21" as="geometry" />
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="XTndKfQsrxSXjWldbuzb-6" target="XTndKfQsrxSXjWldbuzb-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-6" value="读取RGB帧数据" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="387" y="203" width="129" height="21" as="geometry" />
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="XTndKfQsrxSXjWldbuzb-8" target="XTndKfQsrxSXjWldbuzb-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-8" value="输出到LCD显示" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="387" y="245" width="129" height="21" as="geometry" />
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="XTndKfQsrxSXjWldbuzb-10" target="XTndKfQsrxSXjWldbuzb-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-10" value="等待下一帧周期" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="387" y="287" width="129" height="21" as="geometry" />
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="XTndKfQsrxSXjWldbuzb-16" target="XTndKfQsrxSXjWldbuzb-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="604" y="202" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="605" y="381" />
+              <mxPoint x="605" y="214" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="XTndKfQsrxSXjWldbuzb-16" target="XTndKfQsrxSXjWldbuzb-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-16" value="是否读取到末尾" style="rhombus;whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="403" y="348" width="97" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-19" value="播放完毕" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="391.5" y="445" width="120" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="XTndKfQsrxSXjWldbuzb-22" value="读取下一帧数据" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="509" y="356" width="102" height="26" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

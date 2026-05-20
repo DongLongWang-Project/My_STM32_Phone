@@ -1,0 +1,67 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="第 1 页" id="bOccvs4VkKbwXbTZHtAX">
+    <mxGraphModel dx="871" dy="529" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="E--OjouUp9Db2mboczZ7-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="E--OjouUp9Db2mboczZ7-1" target="E--OjouUp9Db2mboczZ7-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-1" value="开始" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="390.5" y="96" width="93" height="17" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="E--OjouUp9Db2mboczZ7-2" target="E--OjouUp9Db2mboczZ7-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-2" value="I2S/DMA初始化" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="388" y="138" width="98" height="19" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="E--OjouUp9Db2mboczZ7-8" target="E--OjouUp9Db2mboczZ7-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-8" value="开启DMA循环发送" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="388" y="183" width="101" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="E--OjouUp9Db2mboczZ7-10" target="E--OjouUp9Db2mboczZ7-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-10" value="DMA后台持续发送PCM数据" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="378.5" y="237" width="121.5" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="E--OjouUp9Db2mboczZ7-12" target="E--OjouUp9Db2mboczZ7-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-12" value="触发DMA半区中断" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="301" width="115" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="E--OjouUp9Db2mboczZ7-14" target="E--OjouUp9Db2mboczZ7-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-14" value="通知填充前半缓冲区" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="377.5" y="349" width="116.5" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="E--OjouUp9Db2mboczZ7-16" target="E--OjouUp9Db2mboczZ7-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-16" value="触发DMA全区中断" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375.75" y="397" width="117.25" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="E--OjouUp9Db2mboczZ7-18" target="E--OjouUp9Db2mboczZ7-20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-18" value="通知填充后半缓冲区" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="374.38" y="450" width="114.62" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="E--OjouUp9Db2mboczZ7-20" target="E--OjouUp9Db2mboczZ7-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-20" value="音频任务填充PCM数据" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="371.69" y="500" width="118.31" height="31" as="geometry" />
+        </mxCell>
+        <mxCell id="E--OjouUp9Db2mboczZ7-22" value="返回" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="392.69" y="551" width="78" height="16" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
